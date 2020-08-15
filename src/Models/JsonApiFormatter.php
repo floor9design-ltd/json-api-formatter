@@ -20,6 +20,9 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use stdClass;
+
 /**
  * Class JsonApiFormatter
  *
@@ -38,7 +41,7 @@ namespace Floor9design\JsonApiFormatter\Models;
  * @since     File available since Release 1.0
  * @see       https://jsonapi.org/format/
  */
-trait JsonApiFormatter
+class JsonApiFormatter
 {
     // Properties
 
@@ -63,10 +66,18 @@ trait JsonApiFormatter
     // Accessors and advanced accessors
 
     /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return $this->content_type;
+    }
+
+    /**
      * @return array
      * @see $base_response_array
      */
-    public function getBaseApiResponseArray(): array
+    protected function getBaseResponseArray(): array
     {
         return $this->base_response_array;
     }
@@ -76,7 +87,7 @@ trait JsonApiFormatter
      */
     public function getData(): ?array
     {
-        return $this->base_response_array['data'] ?? null;
+        return $this->getBaseResponseArray()['data'] ?? null;
     }
 
     /**
@@ -107,7 +118,7 @@ trait JsonApiFormatter
      */
     public function getErrors(): ?array
     {
-        return $this->base_response_array['errors'] ?? null;
+        return $this->getBaseResponseArray()['errors'] ?? null;
     }
 
     /**
@@ -127,7 +138,7 @@ trait JsonApiFormatter
      * @param array $extra_errors
      * @return JsonApiFormatter
      */
-    public function addError(array $extra_errors): JsonApiFormatter
+    public function addErrors(array $extra_errors): JsonApiFormatter
     {
         $this->setErrors(array_merge($this->getErrors() ?? [], $extra_errors));
         return $this;
@@ -138,7 +149,7 @@ trait JsonApiFormatter
      */
     public function getMeta(): ?array
     {
-        return $this->base_response_array['meta'] ?? null;
+        return $this->getBaseResponseArray()['meta'] ?? null;
     }
 
     /**
@@ -167,9 +178,9 @@ trait JsonApiFormatter
     /**
      * @return null|array
      */
-    public function getJsonapi(): ?array
+    public function getJsonapi(): ?StdClass
     {
-        return $this->base_response_array['jsonapi'] ?? null;
+        return $this->getBaseResponseArray()['jsonapi'] ?? null;
     }
 
     /**
@@ -178,7 +189,7 @@ trait JsonApiFormatter
      * @param array $jsonapi
      * @return JsonApiFormatter
      */
-    public function setJsonapi(array $jsonapi): JsonApiFormatter
+    public function setJsonapi(object $jsonapi): JsonApiFormatter
     {
         $this->base_response_array['jsonapi'] = $jsonapi;
         return $this;
@@ -189,7 +200,7 @@ trait JsonApiFormatter
      */
     public function getLinks(): ?array
     {
-        return $this->base_response_array['links'] ?? null;
+        return $this->getBaseResponseArray()['links'] ?? null;
     }
 
     /**
@@ -205,11 +216,22 @@ trait JsonApiFormatter
     }
 
     /**
+     * Fluently adds included to $base_response_array['links']
+     * @param array $extra_links
+     * @return JsonApiFormatter
+     */
+    public function addLinks(array $extra_links): JsonApiFormatter
+    {
+        $this->setLinks(array_merge($this->getLinks() ?? [], $extra_links));
+        return $this;
+    }
+
+    /**
      * @return null|array
      */
     public function getIncluded(): ?array
     {
-        return $this->base_response_array['included'] ?? null;
+        return $this->getBaseResponseArray()['included'] ?? null;
     }
 
     /**
@@ -235,8 +257,131 @@ trait JsonApiFormatter
         return $this;
     }
 
+    // constructor
+
+    /**
+     * Sets up the object quickly with optional items
+     *
+     * JsonApiFormatter constructor.
+     * @param array|null $meta
+     * @param array|null $json_api
+     * @param array|null $links
+     */
+    public function __construct(
+        ?array $meta = null,
+        ?object $json_api = null,
+        ?array $links = null
+    ) {
+        // Cant form an object before instantiation, so do it here:
+        $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
+
+        if ($meta ?? false) {
+            $this->setMeta($meta);
+        }
+
+        if ($json_api ?? false) {
+            $this->setJsonapi($json_api);
+        }
+
+        if ($links ?? false) {
+            $this->addLinks($links);
+        }
+    }
+
+    // private functions
+
+    /**
+     * Correctly encodes the string, catching issues such as:
+     * "you need to specify associative array, else it is invalid json"
+     *
+     * @param array $array
+     * @return string
+     */
+    private function correctEncode(?array $array = null): string
+    {
+        if ($array) {
+            $content = $array;
+        } else {
+            $content = $this->getBaseResponseArray();
+        }
+
+        return json_encode($content, true);
+    }
+
     // Main functionality
 
-    //public function errorResponseArray()
+    /**
+     * @param array $errors
+     * @param array $meta
+     * @return string
+     * @throws JsonApiFormatterException
+     */
+    public function errorResponse(
+        array $errors = []
+    ): string {
+        // clear data: it must not be set in an error response
+        unset($this->base_response_array['data']);
+
+        // if no errors are passed, try to load this object's errors:
+        if (!count($errors) == 0)  {
+            $this->addErrors($errors);
+        }
+
+        // Catch empty errors array: it needs to exist!
+        if (count($this->getErrors()) == 0) {
+            throw new JsonApiFormatterException("Error responses cannot have an empty errors array");
+        }
+
+        return $this->correctEncode();
+    }
+
+    /**
+     * @param string|null $id
+     * @param string|null $type
+     * @param array|null $attributes
+     * @return string
+     * @throws JsonApiFormatterException
+     */
+    public function dataResourceResponse(
+        ?string $id = null,
+        ?string $type = null,
+        ?array $attributes = null
+    ): string {
+        // clear errors: it must not be set in an dataResource response
+        unset($this->base_response_array['errors']);
+
+        // if no data is passed, try to load this object's data:
+        if (
+            $type &&
+            $id &&
+            $attributes &&
+            count($attributes) != 0
+        ) {
+            // Manually set/add the data where needed (overwrite)
+            $data = [
+                'id' => $id,
+                'type' => $type,
+                'attributes' => $attributes
+            ];
+            $this->setData($data);
+        }
+
+        // Catch empty errors array: it needs to exist!
+        if (!($this->getData()['id']?? false)) {
+            throw new JsonApiFormatterException("Data responses require the data id to be set");
+        }
+
+        // Catch empty errors array: it needs to exist!
+        if (!($this->getData()['type']?? false)) {
+            throw new JsonApiFormatterException("Data responses require the data type to be set");
+        }
+
+        // Catch empty errors array: it needs to exist!
+        if (count($this->getData()['attributes'] ?? []) == 0) {
+            throw new JsonApiFormatterException("Data responses cannot have an empty attributes array");
+        }
+
+        return $this->correctEncode();
+    }
 
 }
