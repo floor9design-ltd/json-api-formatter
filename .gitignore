@@ -1,0 +1,10 @@
+# IDE
+.idea
+
+# Vendor
+vendor
+
+# Testing
+docs/tests/*
+docs/phpdoc/*
+/.phpunit.result.cache
