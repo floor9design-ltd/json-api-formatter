@@ -353,7 +353,10 @@ class JsonApiFormatter
         // if no data is passed, try to load this object's data:
         if (
             $type &&
-            $id &&
+            (
+                $id !== null ||
+                $id === "0" // catch string zero, which evaluates to false.
+            ) &&
             $attributes &&
             count($attributes) != 0
         ) {
@@ -365,9 +368,8 @@ class JsonApiFormatter
             ];
             $this->setData($data);
         }
-
         // Catch empty errors array: it needs to exist!
-        if (!($this->getData()['id']?? false)) {
+        if (!isset($this->getData()['id'])) {
             throw new JsonApiFormatterException("Data responses require the data id to be set");
         }
 

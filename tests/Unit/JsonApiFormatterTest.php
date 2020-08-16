@@ -426,7 +426,7 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testDataResourceResponse()
     {
-        $id = '2';
+        $id = (string)'2';
         $type = 'user';
         $attributes = [
             'name' => 'Joe Bloggs',
@@ -447,7 +447,30 @@ class JsonApiFormatterTest extends TestCase
 
         $json_api_formatter = new JsonApiFormatter();
         $response = $json_api_formatter->dataResourceResponse($id, $type, $attributes);
+        $this->assertEquals($validated_json, $response);
 
+        // Catch a zero as id (an add)
+        $id = (string)'0';
+        $type = 'user';
+        $attributes = [
+            'name' => 'Dave Bloggs',
+            'email' => 'dave@bloggs.com'
+        ];
+
+        // make a manually checked correct array:
+        $validated_array = [
+            'data' => [
+                'id' => $id,
+                'type' => $type,
+                'attributes' => $attributes
+            ],
+            'meta' => (object)['status' => null],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+        $validated_json = json_encode($validated_array, true);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $response = $json_api_formatter->dataResourceResponse($id, $type, $attributes);
         $this->assertEquals($validated_json, $response);
     }
 
