@@ -1,11 +1,11 @@
 # json-api-formatter
 
-[![Latest Version](https://img.shields.io/github/release/elb98rm/laravel-restful-api.svg?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter/releases)
+[![Latest Version](https://img.shields.io/github/release/floor9design-ltd/json-api-formatter.svg?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENCE.md)
-[![Build Status](https://img.shields.io/travis/laravel-restful-api/master.svg?style=plastic)](https://travis-ci.org/elb98rm/laravel-restful-api)
-[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api/code-structure)
-[![Quality Score](https://img.shields.io/scrutinizer/g/laravel-restful-api/laravel-restful-api.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/laravel-restful-api)
-[![Total Downloads](https://img.shields.io/packagist/dt/league/laravel-restful-api.svg?style=plastic)](https://packagist.org/packages/floor9design/laravel-restful-api)
+[![Build Status](https://img.shields.io/travis/json-api-formatter/master.svg?style=plastic)](https://travis-ci.org/elb98rm/json-api-formatter)
+[![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/json-api-formatter/json-api-formatter.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/json-api-formatter/code-structure)
+[![Quality Score](https://img.shields.io/scrutinizer/g/json-api-formatter/json-api-formatter.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/json-api-formatter)
+[![Total Downloads](https://img.shields.io/packagist/dt/league/json-api-formatter.svg?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
 
 A set classes that allow for creating JSON API compliant objects
 
