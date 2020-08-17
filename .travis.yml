@@ -8,7 +8,6 @@ before_script:
   - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
-  - skip
   - ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
   - ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
 
