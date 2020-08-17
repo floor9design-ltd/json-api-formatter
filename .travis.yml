@@ -2,21 +2,16 @@ language: php
 
 php:
   - '7.4'
-  - '8.0'
-  - hhvm
-  - nightly
 
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
-  - phpunit --coverage-text --coverage-clover=coverage.clover
+  - ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
+  - ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
