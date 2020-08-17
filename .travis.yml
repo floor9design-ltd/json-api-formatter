@@ -9,7 +9,8 @@ before_script:
 
 script:
   - skip
-#  - phpunit --coverage-text --coverage-clover=coverage.clover
+  - ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
+  - ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_success:
   - skip
