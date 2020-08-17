@@ -11,11 +11,16 @@ A set classes that allow for creating JSON API compliant objects
 
 ## Introduction
 
-To be completed. 
+The JSON API has a precise response format. This set of classes allows these to be easy created and interrogated,
+meaning easy and reliable output/input processing. 
 
 ## Features
 
-To be completed. 
+The classes offer:
+
+* easy methods to wrap and unwrap content
+* default values and settings out of the box, improving the quality of response
+* fluent programming approach, allowing objects to be build on the fly
 
 ## Install
 
@@ -27,15 +32,25 @@ composer require floor9design/json-api-formatter
 
 ## Usage
 
-To be completed. 
+This is to be discussed in the usage document.
+
+* [usage](docs/project/usage.md)
 
 ## Setup
 
-To be completed. 
+There are no specific config setup steps required. 
+The class should autoload in PSR-4 compliant systems. If you are using the class on its own, simply include it 
+however is most appropriate.
 
 ## Testing
 
-To be completed. 
+Tests can be run as follows:
+
+* `./vendor/phpunit/phpunit/phpunit`
+
+The following tests and also creates code coverage (usually maintained at 100%)
+
+* `./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/`
 
 ## Credits
 
