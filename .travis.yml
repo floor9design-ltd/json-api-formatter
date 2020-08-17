@@ -12,8 +12,7 @@ script:
   - ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_success:
-  - skip
-#  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
 
 after_script:
   - skip
