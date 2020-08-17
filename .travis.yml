@@ -3,7 +3,6 @@ language: php
 php:
   - '7.4'
   - '8.0'
-  - hhvm
   - nightly
 
 before_script:
@@ -11,12 +10,15 @@ before_script:
   - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
+  - skip
 #  - phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_success:
+  - skip
 #  - bash <(curl -s https://codecov.io/bash)
 
 after_script:
+  - skip
 #  - wget https://scrutinizer-ci.com/ocular.phar
 #  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
