@@ -1,6 +1,6 @@
 # json-api-formatter
 
-[![Latest Version](https://img.shields.io/github/release/floor9design-ltd/json-api-formatter.svg?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter/releases)
+[![Latest Version](https://img.shields.io/github/v/release/floor9design-ltd/json-api-formatter?include_prereleases&style=plastic)](https://github.com/floor9design-ltd/json-api-formatter/releases)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENCE.md)
 [![Build Status](https://img.shields.io/travis/json-api-formatter/master.svg?style=plastic)](https://travis-ci.org/elb98rm/json-api-formatter)
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/json-api-formatter/json-api-formatter.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/json-api-formatter/code-structure)
