@@ -7,7 +7,7 @@
 [![Coverage Status](https://img.shields.io/scrutinizer/coverage/g/json-api-formatter/json-api-formatter.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/json-api-formatter/code-structure)
 [![Quality Score](https://img.shields.io/scrutinizer/g/json-api-formatter/json-api-formatter.svg?style=plastic)](https://scrutinizer-ci.com/g/floor9design/json-api-formatter)
 [![Github Downloads](https://img.shields.io/github/downloads/floor9design-ltd/json-api-formatter/total?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter)
-[![Github Downloads](https://img.shields.io/packagist/dt/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
 
 
 A set classes that allow for creating JSON API compliant objects
@@ -19,6 +19,9 @@ meaning easy and reliable output/input processing.
 
 ## Features
 
+[![Latest Version](https://img.shields.io/github/v/release/floor9design-ltd/json-api-formatter?include_prereleases&style=plastic)](https://github.com/floor9design-ltd/json-api-formatter/releases)
+[![Packagist](https://img.shields.io/packagist/v/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
+
 The classes offer:
 
 * easy methods to wrap and unwrap content
@@ -27,10 +30,24 @@ The classes offer:
 
 ## Install
 
-Via Composer
+Via Composer/packagist
+
+[![Packagist Downloads](https://img.shields.io/packagist/dt/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
 
 ``` bash
 composer require floor9design/json-api-formatter
+```
+
+Via git
+
+[![Github Downloads](https://img.shields.io/github/downloads/floor9design-ltd/json-api-formatter/total?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter)
+
+``` bash
+git clone https://github.com/floor9design-ltd/json-api-formatter.git
+```
+Or: 
+``` bash
+git clone git@github.com:floor9design-ltd/json-api-formatter.git
 ```
 
 ## Usage
