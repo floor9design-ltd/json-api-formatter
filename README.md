@@ -65,6 +65,9 @@ however is most appropriate.
 
 ## Testing
 
+[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.org/github/floor9design-ltd/json-api-formatter)
+[![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/json-api-formatter?style=plastic)](https://codecov.io/gh/floor9design-ltd/json-api-formatter)
+
 Tests can be run as follows:
 
 * `./vendor/phpunit/phpunit/phpunit`
