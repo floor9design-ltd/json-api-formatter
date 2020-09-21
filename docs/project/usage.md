@@ -97,7 +97,8 @@ The JSON API requires a specific `Content-Type` header, which can be loaded by `
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 
 $json_api_response = new JsonApiFormatter();
-$response = $json_api_response->getContentType();
+$content_type = $json_api_response->getContentType();
+// application/vnd.api+json
 ```
 
 The `dataResourceResponse()` returns a JSON API compliant json string.
