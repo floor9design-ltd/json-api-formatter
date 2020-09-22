@@ -106,9 +106,17 @@ class JsonApiFormatter
      * Fluently adds data to $base_response_array['data']
      * @param array $extra_data
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
     public function addData(array $extra_data): JsonApiFormatter
     {
+        // catch duplicates
+        if(array_intersect_key($this->getData(), $extra_data)) {
+            throw new JsonApiFormatterException(
+                'The data provided clashes with existing data - it should be added manually'
+            );
+        }
+
         $this->setData(array_merge($this->getData() ?? [], $extra_data));
         return $this;
     }
@@ -168,9 +176,17 @@ class JsonApiFormatter
      * Fluently adds meta to $base_response_array['meta']
      * @param array $extra_meta
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
     public function addMeta(array $extra_meta): JsonApiFormatter
     {
+        // catch duplicates
+        if(array_intersect_key($this->getMeta(), $extra_meta)) {
+            throw new JsonApiFormatterException(
+                'The meta provided clashes with existing meta - it should be added manually'
+            );
+        }
+
         $this->setMeta(array_merge($this->getMeta() ?? [], $extra_meta));
         return $this;
     }

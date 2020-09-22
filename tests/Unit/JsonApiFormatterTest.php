@@ -65,6 +65,7 @@ class JsonApiFormatterTest extends TestCase
      * Test data accessors.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testDataAccessors()
     {
@@ -89,6 +90,11 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setData($test_partial_data);
         $json_api_formatter->addData(['attributes' => 'some_data']);
         $this->assertEquals($json_api_formatter->getData(), $test_complete_data);
+
+        // check that addData catches duplicates
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The data provided clashes with existing data - it should be added manually');
+        $json_api_formatter->addData(['attributes' => 'some_data']);
     }
 
     /**
@@ -155,6 +161,11 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setMeta($test_partial_meta);
         $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
         $this->assertEquals($json_api_formatter->getMeta(), $test_complete_meta);
+
+        // check that addMeta catches duplicates
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The meta provided clashes with existing meta - it should be added manually');
+        $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
     }
 
     /**
