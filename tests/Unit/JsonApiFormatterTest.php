@@ -485,6 +485,104 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($validated_json, $response);
     }
 
+    /**
+     * Tests that invalid JSON is caught
+     */
+    public function testImportExceptionNotJson()
+    {
+        $not_json = 'a non-json string';
+        $json_api_formatter = new JsonApiFormatter();
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The provided json was not valid');
+        $json_api_formatter->import($not_json);
+    }
+
+    /**
+     * Tests that badly formed json is caught (no data or errors properties in json)
+     */
+    public function testImportExceptionBadJson()
+    {
+        $bad_json = '{"foo":"bar"}';
+        $json_api_formatter = new JsonApiFormatter();
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The provided json does not match the json api standard');
+        $json_api_formatter->import($bad_json);
+    }
+
+    /**
+     * Tests that a data element correctly matches
+     */
+    public function testImportData()
+    {
+        $json_array = [
+            'data' => [
+                'id' => '0',
+                'type' => 'test',
+                'attributes' => [
+                    'foo' => 'bar'
+                ]
+            ]
+        ];
+
+        $data_json = json_encode($json_array, true);
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->import($data_json);
+
+        $this->assertEquals($json_api_formatter->getData(), $json_array['data']);
+    }
+
+    /**
+     * Tests that errors correctly match
+     */
+    public function testImportErrors()
+    {
+        $json_array = [
+            'errors' => [
+                [
+                    'status' => '400',
+                    'title' => 'Bad request',
+                    'detail' => 'The request was not formed well',
+                ]
+            ],
+        ];
+
+        $errors_json = json_encode($json_array, true);
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->import($errors_json);
+
+        $this->assertEquals($json_api_formatter->getErrors(), $json_array['errors']);
+    }
+
+    /**
+     * Tests that meta correctly matches
+     */
+    public function testImportMeta()
+    {
+        $json_array = [
+            'data' => [
+                'id' => '0',
+                'type' => 'test',
+                'attributes' => [
+                    'foo' => 'bar'
+                ]
+            ],
+            'meta' => [
+                'status' => '200'
+            ],
+        ];
+
+        $meta_json = json_encode($json_array, true);
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->import($meta_json);
+
+        $this->assertEquals($json_api_formatter->getMeta(), $json_array['meta']);
+    }
+
     // Non testing functions
 
     /**
@@ -494,7 +592,8 @@ class JsonApiFormatterTest extends TestCase
      * @return mixed
      * @throws \ReflectionException
      */
-    protected static function getMethod($name) {
+    protected static function getMethod($name)
+    {
         $class = new ReflectionClass(JsonApiFormatter::class);
         $method = $class->getMethod($name);
         $method->setAccessible(true);

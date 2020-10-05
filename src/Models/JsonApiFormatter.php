@@ -111,7 +111,7 @@ class JsonApiFormatter
     public function addData(array $extra_data): JsonApiFormatter
     {
         // catch duplicates
-        if(array_intersect_key($this->getData(), $extra_data)) {
+        if (array_intersect_key($this->getData(), $extra_data)) {
             throw new JsonApiFormatterException(
                 'The data provided clashes with existing data - it should be added manually'
             );
@@ -181,7 +181,7 @@ class JsonApiFormatter
     public function addMeta(array $extra_meta): JsonApiFormatter
     {
         // catch duplicates
-        if(array_intersect_key($this->getMeta(), $extra_meta)) {
+        if (array_intersect_key($this->getMeta(), $extra_meta)) {
             throw new JsonApiFormatterException(
                 'The meta provided clashes with existing meta - it should be added manually'
             );
@@ -327,6 +327,49 @@ class JsonApiFormatter
     // Main functionality
 
     /**
+     * Attempts to import/decode a json api compliant string into a JsonApiFormatter object,
+     * setting the appropriate properties
+     *
+     * @param string $json The source json
+     * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
+     */
+    public function import(string $json): JsonApiFormatter
+    {
+        $decoded_json = json_decode($json, true);
+
+        // not json
+        if (!$decoded_json) {
+            throw new JsonApiFormatterException('The provided json was not valid');
+        }
+
+        //badly formed - must have either data or errors
+        if (
+            !($decoded_json['data'] ?? false) &&
+            !($decoded_json['errors'] ?? false)
+        ) {
+            throw new JsonApiFormatterException('The provided json does not match the json api standard');
+        }
+
+        // attempt to set up data
+        if ($decoded_json['data'] ?? false) {
+            $this->setData($decoded_json['data']);
+        }
+
+        // attempt to set up errors
+        if ($decoded_json['errors'] ?? false) {
+            $this->setErrors($decoded_json['errors']);
+        }
+
+        // attempt to set up meta
+        if ($decoded_json['meta'] ?? false) {
+            $this->setMeta($decoded_json['meta']);
+        }
+
+        return $this;
+    }
+
+    /**
      * @param array $errors
      * @param array $meta
      * @return string
@@ -339,7 +382,7 @@ class JsonApiFormatter
         unset($this->base_response_array['data']);
 
         // if no errors are passed, try to load this object's errors:
-        if (!count($errors) == 0)  {
+        if (!count($errors) == 0) {
             $this->addErrors($errors);
         }
 
@@ -390,7 +433,7 @@ class JsonApiFormatter
         }
 
         // Catch empty errors array: it needs to exist!
-        if (!($this->getData()['type']?? false)) {
+        if (!($this->getData()['type'] ?? false)) {
             throw new JsonApiFormatterException("Data responses require the data type to be set");
         }
 
