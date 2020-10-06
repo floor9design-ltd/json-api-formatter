@@ -259,7 +259,7 @@ class JsonApiFormatterTest extends TestCase
 
         // Defaults
         $this->assertEquals($json_api_formatter->getContentType(), 'application/vnd.api+json');
-        $this->assertEquals($json_api_formatter->getData(), []);
+        $this->assertEquals($json_api_formatter->getData(), null);
         $this->assertEquals($json_api_formatter->getErrors(), []);
         $this->assertEquals($json_api_formatter->getMeta(), ['status' => null]);
         $this->assertEquals($json_api_formatter->getJsonapi(), (object)['version' => '1.0']);
@@ -289,7 +289,7 @@ class JsonApiFormatterTest extends TestCase
     public function testCorrectEncode()
     {
         $base_response_array = [
-            'data' => [],
+            'data' => null,
             'errors' => [],
             'meta' => [
                 'status' => null
@@ -297,7 +297,7 @@ class JsonApiFormatterTest extends TestCase
             'jsonapi' => (object)['version' => '1.0']
         ];
         $test_response_array = [
-            'data' => [],
+            'data' => null,
             'errors' => [],
             'meta' => [
                 'status' => 'changed'

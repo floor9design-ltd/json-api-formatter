@@ -56,8 +56,8 @@ class JsonApiFormatter
      * @var array
      */
     protected $base_response_array = [
-        'data' => [],
-        'errors' => [],
+        'data' => null, // can exist as null
+        'errors' => [], // must be an array
         'meta' => [
             'status' => null
         ]
@@ -93,10 +93,10 @@ class JsonApiFormatter
     /**
      * Fluently sets data to the $base_response_array['data']
      *
-     * @param array $data
+     * @param array|null $data
      * @return JsonApiFormatter
      */
-    public function setData(array $data): JsonApiFormatter
+    public function setData(?array $data = null): JsonApiFormatter
     {
         $this->base_response_array['data'] = $data;
         return $this;
