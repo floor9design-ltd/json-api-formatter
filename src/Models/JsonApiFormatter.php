@@ -55,7 +55,7 @@ class JsonApiFormatter
      *
      * @var array
      */
-    protected $base_response_array = [
+    protected array $base_response_array = [
         'data' => null, // can exist as null
         'errors' => [], // must be an array
         'meta' => [
@@ -227,7 +227,7 @@ class JsonApiFormatter
     /**
      * Fluently sets jsonapi to the $base_response_array['jsonapi']
      *
-     * @param array $jsonapi
+     * @param object $jsonapi
      * @return JsonApiFormatter
      */
     public function setJsonapi(object $jsonapi): JsonApiFormatter
@@ -239,7 +239,7 @@ class JsonApiFormatter
     /**
      * @return null|array
      */
-    public function getLinks(): ?array
+    public function getLinks(): ?stdClass
     {
         return $this->getBaseResponseArray()['links'] ?? null;
     }
@@ -247,23 +247,30 @@ class JsonApiFormatter
     /**
      * Fluently sets links to the $base_response_array['links']
      *
-     * @param array $links
+     * @param stdClass $links
      * @return JsonApiFormatter
      */
-    public function setLinks(array $links): JsonApiFormatter
+    public function setLinks(stdClass $links): JsonApiFormatter
     {
         $this->base_response_array['links'] = $links;
         return $this;
     }
 
     /**
-     * Fluently adds included to $base_response_array['links']
+     * Fluently adds an array of links items to $base_response_array['links'] object
      * @param array $extra_links
      * @return JsonApiFormatter
      */
     public function addLinks(array $extra_links): JsonApiFormatter
     {
-        $this->setLinks(array_merge($this->getLinks() ?? [], $extra_links));
+        $links = $this->getLinks() ?? new stdClass();
+
+        foreach($extra_links as $property => $extra_link) {
+
+            $links->$property = $extra_link;
+        }
+
+        $this->setLinks($links);
         return $this;
     }
 
@@ -305,13 +312,13 @@ class JsonApiFormatter
      *
      * JsonApiFormatter constructor.
      * @param array|null $meta
-     * @param array|null $json_api
-     * @param array|null $links
+     * @param object|null $json_api
+     * @param stdClass|null $links
      */
     public function __construct(
         ?array $meta = null,
         ?object $json_api = null,
-        ?array $links = null
+        ?stdClass $links = null
     ) {
         // Cant form an object before instantiation, so do it here:
         $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
@@ -325,7 +332,7 @@ class JsonApiFormatter
         }
 
         if ($links ?? false) {
-            $this->addLinks($links);
+            $this->setLinks($links);
         }
     }
 
@@ -335,7 +342,7 @@ class JsonApiFormatter
      * Correctly encodes the string, catching issues such as:
      * "you need to specify associative array, else it is invalid json"
      *
-     * @param array $array
+     * @param array|null $array $array
      * @return string
      */
     private function correctEncode(?array $array = null): string
@@ -380,7 +387,6 @@ class JsonApiFormatter
     public function export(): string
     {
         $this->validateObject();
-
         return $this->correctEncode();
     }
 
@@ -429,7 +435,6 @@ class JsonApiFormatter
 
     /**
      * @param array $errors
-     * @param array $meta
      * @return string
      * @throws JsonApiFormatterException
      */

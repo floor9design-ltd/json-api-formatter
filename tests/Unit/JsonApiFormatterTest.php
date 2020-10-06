@@ -242,11 +242,11 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testLinksAccessors()
     {
-        $test_partial_links = [
+        $test_partial_links = (object)[
             'self' => 'http://example.com/posts'
         ];
 
-        $test_complete_links = [
+        $test_complete_links = (object)[
             'self' => 'http://example.com/posts',
             'next' => 'http://example.com/more-posts'
         ];
@@ -282,7 +282,7 @@ class JsonApiFormatterTest extends TestCase
 
         $meta = ['hello' => 'world'];
         $json_api = (object)['application/vnd.api+jsonv2'];
-        $links = [
+        $links = (object)[
             'self' => 'http://example.com/posts',
             'next' => 'http://example.com/more-posts'
         ];
