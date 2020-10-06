@@ -111,13 +111,23 @@ class JsonApiFormatter
     public function addData(array $extra_data): JsonApiFormatter
     {
         // catch duplicates
-        if (array_intersect_key($this->getData(), $extra_data)) {
+        if (array_intersect_key($this->getData() ?? [], $extra_data)) {
             throw new JsonApiFormatterException(
                 'The data provided clashes with existing data - it should be added manually'
             );
         }
 
         $this->setData(array_merge($this->getData() ?? [], $extra_data));
+        return $this;
+    }
+
+    /**
+     * Fluently unset $base_response_array['data']
+     * @return JsonApiFormatter
+     */
+    public function unsetData(): JsonApiFormatter
+    {
+        unset($this->base_response_array['data']);
         return $this;
     }
 
@@ -154,6 +164,16 @@ class JsonApiFormatter
         }
 
         $this->setErrors($errors);
+        return $this;
+    }
+
+    /**
+     * Fluently unset $base_response_array['errors']
+     * @return JsonApiFormatter
+     */
+    public function unsetErrors(): JsonApiFormatter
+    {
+        unset($this->base_response_array['errors']);
         return $this;
     }
 
@@ -329,7 +349,40 @@ class JsonApiFormatter
         return json_encode($content, true);
     }
 
-    // Main functionality
+    /**
+     * internally validates the current object
+     *
+     * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
+     */
+    private function validateObject(): JsonApiFormatter
+    {
+        if(is_array($this->getData()) && is_array($this->getErrors())) {
+            throw new JsonApiFormatterException('Both data and errors properties are set');
+        }
+
+        return $this;
+    }
+
+    // Main functionality:
+
+    /**
+     * Attempts to export the current contents in a valid JSON string.
+     * This will validate the data but will not set it up correctly for you.
+     *
+     * You probably actually want to use the other functions:
+     * @see errorResponse
+     * @see dataResourceResponse
+     *
+     * @return string
+     * @throws JsonApiFormatterException
+     */
+    public function export(): string
+    {
+        $this->validateObject();
+
+        return $this->correctEncode();
+    }
 
     /**
      * Attempts to import/decode a json api compliant string into a JsonApiFormatter object,

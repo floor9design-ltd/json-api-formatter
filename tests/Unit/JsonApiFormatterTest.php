@@ -91,10 +91,18 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->addData(['attributes' => 'some_data']);
         $this->assertEquals($json_api_formatter->getData(), $test_complete_data);
 
+        // unset
+        $reflection = self::getMethod('getBaseResponseArray');
+        $test_object = new JsonApiFormatter();
+        $test_object->unsetData();
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertFalse(isset($response['data']));
+
         // check that addData catches duplicates
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage('The data provided clashes with existing data - it should be added manually');
         $json_api_formatter->addData(['attributes' => 'some_data']);
+
     }
 
     /**
@@ -126,6 +134,13 @@ class JsonApiFormatterTest extends TestCase
         // extend
         $json_api_formatter->addErrors([$error2]);
         $this->assertEquals($json_api_formatter->getErrors(), $test_complete_errors);
+
+        // unset
+        $reflection = self::getMethod('getBaseResponseArray');
+        $test_object = new JsonApiFormatter();
+        $test_object->unsetErrors();
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertFalse(isset($response['errors']));
     }
 
     /**
@@ -284,8 +299,11 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($json_api_formatter->getLinks(), $links);
     }
 
-    // Internal/reflection testing
+    // Internal method/reflection testing
 
+    /**
+     * Tests that encode correctly encodes an array
+     */
     public function testCorrectEncode()
     {
         $base_response_array = [
@@ -297,8 +315,7 @@ class JsonApiFormatterTest extends TestCase
             'jsonapi' => (object)['version' => '1.0']
         ];
         $test_response_array = [
-            'data' => null,
-            'errors' => [],
+            'data' => [],
             'meta' => [
                 'status' => 'changed'
             ],
@@ -315,6 +332,50 @@ class JsonApiFormatterTest extends TestCase
         // modified call
         $response = $reflection->invokeArgs($test_object, ['array' => $test_response_array]);
         $this->assertSame($response, json_encode($test_response_array, true));
+
+        //
+    }
+
+    /**
+     * Test that validation errors if you include data and errors together
+     */
+    public function testValidationDataAndErrors()
+    {
+        $reflection = self::getMethod('validateObject');
+        $test_object = new JsonApiFormatter();
+
+        $test_object->setData([]);
+        $test_object->setErrors([]);
+
+        // basic call
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('Both data and errors properties are set');
+        $reflection->invokeArgs($test_object, []);
+    }
+
+    /**
+     * Tests validation with good packets
+     */
+    public function testValidationData()
+    {
+        $reflection = self::getMethod('validateObject');
+        $test_object = new JsonApiFormatter();
+
+        // null data check
+        $test_object->setData(null);
+        $test_object->setErrors([]);
+
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertTrue($response instanceof JsonApiFormatter);
+
+        // null errors check
+        $test_object->setData([]);
+        $test_object->unsetErrors();
+
+        // null errors check
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertTrue($response instanceof JsonApiFormatter);
+
     }
 
     // Main functionality
@@ -471,6 +532,88 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $response = $json_api_formatter->dataResourceResponse($id, $type, $attributes);
         $this->assertEquals($validated_json, $response);
+    }
+
+    /**
+     * Tests that invalid JSON is caught
+     */
+    public function testExportException()
+    {
+        $not_json = 'Not json';
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->setData([]);
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The provided json was not valid');
+        $json_api_formatter->import($not_json);
+    }
+
+    /**
+     * Tests the export function
+     */
+    public function testExport()
+    {
+        $data = [
+            'id' => '0',
+            'type' => 'data',
+            'attributes' => 'some_data'
+        ];
+
+        $error = [
+            'status' => '400',
+            'title' => 'Bad request',
+            'detail' => 'The request was not formed well'
+        ];
+
+        // errors
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetData();
+        $json_api_formatter->addErrors([$error]);
+
+        $error_response_array = [
+            'errors' => [$error],
+            'meta' => [
+                'status' => null
+            ],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
+
+        // data
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetErrors();
+        $json_api_formatter->addData($data);
+
+        $error_response_array = [
+            'data' => $data,
+            'meta' => [
+                'status' => null
+            ],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
+
+        // meta
+
+        $meta = [
+            'status' => '200',
+            'info' => 'Request loaded in 34ms'
+        ];
+
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetErrors();
+        $json_api_formatter->addData($data);
+        $json_api_formatter->setMeta($meta);
+
+        $error_response_array = [
+            'data' => $data,
+            'meta' => $meta,
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
     }
 
     /**
