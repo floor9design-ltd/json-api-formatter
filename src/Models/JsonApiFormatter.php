@@ -58,9 +58,7 @@ class JsonApiFormatter
     protected array $base_response_array = [
         'data' => null, // can exist as null
         'errors' => [], // must be an array
-        'meta' => [
-            'status' => null
-        ]
+        'meta' => null // must be an object
     ];
 
     // Accessors and advanced accessors
@@ -159,7 +157,7 @@ class JsonApiFormatter
     public function addErrors(array $extra_errors): JsonApiFormatter
     {
         $errors = $this->getErrors() ?? [];
-        foreach($extra_errors as $error) {
+        foreach ($extra_errors as $error) {
             $errors[] = $error;
         }
 
@@ -178,9 +176,9 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @return null|stdClass
      */
-    public function getMeta(): ?array
+    public function getMeta(): ?stdClass
     {
         return $this->getBaseResponseArray()['meta'] ?? null;
     }
@@ -188,10 +186,10 @@ class JsonApiFormatter
     /**
      * Fluently sets meta to the $base_response_array['meta']
      *
-     * @param array $meta
+     * @param stdClass $meta
      * @return JsonApiFormatter
      */
-    public function setMeta(array $meta): JsonApiFormatter
+    public function setMeta(stdClass $meta): JsonApiFormatter
     {
         $this->base_response_array['meta'] = $meta;
         return $this;
@@ -205,14 +203,35 @@ class JsonApiFormatter
      */
     public function addMeta(array $extra_meta): JsonApiFormatter
     {
-        // catch duplicates
-        if (array_intersect_key($this->getMeta(), $extra_meta)) {
-            throw new JsonApiFormatterException(
-                'The meta provided clashes with existing meta - it should be added manually'
-            );
+        $meta = $this->getMeta();
+        if (!$meta) {
+            $meta = new stdClass();
         }
 
-        $this->setMeta(array_merge($this->getMeta() ?? [], $extra_meta));
+        // catch duplicates
+        foreach ($extra_meta as $key => $new_meta) {
+            if (property_exists($meta, $key)) {
+                throw new JsonApiFormatterException(
+                    'The meta provided clashes with existing meta - it should be added manually'
+                );
+            }
+
+            $meta->$key = $new_meta;
+        }
+
+
+        $this->setMeta($meta);
+
+        return $this;
+    }
+
+    /**
+     * Fluently unset $base_response_array['meta']
+     * @return JsonApiFormatter
+     */
+    public function unsetMeta(): JsonApiFormatter
+    {
+        unset($this->base_response_array['meta']);
         return $this;
     }
 
@@ -233,6 +252,18 @@ class JsonApiFormatter
     public function setJsonapi(object $jsonapi): JsonApiFormatter
     {
         $this->base_response_array['jsonapi'] = $jsonapi;
+        return $this;
+    }
+
+    /**
+     * Fluently sets jsonapi to the $base_response_array['jsonapi'] to the standard value
+     *
+     * @return JsonApiFormatter
+     */
+    public function autoIncludeJsonapi(): JsonApiFormatter
+    {
+        // Cant form an object before instantiation, so do it here:
+        $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
         return $this;
     }
 
@@ -265,12 +296,21 @@ class JsonApiFormatter
     {
         $links = $this->getLinks() ?? new stdClass();
 
-        foreach($extra_links as $property => $extra_link) {
-
+        foreach ($extra_links as $property => $extra_link) {
             $links->$property = $extra_link;
         }
 
         $this->setLinks($links);
+        return $this;
+    }
+
+    /**
+     * Fluently unset $base_response_array['links']
+     * @return JsonApiFormatter
+     */
+    public function unsetLinks(): JsonApiFormatter
+    {
+        unset($this->base_response_array['links']);
         return $this;
     }
 
@@ -311,13 +351,13 @@ class JsonApiFormatter
      * Sets up the object quickly with optional items
      *
      * JsonApiFormatter constructor.
-     * @param array|null $meta
-     * @param object|null $json_api
+     * @param stdClass|null $meta
+     * @param stdClass|null $json_api
      * @param stdClass|null $links
      */
     public function __construct(
-        ?array $meta = null,
-        ?object $json_api = null,
+        ?stdClass $meta = null,
+        ?stdClass $json_api = null,
         ?stdClass $links = null
     ) {
         // Cant form an object before instantiation, so do it here:
@@ -325,6 +365,8 @@ class JsonApiFormatter
 
         if ($meta ?? false) {
             $this->setMeta($meta);
+        } else {
+            $this->setMeta((object)['status' => null]);
         }
 
         if ($json_api ?? false) {
@@ -364,7 +406,7 @@ class JsonApiFormatter
      */
     private function validateObject(): JsonApiFormatter
     {
-        if(is_array($this->getData()) && is_array($this->getErrors())) {
+        if (is_array($this->getData()) && is_array($this->getErrors())) {
             throw new JsonApiFormatterException('Both data and errors properties are set');
         }
 
@@ -378,11 +420,11 @@ class JsonApiFormatter
      * This will validate the data but will not set it up correctly for you.
      *
      * You probably actually want to use the other functions:
+     * @return string
+     * @throws JsonApiFormatterException
      * @see errorResponse
      * @see dataResourceResponse
      *
-     * @return string
-     * @throws JsonApiFormatterException
      */
     public function export(): string
     {
@@ -427,7 +469,7 @@ class JsonApiFormatter
 
         // attempt to set up meta
         if ($decoded_json['meta'] ?? false) {
-            $this->setMeta($decoded_json['meta']);
+            $this->setMeta((object)$decoded_json['meta']);
         }
 
         return $this;
@@ -441,8 +483,8 @@ class JsonApiFormatter
     public function errorResponse(
         array $errors = []
     ): string {
-        // clear data: it must not be set in an error response
-        unset($this->base_response_array['data']);
+        // clear data and links: it must not be set in an error response
+        $this->unsetData()->unsetLinks();
 
         // if no errors are passed, try to load this object's errors:
         if (!count($errors) == 0) {
@@ -453,6 +495,8 @@ class JsonApiFormatter
         if (count($this->getErrors()) == 0) {
             throw new JsonApiFormatterException("Error responses cannot have an empty errors array");
         }
+
+        $this->autoIncludeJsonapi();
 
         return $this->correctEncode();
     }
@@ -490,20 +534,23 @@ class JsonApiFormatter
             ];
             $this->setData($data);
         }
-        // Catch empty errors array: it needs to exist!
+
+        // Catch empty id array: it needs to exist!
         if (!isset($this->getData()['id'])) {
             throw new JsonApiFormatterException("Data responses require the data id to be set");
         }
 
-        // Catch empty errors array: it needs to exist!
+        // Catch empty type array: it needs to exist!
         if (!($this->getData()['type'] ?? false)) {
             throw new JsonApiFormatterException("Data responses require the data type to be set");
         }
 
-        // Catch empty errors array: it needs to exist!
+        // Catch empty attributes array: it needs to exist!
         if (count($this->getData()['attributes'] ?? []) == 0) {
             throw new JsonApiFormatterException("Data responses cannot have an empty attributes array");
         }
+
+        $this->autoIncludeJsonapi();
 
         return $this->correctEncode();
     }

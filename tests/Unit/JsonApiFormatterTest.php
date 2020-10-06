@@ -166,16 +166,29 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
 
         // check the default value
-        $this->assertEquals($json_api_formatter->getMeta(), $test_default_meta);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_default_meta);
 
         // Valid get and set
-        $json_api_formatter->setMeta($test_complete_meta);
-        $this->assertEquals($json_api_formatter->getMeta(), $test_complete_meta);
+        $json_api_formatter->setMeta((object)$test_complete_meta);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
+
+        // unset
+        $reflection = self::getMethod('getBaseResponseArray');
+        $test_object = new JsonApiFormatter();
+        $test_object->unsetMeta();
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertFalse(isset($response['meta']));
+
+        // Empty add
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetMeta();
+        $json_api_formatter->addMeta($test_complete_meta);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // make a partial and extend
-        $json_api_formatter->setMeta($test_partial_meta);
+        $json_api_formatter->setMeta((object)$test_partial_meta);
         $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
-        $this->assertEquals($json_api_formatter->getMeta(), $test_complete_meta);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // check that addMeta catches duplicates
         $this->expectException(JsonApiFormatterException::class);
@@ -261,6 +274,13 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setLinks($test_partial_links);
         $json_api_formatter->addLinks(['next' => 'http://example.com/more-posts']);
         $this->assertEquals($json_api_formatter->getLinks(), $test_complete_links);
+
+        // unset
+        $reflection = self::getMethod('getBaseResponseArray');
+        $test_object = new JsonApiFormatter();
+        $test_object->unsetLinks();
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertFalse(isset($response['links']));
     }
 
     // Constructor
@@ -276,11 +296,11 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($json_api_formatter->getContentType(), 'application/vnd.api+json');
         $this->assertEquals($json_api_formatter->getData(), null);
         $this->assertEquals($json_api_formatter->getErrors(), []);
-        $this->assertEquals($json_api_formatter->getMeta(), ['status' => null]);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)['status' => null]);
         $this->assertEquals($json_api_formatter->getJsonapi(), (object)['version' => '1.0']);
         $this->assertNull($json_api_formatter->getIncluded());
 
-        $meta = ['hello' => 'world'];
+        $meta = (object)['hello' => 'world'];
         $json_api = (object)['application/vnd.api+jsonv2'];
         $links = (object)[
             'self' => 'http://example.com/posts',
@@ -597,7 +617,7 @@ class JsonApiFormatterTest extends TestCase
 
         // meta
 
-        $meta = [
+        $meta = (object)[
             'status' => '200',
             'info' => 'Request loaded in 34ms'
         ];
@@ -711,7 +731,7 @@ class JsonApiFormatterTest extends TestCase
 
         $json_api_formatter->import($meta_json);
 
-        $this->assertEquals($json_api_formatter->getMeta(), $json_array['meta']);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$json_array['meta']);
     }
 
     // Non testing functions
