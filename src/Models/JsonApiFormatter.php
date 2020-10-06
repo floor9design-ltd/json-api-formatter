@@ -148,7 +148,12 @@ class JsonApiFormatter
      */
     public function addErrors(array $extra_errors): JsonApiFormatter
     {
-        $this->setErrors(array_merge($this->getErrors() ?? [], $extra_errors));
+        $errors = $this->getErrors() ?? [];
+        foreach($extra_errors as $error) {
+            $errors[] = $error;
+        }
+
+        $this->setErrors($errors);
         return $this;
     }
 

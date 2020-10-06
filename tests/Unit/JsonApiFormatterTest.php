@@ -348,30 +348,18 @@ class JsonApiFormatterTest extends TestCase
 
         $test_errors = [$error, $error2];
 
-        // make 2 maually checked correct arrays:
+        // make 2 manually checked correct arrays:
         $validated_array = [
             'errors' => [
-                (object)[
-                    'status' => '400',
-                    'title' => 'Bad request',
-                    'detail' => 'The request was not formed well'
-                ],
-                (object)[
-                    'status' => '400',
-                    'title' => 'Bad request 2',
-                    'detail' => 'The request was not formed well either'
-                ]
+                $error,
+                $error2
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
         ];
         $validated_array2 = [
             'errors' => [
-                (object)[
-                    'status' => '400',
-                    'title' => 'Bad request',
-                    'detail' => 'The request was not formed well'
-                ]
+                $error2
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
@@ -387,7 +375,7 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($validated_json, $response);
 
         $json_api_formatter = new JsonApiFormatter();
-        $response = $json_api_formatter->errorResponse([$error]);
+        $response = $json_api_formatter->errorResponse([$error2]);
         $this->assertEquals($validated_json2, $response);
     }
 
