@@ -483,6 +483,18 @@ class JsonApiFormatter
     public function errorResponse(
         array $errors = []
     ): string {
+        $this->errorResponseArray($errors);
+        return $this->correctEncode();
+    }
+
+    /**
+     * @param array $errors
+     * @return string
+     * @throws JsonApiFormatterException
+     */
+    public function errorResponseArray(
+        array $errors = []
+    ): array {
         // clear data and links: it must not be set in an error response
         $this->unsetData()->unsetLinks();
 
@@ -498,7 +510,7 @@ class JsonApiFormatter
 
         $this->autoIncludeJsonapi();
 
-        return $this->correctEncode();
+        return $this->getBaseResponseArray();
     }
 
     /**
@@ -513,6 +525,22 @@ class JsonApiFormatter
         ?string $type = null,
         ?array $attributes = null
     ): string {
+        $this->dataResourceResponseArray($id, $type, $attributes);
+        return $this->correctEncode();
+    }
+
+    /**
+     * @param string|null $id
+     * @param string|null $type
+     * @param array|null $attributes
+     * @return array
+     * @throws JsonApiFormatterException
+     */
+    public function dataResourceResponseArray(
+        ?string $id = null,
+        ?string $type = null,
+        ?array $attributes = null
+    ): array {
         // clear errors: it must not be set in an dataResource response
         unset($this->base_response_array['errors']);
 
@@ -552,7 +580,7 @@ class JsonApiFormatter
 
         $this->autoIncludeJsonapi();
 
-        return $this->correctEncode();
+        return $this->getBaseResponseArray();
     }
 
 }
