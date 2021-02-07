@@ -4,7 +4,7 @@
 [![Packagist](https://img.shields.io/packagist/v/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=plastic)](LICENCE.md)
 
-[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.org/github/floor9design-ltd/json-api-formatter)
+[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.com/github/floor9design-ltd/json-api-formatter)
 [![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/json-api-formatter?style=plastic)](https://codecov.io/gh/floor9design-ltd/json-api-formatter)
 
 [![Github Downloads](https://img.shields.io/github/downloads/floor9design-ltd/json-api-formatter/total?style=plastic)](https://github.com/floor9design-ltd/json-api-formatter)
@@ -65,7 +65,7 @@ however is most appropriate.
 
 ## Testing
 
-[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.org/github/floor9design-ltd/json-api-formatter)
+[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.com/github/floor9design-ltd/json-api-formatter)
 [![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/json-api-formatter?style=plastic)](https://codecov.io/gh/floor9design-ltd/json-api-formatter)
 
 Tests can be run as follows:
