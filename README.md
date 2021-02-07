@@ -53,7 +53,7 @@ git clone git@github.com:floor9design-ltd/json-api-formatter.git
 
 ## Usage
 
-This is to be discussed in the usage document.
+This is discussed in the usage document.
 
 * [usage](docs/project/usage.md)
 
