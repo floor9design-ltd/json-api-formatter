@@ -13,7 +13,6 @@
  * @license   MIT
  * @version   1.0
  * @link      https://www.floor9design.com
- * @version   1.0
  * @since     File available since Release 1.0
  *
  */

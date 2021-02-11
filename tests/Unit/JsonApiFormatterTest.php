@@ -14,7 +14,6 @@
  * @version   1.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
- * @version   1.0
  * @since     File available since Release 1.0
  *
  */
@@ -40,7 +39,6 @@ use stdClass;
  * @version   1.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
- * @version   1.0
  * @since     File available since Release 1.0
  */
 class JsonApiFormatterTest extends TestCase
@@ -85,6 +83,13 @@ class JsonApiFormatterTest extends TestCase
         // Valid get and set
         $json_api_formatter->setData($test_complete_data);
         $this->assertEquals($json_api_formatter->getData(), $test_complete_data);
+
+        // Check id string casting
+        $test_complete_data_string = $test_complete_data_int = $test_complete_data;
+        $test_complete_data_int['id'] = 2;
+        $test_complete_data_string['id'] = "2";
+        $json_api_formatter->setData($test_complete_data_int);
+        $this->assertEquals($json_api_formatter->getData(), $test_complete_data_string);
 
         // make a partial and extend
         $json_api_formatter->setData($test_partial_data);

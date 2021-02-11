@@ -1,3 +1,16 @@
+# .travis.yml
+#
+# Setup for travis-cl.com
+#
+# @category  None
+# @package   \
+# @author    Rick Morice <rick@floor9design.com>
+# @copyright Floor9design Ltd
+# @license   Proprietary software
+# @version   1.0
+# @link      https://github.com/floor9design-ltd/json-api-formatter
+# @link      https://us-auth.crowdfunder.co.uk
+# @since     https://floor9design.com
 language: php
 
 php:
@@ -9,8 +22,8 @@ before_script:
   - travis_retry composer install --no-interaction --prefer-source --dev
 
 script:
-  - ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
-  - ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
+  - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
+  - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

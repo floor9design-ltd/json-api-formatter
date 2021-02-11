@@ -13,7 +13,6 @@
  * @license   MIT
  * @version   1.0
  * @link      https://www.floor9design.com
- * @version   1.0
  * @since     File available since Release 1.0
  *
  */
@@ -96,6 +95,11 @@ class JsonApiFormatter
      */
     public function setData(?array $data = null): JsonApiFormatter
     {
+        // cast id to be a string:
+        if($data['id'] ?? false) {
+            $data['id'] = (string)$data['id'];
+        }
+
         $this->base_response_array['data'] = $data;
         return $this;
     }
