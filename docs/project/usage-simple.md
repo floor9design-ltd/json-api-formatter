@@ -11,7 +11,7 @@ Data resources can be quickly created using the `dataResourceResponse()` functio
 
 The following arguments are required:
 
-* `id` : ID for the data resource (string)
+* `id` : id for the data resource (string)
 * `type` : type of resource (string)
 * `attributes` : array of resource properties 
 

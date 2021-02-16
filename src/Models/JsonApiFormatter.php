@@ -107,13 +107,14 @@ class JsonApiFormatter
     /**
      * Fluently adds data to $base_response_array['data']
      * @param array $extra_data
+     * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
      */
-    public function addData(array $extra_data): JsonApiFormatter
+    public function addData(array $extra_data, bool $overwrite = false): JsonApiFormatter
     {
         // catch duplicates
-        if (array_intersect_key($this->getData() ?? [], $extra_data)) {
+        if (!$overwrite && array_intersect_key($this->getData() ?? [], $extra_data)) {
             throw new JsonApiFormatterException(
                 'The data provided clashes with existing data - it should be added manually'
             );
@@ -202,10 +203,11 @@ class JsonApiFormatter
     /**
      * Fluently adds meta to $base_response_array['meta']
      * @param array $extra_meta
+     * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
      */
-    public function addMeta(array $extra_meta): JsonApiFormatter
+    public function addMeta(array $extra_meta, bool $overwrite = false): JsonApiFormatter
     {
         $meta = $this->getMeta();
         if (!$meta) {
@@ -214,7 +216,7 @@ class JsonApiFormatter
 
         // catch duplicates
         foreach ($extra_meta as $key => $new_meta) {
-            if (property_exists($meta, $key)) {
+            if (!$overwrite && property_exists($meta, $key)) {
                 throw new JsonApiFormatterException(
                     'The meta provided clashes with existing meta - it should be added manually'
                 );
@@ -294,14 +296,23 @@ class JsonApiFormatter
     /**
      * Fluently adds an array of links items to $base_response_array['links'] object
      * @param array $extra_links
+     * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
-    public function addLinks(array $extra_links): JsonApiFormatter
+    public function addLinks(array $extra_links, bool $overwrite = false): JsonApiFormatter
     {
         $links = $this->getLinks() ?? new stdClass();
 
-        foreach ($extra_links as $property => $extra_link) {
-            $links->$property = $extra_link;
+        // catch duplicates
+        foreach ($extra_links as $key => $new_link) {
+            if (!$overwrite && property_exists($links, $key)) {
+                throw new JsonApiFormatterException(
+                    'The link provided clashes with existing links - it should be added manually'
+                );
+            }
+
+            $links->$key = $new_link;
         }
 
         $this->setLinks($links);
@@ -341,11 +352,19 @@ class JsonApiFormatter
     /**
      * Fluently adds included to $base_response_array['included']
      * @param array $extra_included
+     * @param bool $overwrite
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
     public function addIncluded(array $extra_included): JsonApiFormatter
     {
-        $this->setIncluded(array_merge($this->getIncluded() ?? [], $extra_included));
+        $includeds = $this->getIncluded() ?? [];
+
+        foreach ($extra_included as $included) {
+            $includeds[] = $included;
+        }
+
+        $this->setIncluded($includeds);
         return $this;
     }
 
@@ -402,28 +421,14 @@ class JsonApiFormatter
         return json_encode($content, true);
     }
 
-    /**
-     * internally validates the current object
-     *
-     * @return JsonApiFormatter
-     * @throws JsonApiFormatterException
-     */
-    private function validateObject(): JsonApiFormatter
-    {
-        if (is_array($this->getData()) && is_array($this->getErrors())) {
-            throw new JsonApiFormatterException('Both data and errors properties are set');
-        }
-
-        return $this;
-    }
-
     // Main functionality:
 
     /**
      * Attempts to export the current contents in a valid JSON string.
      * This will validate the data but will not set it up correctly for you.
      *
-     * You probably actually want to use the other functions:
+     * You probably actually want to use the other functions: eg dataResourceResponse
+     *
      * @return string
      * @throws JsonApiFormatterException
      * @see errorResponse
@@ -432,7 +437,7 @@ class JsonApiFormatter
      */
     public function export(): string
     {
-        $this->validateObject();
+        $this->quickValidatorArray($this->getBaseResponseArray());
         return $this->correctEncode();
     }
 
@@ -453,13 +458,8 @@ class JsonApiFormatter
             throw new JsonApiFormatterException('The provided json was not valid');
         }
 
-        //badly formed - must have either data or errors
-        if (
-            !($decoded_json['data'] ?? false) &&
-            !($decoded_json['errors'] ?? false)
-        ) {
-            throw new JsonApiFormatterException('The provided json does not match the json api standard');
-        }
+        // throws its own exceptions
+        $this->quickValidatorArray($decoded_json);
 
         // attempt to set up data
         if ($decoded_json['data'] ?? false) {
@@ -585,6 +585,72 @@ class JsonApiFormatter
         $this->autoIncludeJsonapi();
 
         return $this->getBaseResponseArray();
+    }
+
+    // other useful functionality
+
+    /**
+     * Performs a quick validation against some basic rules.
+     * This is not a schema validation.
+     *
+     * @param $array
+     * @return bool
+     * @throws JsonApiFormatterException
+     */
+    public function quickValidatorArray(array $array): bool
+    {
+        $message = 'The provided json structure does not match the json api standard - ';
+
+        // it must have either have data OR errors
+        if (!array_key_exists('data', $array) && !array_key_exists('errors', $array)) {
+            $message .= 'no data or error array found';
+            throw new JsonApiFormatterException($message);
+        }
+
+        if (array_key_exists('data', $array) && array_key_exists('errors', $array)) {
+            $message .= 'only one data or error array must be used';
+            throw new JsonApiFormatterException($message);
+        }
+
+        // resource validation:
+
+        // no id
+        if(array_key_exists('data', $array) && !array_key_exists('id', $array['data'])) {
+            $message .= 'resource objects require an id';
+            throw new JsonApiFormatterException($message);
+        }
+
+        // id needs to be string
+        if(array_key_exists('data', $array) && !is_string($array['data']['id'])) {
+            $message .= 'a resource object id must be a string';
+            throw new JsonApiFormatterException($message);
+        }
+
+        // type required
+        if(array_key_exists('data', $array) && !array_key_exists('type', $array['data'])) {
+            $message .= 'resource objects require a type';
+            throw new JsonApiFormatterException($message);
+        }
+        // type needs to be a string
+        if(array_key_exists('data', $array) && !is_string($array['data']['type'])) {
+            $message .= 'a resource object type must be a string';
+            throw new JsonApiFormatterException($message);
+        }
+
+        // no attributes
+        if(array_key_exists('data', $array) && !array_key_exists('attributes', $array['data'])) {
+            $message .= 'resource objects require an attributes array';
+            throw new JsonApiFormatterException($message);
+        }
+
+        // attributes needs to be an array
+        if(array_key_exists('data', $array) && !is_array($array['data']['attributes'])) {
+            $message .= 'a resource object attributes must be an array';
+            throw new JsonApiFormatterException($message);
+        }
+
+        return true;
+
     }
 
 }

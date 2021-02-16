@@ -103,17 +103,21 @@ class JsonApiFormatterTest extends TestCase
         $response = $reflection->invokeArgs($test_object, []);
         $this->assertFalse(isset($response['data']));
 
+        // force add some data
+        $json_api_formatter->addData(['attributes' => 'some_data'], true);
+        $this->assertEquals($json_api_formatter->getData(), $test_complete_data);
+
         // check that addData catches duplicates
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage('The data provided clashes with existing data - it should be added manually');
         $json_api_formatter->addData(['attributes' => 'some_data']);
-
     }
 
     /**
      * Test errors accessors.
      *
      * @return void
+     * @throws \ReflectionException
      */
     public function testErrorsAccessors()
     {
@@ -152,6 +156,8 @@ class JsonApiFormatterTest extends TestCase
      * Test meta accessors.
      *
      * @return void
+     * @throws JsonApiFormatterException
+     * @throws \ReflectionException
      */
     public function testMetaAccessors()
     {
@@ -193,6 +199,10 @@ class JsonApiFormatterTest extends TestCase
         // make a partial and extend
         $json_api_formatter->setMeta((object)$test_partial_meta);
         $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
+        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
+
+        // force add some meta
+        $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms'], true);
         $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // check that addMeta catches duplicates
@@ -257,6 +267,7 @@ class JsonApiFormatterTest extends TestCase
      * Test links accessors.
      *
      * @return void
+     * @throws \ReflectionException
      */
     public function testLinksAccessors()
     {
@@ -286,6 +297,16 @@ class JsonApiFormatterTest extends TestCase
         $test_object->unsetLinks();
         $response = $reflection->invokeArgs($test_object, []);
         $this->assertFalse(isset($response['links']));
+
+        // force add some links
+        $json_api_formatter->setLinks($test_complete_links);
+        $json_api_formatter->addLinks(['next' => 'http://example.com/more-posts'], true);
+        $this->assertEquals($json_api_formatter->getLinks(), (object)$test_complete_links);
+
+        // check that addLinks catches duplicates
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('The link provided clashes with existing links - it should be added manually');
+        $json_api_formatter->addLinks(['next' => 'http://example.com/more-posts']);
     }
 
     // Constructor
@@ -357,53 +378,195 @@ class JsonApiFormatterTest extends TestCase
         // modified call
         $response = $reflection->invokeArgs($test_object, ['array' => $test_response_array]);
         $this->assertSame($response, json_encode($test_response_array, true));
-
-        //
-    }
-
-    /**
-     * Test that validation errors if you include data and errors together
-     */
-    public function testValidationDataAndErrors()
-    {
-        $reflection = self::getMethod('validateObject');
-        $test_object = new JsonApiFormatter();
-
-        $test_object->setData([]);
-        $test_object->setErrors([]);
-
-        // basic call
-        $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('Both data and errors properties are set');
-        $reflection->invokeArgs($test_object, []);
-    }
-
-    /**
-     * Tests validation with good packets
-     */
-    public function testValidationData()
-    {
-        $reflection = self::getMethod('validateObject');
-        $test_object = new JsonApiFormatter();
-
-        // null data check
-        $test_object->setData(null);
-        $test_object->setErrors([]);
-
-        $response = $reflection->invokeArgs($test_object, []);
-        $this->assertTrue($response instanceof JsonApiFormatter);
-
-        // null errors check
-        $test_object->setData([]);
-        $test_object->unsetErrors();
-
-        // null errors check
-        $response = $reflection->invokeArgs($test_object, []);
-        $this->assertTrue($response instanceof JsonApiFormatter);
-
     }
 
     // Main functionality
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: empty array
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayEmptyArray()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/no data or error array found/');
+        $json_api_formatter->quickValidatorArray([]);
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: data and errors
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayDataAndErrors()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/only one data or error array must be used/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [],
+                'errors' => []
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: resource missing id
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceMissingId()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/resource objects require an id/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => []
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: resource bad id type
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceNonStringId()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/a resource object id must be a string/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [
+                    'id' => (int)3
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: resource missing type
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceMissingType()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/resource objects require a type/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [
+                    'id' => "0"
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: resource missing id
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceNonStringType()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/a resource object type must be a string/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [
+                    'id' => '3',
+                    'type' => (int)3
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArrayEmptyArray
+     *
+     * Incorrect data: resource missing type
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceMissingAttributes()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/resource objects require an attributes array/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [
+                    'id' => '0',
+                    'type' => 'test'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Incorrect data: resource missing id
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArrayResourceNonArrayAttributes()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/a resource object attributes must be an array/');
+        $json_api_formatter->quickValidatorArray(
+            [
+                'data' => [
+                    'id' => '3',
+                    'type' => 'test',
+                    'attributes' => 'string'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Test JsonApiFormatter::quickValidatorArray
+     *
+     * Validate a well formed resource/data array
+     *
+     * @throws JsonApiFormatterException
+     */
+    public function testQuickValidatorArray()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $response = $json_api_formatter->quickValidatorArray([
+                'data' => [
+                    'id' => '3',
+                    'type' => 'test',
+                    'attributes' => [
+                        'test' => 'value'
+                    ]
+                ]
+            ]
+        );
+        $this->assertTrue($response);
+    }
 
     /**
      * Tests a badly formed json error response
@@ -560,20 +723,6 @@ class JsonApiFormatterTest extends TestCase
     }
 
     /**
-     * Tests that invalid JSON is caught
-     */
-    public function testExportException()
-    {
-        $not_json = 'Not json';
-        $json_api_formatter = new JsonApiFormatter();
-        $json_api_formatter->setData([]);
-
-        $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('The provided json was not valid');
-        $json_api_formatter->import($not_json);
-    }
-
-    /**
      * Tests the export function
      */
     public function testExport()
@@ -581,7 +730,7 @@ class JsonApiFormatterTest extends TestCase
         $data = [
             'id' => '0',
             'type' => 'data',
-            'attributes' => 'some_data'
+            'attributes' => ['test' => 'some_data']
         ];
 
         $error = [
@@ -642,6 +791,26 @@ class JsonApiFormatterTest extends TestCase
     }
 
     /**
+     * Tests the export function
+     */
+    public function testExportException()
+    {
+        $data = [
+            'type' => 'data',
+            'attributes' => ['test' => 'some_data']
+        ];
+
+        // data
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetErrors();
+        $json_api_formatter->addData($data);
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessageMatches('/The provided json structure does not match the json api standard/');
+        $json_api_formatter->export();
+    }
+
+    /**
      * Tests that invalid JSON is caught
      */
     public function testImportExceptionNotJson()
@@ -650,7 +819,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
 
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('The provided json was not valid');
+        $this->expectExceptionMessageMatches('/The provided json was not valid/');
         $json_api_formatter->import($not_json);
     }
 
@@ -663,7 +832,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
 
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('The provided json does not match the json api standard');
+        $this->expectExceptionMessageMatches('/The provided json structure does not match the json api standard/');
         $json_api_formatter->import($bad_json);
     }
 
