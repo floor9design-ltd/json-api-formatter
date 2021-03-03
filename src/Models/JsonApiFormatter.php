@@ -345,6 +345,7 @@ class JsonApiFormatter
      */
     public function setIncluded(array $included): JsonApiFormatter
     {
+
         $this->base_response_array['included'] = $included;
         return $this;
     }
@@ -476,6 +477,12 @@ class JsonApiFormatter
             $this->setMeta((object)$decoded_json['meta']);
         }
 
+        // attempt to set up included
+        if ($decoded_json['included'] ?? false) {
+            $this->setIncluded($decoded_json['included']);
+        }
+
+
         return $this;
     }
 
@@ -579,6 +586,7 @@ class JsonApiFormatter
 
         // Catch empty attributes array: it needs to exist!
         if (count($this->getData()['attributes'] ?? []) == 0) {
+            // @todo add some validation to this: this is an array of data objects
             throw new JsonApiFormatterException("Data responses cannot have an empty attributes array");
         }
 

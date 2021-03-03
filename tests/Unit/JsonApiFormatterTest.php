@@ -848,6 +848,15 @@ class JsonApiFormatterTest extends TestCase
                 'attributes' => [
                     'foo' => 'bar'
                 ]
+            ],
+            'included' => [
+                [
+                    'id' => '0',
+                    'type' => 'test',
+                    'attributes' => [
+                        'foo' => 'bar'
+                    ]
+                ]
             ]
         ];
 
