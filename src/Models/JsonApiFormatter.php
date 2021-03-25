@@ -80,9 +80,9 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @return null|array|DataResource
      */
-    public function getData(): ?array
+    public function getData()
     {
         return $this->getBaseResponseArray()['data'] ?? null;
     }
@@ -90,14 +90,25 @@ class JsonApiFormatter
     /**
      * Fluently sets data to the $base_response_array['data']
      *
-     * @param array|null $data
+     * @param DataResource|array|null $data
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
-    public function setData(?array $data = null): JsonApiFormatter
+    public function setData($data = null): JsonApiFormatter
     {
-        // cast id to be a string:
-        if($data['id'] ?? false) {
-            $data['id'] = (string)$data['id'];
+        // catch bad data:
+        if (!($data instanceof DataResource || is_array($data))) {
+            $error = '$data needs to be either a DataResource or an array of DataResource objects';
+            throw new JsonApiFormatterException($error);
+        }
+
+        if (is_array($data)) {
+            foreach ($data as $datum) {
+                if (!$datum instanceof DataResource) {
+                    $error = '$data needs to be either a DataResource or an array of DataResource objects';
+                    throw new JsonApiFormatterException($error);
+                }
+            }
         }
 
         $this->base_response_array['data'] = $data;
@@ -106,21 +117,29 @@ class JsonApiFormatter
 
     /**
      * Fluently adds data to $base_response_array['data']
-     * @param array $extra_data
-     * @param bool $overwrite allows overwrites of existing keys
+     * @param DataResource $extra_data
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
      */
-    public function addData(array $extra_data, bool $overwrite = false): JsonApiFormatter
+    public function addData(DataResource $extra_data): JsonApiFormatter
     {
-        // catch duplicates
-        if (!$overwrite && array_intersect_key($this->getData() ?? [], $extra_data)) {
-            throw new JsonApiFormatterException(
-                'The data provided clashes with existing data - it should be added manually'
-            );
+        $data = $this->getData();
+
+        if (is_array($data)) {
+            // add to an existing array
+            $data[] = $extra_data;
+            $this->setData($data);
+        } else {
+            if ($data) {
+                // turn data into an array
+                $array_data = [$data, $extra_data];
+                $this->setData($array_data);
+            } else {
+                // add a singular data
+                $this->setData($extra_data);
+            }
         }
 
-        $this->setData(array_merge($this->getData() ?? [], $extra_data));
         return $this;
     }
 
@@ -345,7 +364,6 @@ class JsonApiFormatter
      */
     public function setIncluded(array $included): JsonApiFormatter
     {
-
         $this->base_response_array['included'] = $included;
         return $this;
     }
@@ -459,12 +477,33 @@ class JsonApiFormatter
             throw new JsonApiFormatterException('The provided json was not valid');
         }
 
-        // throws its own exceptions
-        $this->quickValidatorArray($decoded_json);
-
         // attempt to set up data
         if ($decoded_json['data'] ?? false) {
-            $this->setData($decoded_json['data']);
+
+            // validate it
+            $this->quickValidatorDataResourceArray($decoded_json['data']);
+
+            if ($decoded_json['data']['type'] ?? false) {
+                // singular
+                $this->setData(
+                    new DataResource(
+                        $decoded_json['data']['id'],
+                        $decoded_json['data']['type'],
+                        $decoded_json['data']['attributes']
+                    )
+                );
+            } else {
+                // array
+                foreach($decoded_json['data'] as $datum) {
+                    $this->addData(
+                        new DataResource(
+                            $datum['id'],
+                            $datum['type'],
+                            $datum['attributes']
+                        )
+                    );
+                }
+            }
         }
 
         // attempt to set up errors
@@ -481,7 +520,6 @@ class JsonApiFormatter
         if ($decoded_json['included'] ?? false) {
             $this->setIncluded($decoded_json['included']);
         }
-
 
         return $this;
     }
@@ -525,69 +563,51 @@ class JsonApiFormatter
     }
 
     /**
-     * @param string|null $id
-     * @param string|null $type
-     * @param array|null $attributes
+     * @param array|DataResource $data_resources
      * @return string
      * @throws JsonApiFormatterException
      */
-    public function dataResourceResponse(
-        ?string $id = null,
-        ?string $type = null,
-        ?array $attributes = null
-    ): string {
-        $this->dataResourceResponseArray($id, $type, $attributes);
+    public function dataResourceResponse($data_resources = null): string
+    {
+        // if there's no resources provided, load internally
+        if (!$data_resources) {
+            $data_resources = $this->getData();
+
+            // empty is not allowed::
+            if (!$data_resources) {
+                throw new JsonApiFormatterException('A Data resource requires data to be generated');
+            }
+        }
+        $this->dataResourceResponseArray($data_resources);
         return $this->correctEncode();
     }
 
     /**
-     * @param string|null $id
-     * @param string|null $type
-     * @param array|null $attributes
+     * @param array|DataResource $data_resources
      * @return array
      * @throws JsonApiFormatterException
      */
-    public function dataResourceResponseArray(
-        ?string $id = null,
-        ?string $type = null,
-        ?array $attributes = null
-    ): array {
+    public function dataResourceResponseArray($data_resources): array
+    {
         // clear errors: it must not be set in an dataResource response
         unset($this->base_response_array['errors']);
 
-        // if no data is passed, try to load this object's data:
-        if (
-            $type &&
-            (
-                $id !== null ||
-                $id === "0" // catch string zero, which evaluates to false.
-            ) &&
-            $attributes &&
-            count($attributes) != 0
-        ) {
-            // Manually set/add the data where needed (overwrite)
-            $data = [
-                'id' => $id,
-                'type' => $type,
-                'attributes' => $attributes
-            ];
-            $this->setData($data);
+        // catch bad data:
+        if (!($data_resources instanceof DataResource || is_array($data_resources))) {
+            $error = '$data_resources needs to be a data resource or array of data resources';
+            throw new JsonApiFormatterException($error);
         }
 
-        // Catch empty id array: it needs to exist!
-        if (!isset($this->getData()['id'])) {
-            throw new JsonApiFormatterException("Data responses require the data id to be set");
-        }
-
-        // Catch empty type array: it needs to exist!
-        if (!($this->getData()['type'] ?? false)) {
-            throw new JsonApiFormatterException("Data responses require the data type to be set");
-        }
-
-        // Catch empty attributes array: it needs to exist!
-        if (count($this->getData()['attributes'] ?? []) == 0) {
-            // @todo add some validation to this: this is an array of data objects
-            throw new JsonApiFormatterException("Data responses cannot have an empty attributes array");
+        if ($data_resources instanceof DataResource) {
+            $this->addData($data_resources);
+        } else {
+            foreach ($data_resources as $data_resource) {
+                if (!$data_resource instanceof DataResource) {
+                    $error = '$data_resources needs to be a data resource or array of data resources';
+                    throw new JsonApiFormatterException($error);
+                }
+                $this->addData($data_resource);
+            }
         }
 
         $this->autoIncludeJsonapi();
@@ -598,8 +618,8 @@ class JsonApiFormatter
     // other useful functionality
 
     /**
-     * Performs a quick validation against some basic rules.
-     * This is not a schema validation.
+     * Performs a quick validation  of internal setup against some basic rules.
+     * eg: data and errors set.
      *
      * @param $array
      * @return bool
@@ -620,45 +640,93 @@ class JsonApiFormatter
             throw new JsonApiFormatterException($message);
         }
 
-        // resource validation:
+        return true;
+    }
 
+    /**
+     * Performs a quick validation for Data against some basic rules.
+     * This is not a schema validation, "But it'll give it a shot..."
+     *
+     * @param $array
+     * @return bool
+     * @throws JsonApiFormatterException
+     */
+    public function quickValidatorDataResourceArray(array $array): bool
+    {
+        $message = 'The provided json structure does not match the json api standard - ';
+
+        // check object type:
+
+        // singular object
+        if (
+            // do OR here to allow a graceful failure that provides validation context
+            array_key_exists('id', $array) ||
+            array_key_exists('type', $array) ||
+            array_key_exists('attributes', $array)
+        ) {
+            try {
+                $this->validateDataResourceArray($array);
+            } catch (JsonApiFormatterException $e) {
+                throw new JsonApiFormatterException($message . $e->getMessage());
+            }
+        } else {
+            foreach ($array as $data_resource) {
+                try {
+                    $this->validateDataResourceArray($data_resource);
+                } catch (JsonApiFormatterException $e) {
+                    throw new JsonApiFormatterException($message . $e->getMessage());
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Internal validator for a array representation of a data resource
+     *
+     * @param array $data_resource_array
+     * @return bool
+     * @throws JsonApiFormatterException
+     */
+    public function validateDataResourceArray(array $data_resource_array): bool
+    {
         // no id
-        if(array_key_exists('data', $array) && !array_key_exists('id', $array['data'])) {
-            $message .= 'resource objects require an id';
+        if (!array_key_exists('id', $data_resource_array)) {
+            $message = 'resource objects require an id';
             throw new JsonApiFormatterException($message);
         }
 
         // id needs to be string
-        if(array_key_exists('data', $array) && !is_string($array['data']['id'])) {
-            $message .= 'a resource object id must be a string';
+        if (!is_string($data_resource_array['id'])) {
+            $message = 'a resource object id must be a string';
             throw new JsonApiFormatterException($message);
         }
 
         // type required
-        if(array_key_exists('data', $array) && !array_key_exists('type', $array['data'])) {
-            $message .= 'resource objects require a type';
+        if (!array_key_exists('type', $data_resource_array)) {
+            $message = 'resource objects require a type';
             throw new JsonApiFormatterException($message);
         }
         // type needs to be a string
-        if(array_key_exists('data', $array) && !is_string($array['data']['type'])) {
-            $message .= 'a resource object type must be a string';
+        if (!is_string($data_resource_array['type'])) {
+            $message = 'a resource object type must be a string';
             throw new JsonApiFormatterException($message);
         }
 
         // no attributes
-        if(array_key_exists('data', $array) && !array_key_exists('attributes', $array['data'])) {
-            $message .= 'resource objects require an attributes array';
+        if (!array_key_exists('attributes', $data_resource_array)) {
+            $message = 'resource objects require an attributes array';
             throw new JsonApiFormatterException($message);
         }
 
         // attributes needs to be an array
-        if(array_key_exists('data', $array) && !is_array($array['data']['attributes'])) {
-            $message .= 'a resource object attributes must be an array';
+        if (!is_array($data_resource_array['attributes'])) {
+            $message = 'a resource object attributes must be an array';
             throw new JsonApiFormatterException($message);
         }
 
         return true;
-
     }
 
 }

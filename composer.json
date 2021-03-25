@@ -22,6 +22,7 @@
         "php" : ">=7.4"
     },
     "require-dev": {
+        "floor9design/testing-tools": "*",
         "mockery/mockery": "dev-master",
         "phpunit/phpunit": "^9.0"
     },
