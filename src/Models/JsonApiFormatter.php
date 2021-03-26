@@ -528,12 +528,12 @@ class JsonApiFormatter
                 if ($error['links'] ?? null) {
                     $links = new Links();
 
-                    foreach ($error['links'] as $link) {
+                    foreach ($error['links'] as $key => $link) {
                         if (is_string($link)) {
-                            $links[] = $link;
+                            $links->addLink($key, $link);
                         } else {
                             $new_link = new Link($link);
-                            $links[] = $new_link;
+                            $links->addLink($key, $new_link);
                         }
                     }
                 }

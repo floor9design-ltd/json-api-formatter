@@ -24,6 +24,7 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
+use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
@@ -179,6 +180,48 @@ class JsonApiFormatterTest extends TestCase
         $test_object->unsetErrors();
         $response = $reflection->invokeArgs($test_object, []);
         $this->assertFalse(isset($response['errors']));
+
+        $json_api_formatter = new JsonApiFormatter();
+        $test_bad_object = new StdClass();
+
+        // Check bad error object exception
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('$errors needs to be an array of Error objects');
+        $json_api_formatter->setErrors([$test_bad_object]);
+    }
+
+    /**
+     * Test errors accessors.
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function testErrorsAccessorsSetException()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $test_bad_object = new StdClass();
+
+        // Check bad error object exception
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('$errors needs to be an array of Error objects');
+        $json_api_formatter->setErrors([$test_bad_object]);
+    }
+
+    /**
+     * Test errors accessors.
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function testErrorsAccessorsAddException()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+        $test_bad_object = new StdClass();
+
+        // Check bad error object exception
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('$errors needs to be an array of Error objects');
+        $json_api_formatter->addErrors([$test_bad_object]);
     }
 
     /**
@@ -777,12 +820,44 @@ class JsonApiFormatterTest extends TestCase
     public function testImportErrors()
     {
         $error = new Error();
+        $links = new Links(
+            [
+                'http://link.com',
+                new Link(
+                    ['hello', 'world']
+                )
+            ]
+        );
+        $source = new StdClass();
+        $source->hello = 'world';
+        $status = '400';
+        $code = '400';
+        $title = 'Bad request';
+        $detail = 'The request was not formed well';
+
         $error
-            ->setStatus('400')
-            ->setTitle('Bad request')
-            ->setDetail('The request was not formed well');
+            ->setStatus($status)
+            ->setCode($code)
+            ->setTitle($title)
+            ->setDetail($detail)
+            ->setLinks($links)
+            ->setSource($source);
+
         $json_array = [
-            'errors' => [$error]
+            'errors' =>
+                [
+                    [
+                        'status' => $status,
+                        'code' => $code,
+                        'title' => $title,
+                        'detail' => $detail,
+                        'links' => [
+                            'http://link.com',
+                            ['hello', 'world']
+                        ],
+                        'source' => ['hello' => 'world']
+                    ]
+                ]
         ];
 
         $errors_json = json_encode($json_array, true);
@@ -790,7 +865,16 @@ class JsonApiFormatterTest extends TestCase
 
         $json_api_formatter->import($errors_json);
 
-        $this->assertEquals($json_api_formatter->getErrors(), $json_array['errors']);
+        $errors = $json_api_formatter->getErrors();
+        $error = $errors[0];
+
+        // test
+        $this->assertEquals($status, $error->getStatus());
+        $this->assertEquals($code, $error->getCode());
+        $this->assertEquals($title, $error->getTitle());
+        $this->assertEquals($detail, $error->getDetail());
+        $this->assertEquals($links, $error->getLinks());
+        $this->assertEquals($source, $error->getSource());
     }
 
     /**
