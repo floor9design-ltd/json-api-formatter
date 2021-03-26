@@ -166,9 +166,17 @@ class JsonApiFormatter
      *
      * @param array $errors
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
     public function setErrors(array $errors): JsonApiFormatter
     {
+        foreach ($errors as $error) {
+            if (!$error instanceof Error) {
+                $error_message = '$errors needs to be an array of Error objects';
+                throw new JsonApiFormatterException($error_message);
+            }
+        }
+
         $this->base_response_array['errors'] = $errors;
         return $this;
     }
@@ -177,11 +185,17 @@ class JsonApiFormatter
      * Fluently adds error to $base_response_array['errors']
      * @param array $extra_errors
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
     public function addErrors(array $extra_errors): JsonApiFormatter
     {
         $errors = $this->getErrors() ?? [];
         foreach ($extra_errors as $error) {
+            if (!$error instanceof Error) {
+                $error_message = '$errors needs to be an array of Error objects';
+                throw new JsonApiFormatterException($error_message);
+            }
+
             $errors[] = $error;
         }
 
@@ -202,7 +216,7 @@ class JsonApiFormatter
     /**
      * @return null|stdClass
      */
-    public function getMeta(): ?stdClass
+    public function getMeta(): ?Meta
     {
         return $this->getBaseResponseArray()['meta'] ?? null;
     }
@@ -213,7 +227,7 @@ class JsonApiFormatter
      * @param stdClass $meta
      * @return JsonApiFormatter
      */
-    public function setMeta(stdClass $meta): JsonApiFormatter
+    public function setMeta(Meta $meta): JsonApiFormatter
     {
         $this->base_response_array['meta'] = $meta;
         return $this;
@@ -226,15 +240,15 @@ class JsonApiFormatter
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
      */
-    public function addMeta(array $extra_meta, bool $overwrite = false): JsonApiFormatter
+    public function addMeta(Meta $extra_meta, bool $overwrite = false): JsonApiFormatter
     {
         $meta = $this->getMeta();
         if (!$meta) {
-            $meta = new stdClass();
+            $meta = new Meta();
         }
 
         // catch duplicates
-        foreach ($extra_meta as $key => $new_meta) {
+        foreach ($extra_meta->toArray() as $key => $new_meta) {
             if (!$overwrite && property_exists($meta, $key)) {
                 throw new JsonApiFormatterException(
                     'The meta provided clashes with existing meta - it should be added manually'
@@ -295,7 +309,7 @@ class JsonApiFormatter
     /**
      * @return null|array
      */
-    public function getLinks(): ?stdClass
+    public function getLinks(): ?Links
     {
         return $this->getBaseResponseArray()['links'] ?? null;
     }
@@ -306,7 +320,7 @@ class JsonApiFormatter
      * @param stdClass $links
      * @return JsonApiFormatter
      */
-    public function setLinks(stdClass $links): JsonApiFormatter
+    public function setLinks(Links $links): JsonApiFormatter
     {
         $this->base_response_array['links'] = $links;
         return $this;
@@ -321,17 +335,17 @@ class JsonApiFormatter
      */
     public function addLinks(array $extra_links, bool $overwrite = false): JsonApiFormatter
     {
-        $links = $this->getLinks() ?? new stdClass();
+        $links = $this->getLinks() ?? new Links();
 
         // catch duplicates
-        foreach ($extra_links as $key => $new_link) {
-            if (!$overwrite && property_exists($links, $key)) {
+        foreach ($extra_links as $name => $new_link) {
+            if (!$overwrite && property_exists($links, $name)) {
                 throw new JsonApiFormatterException(
                     'The link provided clashes with existing links - it should be added manually'
                 );
             }
 
-            $links->$key = $new_link;
+            $links->addLink($name, $new_link);
         }
 
         $this->setLinks($links);
@@ -398,9 +412,9 @@ class JsonApiFormatter
      * @param stdClass|null $links
      */
     public function __construct(
-        ?stdClass $meta = null,
+        ?Meta $meta = null,
         ?stdClass $json_api = null,
-        ?stdClass $links = null
+        ?Links $links = null
     ) {
         // Cant form an object before instantiation, so do it here:
         $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
@@ -408,7 +422,7 @@ class JsonApiFormatter
         if ($meta ?? false) {
             $this->setMeta($meta);
         } else {
-            $this->setMeta((object)['status' => null]);
+            $this->setMeta(new Meta(['status' => null]));
         }
 
         if ($json_api ?? false) {
@@ -479,7 +493,6 @@ class JsonApiFormatter
 
         // attempt to set up data
         if ($decoded_json['data'] ?? false) {
-
             // validate it
             $this->quickValidatorDataResourceArray($decoded_json['data']);
 
@@ -494,7 +507,7 @@ class JsonApiFormatter
                 );
             } else {
                 // array
-                foreach($decoded_json['data'] as $datum) {
+                foreach ($decoded_json['data'] as $datum) {
                     $this->addData(
                         new DataResource(
                             $datum['id'],
@@ -508,12 +521,46 @@ class JsonApiFormatter
 
         // attempt to set up errors
         if ($decoded_json['errors'] ?? false) {
-            $this->setErrors($decoded_json['errors']);
+            $errors = [];
+
+            foreach ($decoded_json['errors'] as $error) {
+                // import links
+                if ($error['links'] ?? null) {
+                    $links = new Links();
+
+                    foreach ($error['links'] as $link) {
+                        if (is_string($link)) {
+                            $links[] = $link;
+                        } else {
+                            $new_link = new Link($link);
+                            $links[] = $new_link;
+                        }
+                    }
+                }
+
+                // format source
+                $source = $error['source'] ?? null;
+                if ($source) {
+                    $source = (object)$source;
+                }
+
+                $errors[] = new Error(
+                    $error['id'] ?? null,
+                    $links ?? null,
+                    $error['status'] ?? null,
+                    $error['code'] ?? null,
+                    $error['title'] ?? null,
+                    $error['detail'] ?? null,
+                    $source
+                );
+            }
+
+            $this->setErrors($errors);
         }
 
         // attempt to set up meta
         if ($decoded_json['meta'] ?? false) {
-            $this->setMeta((object)$decoded_json['meta']);
+            $this->setMeta(new Meta($decoded_json['meta']));
         }
 
         // attempt to set up included

@@ -22,10 +22,13 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
+use Floor9design\JsonApiFormatter\Models\Links;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use stdClass;
+use StdClass;
 
 /**
  * JsonApiFormatterTest
@@ -114,7 +117,7 @@ class JsonApiFormatterTest extends TestCase
     public function testDataAccessorsBadObject()
     {
         $json_api_formatter = new JsonApiFormatter();
-        $test_bad_object = new \StdClass();
+        $test_bad_object = new StdClass();
 
         // Check bad data exception
         $this->expectException(JsonApiFormatterException::class);
@@ -131,7 +134,7 @@ class JsonApiFormatterTest extends TestCase
     public function testDataAccessorsBadArrayObject()
     {
         $json_api_formatter = new JsonApiFormatter();
-        $test_bad_object = new \StdClass();
+        $test_bad_object = new StdClass();
 
         // Check bad data exception
         $this->expectException(JsonApiFormatterException::class);
@@ -147,15 +150,15 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testErrorsAccessors()
     {
-        $error = new StdClass();
-        $error->status = '400';
-        $error->title = 'Bad request';
-        $error->detail = 'The request was not formed well';
+        $error = new Error();
+        $error->setStatus('400');
+        $error->setTitle('Bad request');
+        $error->setDetail('The request was not formed well');
 
-        $error2 = new StdClass();
-        $error2->status = '400';
-        $error2->title = 'Bad request 2';
-        $error2->detail = 'The request was not formed well either';
+        $error2 = new Error();
+        $error2->setStatus('400');
+        $error2->setTitle('Bad request 2');
+        $error2->setDetail('The request was not formed well either');
 
         $test_error = [$error];
         $test_complete_errors = [$error, $error2];
@@ -187,23 +190,29 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testMetaAccessors()
     {
-        $test_default_meta = [
-            'status' => null
-        ];
+        $test_default_meta = new Meta(
+            [
+                'status' => null
+            ]
+        );
 
-        $test_partial_meta = [
-            'status' => '200'
-        ];
+        $test_partial_meta = new Meta(
+            [
+                'status' => '200'
+            ]
+        );
 
-        $test_complete_meta = [
-            'status' => '200',
-            'info' => 'Request loaded in 34ms'
-        ];
+        $test_complete_meta = new Meta(
+            [
+                'status' => '200',
+                'info' => 'Request loaded in 34ms'
+            ]
+        );
 
         $json_api_formatter = new JsonApiFormatter();
 
         // check the default value
-        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_default_meta);
+        $this->assertEquals($test_default_meta, $json_api_formatter->getMeta());
 
         // Valid get and set
         $json_api_formatter->setMeta((object)$test_complete_meta);
@@ -224,17 +233,17 @@ class JsonApiFormatterTest extends TestCase
 
         // make a partial and extend
         $json_api_formatter->setMeta((object)$test_partial_meta);
-        $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
+        $json_api_formatter->addMeta(new Meta(['info' => 'Request loaded in 34ms']));
         $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // force add some meta
-        $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms'], true);
+        $json_api_formatter->addMeta(new Meta(['info' => 'Request loaded in 34ms']), true);
         $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // check that addMeta catches duplicates
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage('The meta provided clashes with existing meta - it should be added manually');
-        $json_api_formatter->addMeta(['info' => 'Request loaded in 34ms']);
+        $json_api_formatter->addMeta(new Meta(['info' => 'Request loaded in 34ms']));
     }
 
     /**
@@ -297,14 +306,14 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testLinksAccessors()
     {
-        $test_partial_links = (object)[
-            'self' => 'http://example.com/posts'
-        ];
+        $test_partial_links = new Links(['self' => 'http://example.com/posts']);
 
-        $test_complete_links = (object)[
-            'self' => 'http://example.com/posts',
-            'next' => 'http://example.com/more-posts'
-        ];
+        $test_complete_links = new Links(
+            [
+                'self' => 'http://example.com/posts',
+                'next' => 'http://example.com/more-posts'
+            ]
+        );
 
         $json_api_formatter = new JsonApiFormatter();
 
@@ -348,16 +357,18 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($json_api_formatter->getContentType(), 'application/vnd.api+json');
         $this->assertEquals($json_api_formatter->getData(), null);
         $this->assertEquals($json_api_formatter->getErrors(), []);
-        $this->assertEquals($json_api_formatter->getMeta(), (object)['status' => null]);
+        $this->assertEquals($json_api_formatter->getMeta(), new Meta(['status' => null]));
         $this->assertEquals($json_api_formatter->getJsonapi(), (object)['version' => '1.0']);
         $this->assertNull($json_api_formatter->getIncluded());
 
-        $meta = (object)['hello' => 'world'];
+        $meta = new Meta(['hello' => 'world']);
         $json_api = (object)['application/vnd.api+jsonv2'];
-        $links = (object)[
-            'self' => 'http://example.com/posts',
-            'next' => 'http://example.com/more-posts'
-        ];
+        $links = new Links(
+            [
+                'self' => 'http://example.com/posts',
+                'next' => 'http://example.com/more-posts'
+            ]
+        );
 
         $json_api_formatter = new JsonApiFormatter(
             $meta,
@@ -498,7 +509,7 @@ class JsonApiFormatterTest extends TestCase
 
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage('$data_resources needs to be a data resource or array of data resources');
-        $json_api_formatter->dataResourceResponse(new \StdCLass());
+        $json_api_formatter->dataResourceResponse(new StdCLass());
     }
 
     /**
@@ -512,7 +523,7 @@ class JsonApiFormatterTest extends TestCase
 
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage('$data_resources needs to be a data resource or array of data resources');
-        $json_api_formatter->dataResourceResponse([new \StdCLass()]);
+        $json_api_formatter->dataResourceResponse([new StdCLass()]);
     }
 
     // Main functionality: error responses
@@ -534,15 +545,15 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testErrorResponse()
     {
-        $error = new StdClass();
-        $error->status = '400';
-        $error->title = 'Bad request';
-        $error->detail = 'The request was not formed well';
+        $error = new Error();
+        $error->setStatus('400');
+        $error->setTitle('Bad request');
+        $error->setDetail('The request was not formed well');
 
-        $error2 = new StdClass();
-        $error2->status = '400';
-        $error2->title = 'Bad request 2';
-        $error2->detail = 'The request was not formed well either';
+        $error2 = new Error();
+        $error->setStatus('400');
+        $error2->setTitle('Bad request 2');
+        $error2->setDetail('The request was not formed well either');
 
         $test_errors = [$error, $error2];
 
@@ -589,11 +600,11 @@ class JsonApiFormatterTest extends TestCase
         $data_attributes = ['test' => 'some_data'];
         $data = new DataResource($data_id, $data_type, $data_attributes);
 
-        $error = [
-            'status' => '400',
-            'title' => 'Bad request',
-            'detail' => 'The request was not formed well'
-        ];
+        $error = new Error();
+        $error
+            ->setStatus('400')
+            ->setTitle('Bad request')
+            ->setDetail('The request was not formed well');
 
         // errors
         $json_api_formatter = new JsonApiFormatter();
@@ -627,10 +638,12 @@ class JsonApiFormatterTest extends TestCase
 
         // meta
 
-        $meta = (object)[
-            'status' => '200',
-            'info' => 'Request loaded in 34ms'
-        ];
+        $meta = new Meta(
+            [
+                'status' => '200',
+                'info' => 'Request loaded in 34ms'
+            ]
+        );
 
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetErrors();
@@ -663,11 +676,11 @@ class JsonApiFormatterTest extends TestCase
 
         // Now add errors
 
-        $error = [
-            'status' => '400',
-            'title' => 'Bad request',
-            'detail' => 'The request was not formed well'
-        ];
+        $error = new Error();
+        $error
+            ->setStatus('400')
+            ->setTitle('Bad request')
+            ->setDetail('The request was not formed well');
 
         // errors
         $json_api_formatter->addErrors([$error]);
@@ -763,14 +776,13 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testImportErrors()
     {
+        $error = new Error();
+        $error
+            ->setStatus('400')
+            ->setTitle('Bad request')
+            ->setDetail('The request was not formed well');
         $json_array = [
-            'errors' => [
-                [
-                    'status' => '400',
-                    'title' => 'Bad request',
-                    'detail' => 'The request was not formed well',
-                ]
-            ],
+            'errors' => [$error]
         ];
 
         $errors_json = json_encode($json_array, true);
@@ -804,7 +816,7 @@ class JsonApiFormatterTest extends TestCase
 
         $json_api_formatter->import($meta_json);
 
-        $this->assertEquals($json_api_formatter->getMeta(), (object)$json_array['meta']);
+        $this->assertEquals($json_api_formatter->getMeta(), new Meta($json_array['meta']));
     }
 
     // Main functionality : validation

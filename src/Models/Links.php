@@ -1,0 +1,107 @@
+<?php
+/**
+ * Links.php
+ *
+ * Links class
+ *
+ * php 7.4+
+ *
+ * @category  None
+ * @package   Floor9design\JsonApiFormatter\Models
+ * @author    Rick Morice <rick@floor9design.com>
+ * @copyright Floor9design Ltd
+ * @license   MIT
+ * @version   1.0
+ * @link      https://www.floor9design.com
+ * @since     File available since Release 1.0
+ *
+ */
+
+namespace Floor9design\JsonApiFormatter\Models;
+
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+
+/**
+ * Class Links
+ *
+ * Class to offer methods/properties to prepare data for a Links object
+ * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ *
+ * Note: links should be populated by either a Link object or a string
+ *
+ * @category  None
+ * @package   Floor9design\JsonApiFormatter\Models
+ * @author    Rick Morice <rick@floor9design.com>
+ * @copyright Floor9design Ltd
+ * @license   MIT
+ * @version   1.0
+ * @link      https://www.floor9design.com
+ * @link      https://jsonapi.org/
+ * @link      https://jsonapi-validator.herokuapp.com/
+ * @since     File available since Release 1.0
+ * @see       https://jsonapi.org/format/
+ */
+class Links
+{
+    // constructor
+
+    /**
+     * Links constructor.
+     * Automatically sets up the provided array as properties
+     * @param array|null $array
+     * @throws JsonApiFormatterException
+     */
+    public function __construct(?array $array = [])
+    {
+        foreach ($array as $name => $link) {
+            $this->addLink($name, $link);
+        }
+    }
+
+    /**
+     * @param string $name
+     * @param string|Link $link
+     * @throws JsonApiFormatterException
+     */
+    public function addLink(string $name, $link)
+    {
+        // validate:
+        $this->validateProperty($link);
+        $this->$name = $link;
+    }
+
+    /**
+     * @param string $name
+     * @param string|Link $link
+     * @throws JsonApiFormatterException
+     */
+    public function unsetLink(string $name)
+    {
+        unset($this->$name);
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return (array)$this;
+    }
+
+    /**
+     * @param $value
+     * @return bool
+     * @throws JsonApiFormatterException
+     */
+    private function validateProperty($value): bool
+    {
+        if (
+        !($value instanceof Link || is_string($value))
+        ) {
+            throw new JsonApiFormatterException('Links can only be populated with strings or Link objects');
+        }
+
+        return true;
+    }
+
+}
