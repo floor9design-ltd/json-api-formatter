@@ -254,15 +254,39 @@ class Error
      */
     public function toArray(): array
     {
-        return [
-            'id' => $this->getId(),
-            'links' => $this->getLinks(),
-            'status' => $this->getStatus(),
-            'code' => $this->getCode(),
-            'title' => $this->getTitle(),
-            'detail' => $this->getDetail(),
-            'source' => $this->getSource(),
-        ];
+        // only include set values:
+
+        $return = [];
+
+        if($this->getId()) {
+            $return['id'] = $this->getId();
+        }
+
+        if($this->getLinks()) {
+            $return['links'] = $this->getLinks();
+        }
+
+        if($this->getStatus()) {
+            $return['status'] = $this->getStatus();
+        }
+
+        if($this->getCode()) {
+            $return['code'] = $this->getCode();
+        }
+
+        if($this->getTitle()) {
+            $return['title'] = $this->getTitle();
+        }
+
+        if($this->getDetail()) {
+            $return['detail'] = $this->getDetail();
+        }
+
+        if($this->getSource()) {
+            $return['source'] = $this->getSource();
+        }
+
+        return $return;
     }
 
 }

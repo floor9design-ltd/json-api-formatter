@@ -45,7 +45,6 @@ use StdClass;
  */
 class ErrorTest extends TestCase
 {
-
     use AccessorTesterTrait;
 
     // Accessors
@@ -80,9 +79,8 @@ class ErrorTest extends TestCase
         $this->assertEquals($source, $error->getSource());
     }
 
-
     /**
-     * Test Error constructor.
+     * Test Error::toArray()
      *
      * @return void
      * @throws TestingToolsException
@@ -112,5 +110,55 @@ class ErrorTest extends TestCase
         );
 
         $this->assertEquals($error->toArray(), $array);
+    }
+
+    /**
+     * Test Error::toArray
+     *
+     * @return void
+     */
+    public function testToArrayNullProperties()
+    {
+        $generator = new Generator();
+
+        $array = [
+            'id' => $generator->randomString(),
+            'links' => new Links(),
+            'status' => $generator->randomString(),
+            'code' => $generator->randomString(),
+            'title' => $generator->randomString(),
+            'detail' => $generator->randomString(),
+            'source' => new StdClass,
+        ];
+
+        $error = new Error(
+            $array['id'],
+            $array['links'],
+            $array['status'],
+            $array['code'],
+            $array['title'],
+            $array['detail'],
+            $array['source']
+        );
+
+        // should do nothing
+        $this->assertEquals($error->toArray(), $array);
+
+        // remove one by one, then check
+        $error->setId(null);
+        $this->assertArrayNotHasKey('id', $error->toArray());
+        $error->setLinks(null);
+        $this->assertArrayNotHasKey('links', $error->toArray());
+        $error->setStatus(null);
+        $this->assertArrayNotHasKey('status', $error->toArray());
+        $error->setCode(null);
+        $this->assertArrayNotHasKey('code', $error->toArray());
+        $error->setTitle(null);
+        $this->assertArrayNotHasKey('title', $error->toArray());
+        $error->setDetail(null);
+        $this->assertArrayNotHasKey('detail', $error->toArray());
+        $error->setSource(null);
+        $this->assertArrayNotHasKey('source', $error->toArray());
+
     }
 }
