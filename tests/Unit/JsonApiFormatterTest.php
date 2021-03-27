@@ -603,15 +603,17 @@ class JsonApiFormatterTest extends TestCase
         // make 2 manually checked correct arrays:
         $validated_array = [
             'errors' => [
-                $error,
-                $error2
+                // remember to clear nulls by flattening using toArray()
+                (object)$error->toArray(),
+                (object)$error2->toArray()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
         ];
         $validated_array2 = [
             'errors' => [
-                $error2
+                // remember to clear nulls by flattening using toArray()
+                (object)$error2->toArray()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
@@ -655,7 +657,8 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->addErrors([$error]);
 
         $error_response_array = [
-            'errors' => [$error],
+            // remember to clear nulls by flattening using toArray()
+            'errors' => [(object)$error->toArray()],
             'meta' => [
                 'status' => null
             ],

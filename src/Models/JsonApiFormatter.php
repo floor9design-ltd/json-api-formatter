@@ -451,6 +451,13 @@ class JsonApiFormatter
             $content = $this->getBaseResponseArray();
         }
 
+        // strip nulls from errors by converting to StdClass:
+        if ($content['errors'] ?? false) {
+            foreach ($content['errors'] as $key => $error) {
+                $content['errors'][$key] = (object)$error->toArray();
+            }
+        }
+
         return json_encode($content, true);
     }
 
@@ -616,15 +623,6 @@ class JsonApiFormatter
      */
     public function dataResourceResponse($data_resources = null): string
     {
-        // if there's no resources provided, load internally
-        if (!$data_resources) {
-            $data_resources = $this->getData();
-
-            // empty is not allowed::
-            if (!$data_resources) {
-                throw new JsonApiFormatterException('A Data resource requires data to be generated');
-            }
-        }
         $this->dataResourceResponseArray($data_resources);
         return $this->correctEncode();
     }
@@ -634,10 +632,20 @@ class JsonApiFormatter
      * @return array
      * @throws JsonApiFormatterException
      */
-    public function dataResourceResponseArray($data_resources): array
+    public function dataResourceResponseArray($data_resources = null): array
     {
         // clear errors: it must not be set in an dataResource response
         unset($this->base_response_array['errors']);
+
+        // if there's no resources provided, load internally
+        if (!$data_resources) {
+            $data_resources = $this->getData();
+
+            // empty is not allowed::
+            if (!$data_resources) {
+                throw new JsonApiFormatterException('A Data resource requires data to be generated');
+            }
+        }
 
         // catch bad data:
         if (!($data_resources instanceof DataResource || is_array($data_resources))) {
