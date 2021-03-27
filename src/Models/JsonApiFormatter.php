@@ -646,7 +646,7 @@ class JsonApiFormatter
         }
 
         if ($data_resources instanceof DataResource) {
-            $this->addData($data_resources);
+            $this->setData($data_resources);
         } else {
             foreach ($data_resources as $data_resource) {
                 if (!$data_resource instanceof DataResource) {
