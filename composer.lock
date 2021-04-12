@@ -78,16 +78,16 @@
         },
         {
             "name": "floor9design/test-data-generator",
-            "version": "1.3.1",
+            "version": "1.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/floor9design-ltd/test-data-generator.git",
-                "reference": "c1664602773d44191cbb464d372f7a01461187bf"
+                "reference": "84dddc092a4107e2045dbe4b2a140452a24a8af9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/floor9design-ltd/test-data-generator/zipball/c1664602773d44191cbb464d372f7a01461187bf",
-                "reference": "c1664602773d44191cbb464d372f7a01461187bf",
+                "url": "https://api.github.com/repos/floor9design-ltd/test-data-generator/zipball/84dddc092a4107e2045dbe4b2a140452a24a8af9",
+                "reference": "84dddc092a4107e2045dbe4b2a140452a24a8af9",
                 "shasum": ""
             },
             "require": {
@@ -127,9 +127,9 @@
             ],
             "support": {
                 "issues": "https://github.com/floor9design-ltd/test-data-generator/issues",
-                "source": "https://github.com/floor9design-ltd/test-data-generator/tree/1.3.1"
+                "source": "https://github.com/floor9design-ltd/test-data-generator/tree/1.3.2"
             },
-            "time": "2021-03-17T12:52:10+00:00"
+            "time": "2021-04-09T13:50:19+00:00"
         },
         {
             "name": "floor9design/testing-tools",
@@ -761,16 +761,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.5",
+            "version": "9.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "f3e026641cc91909d421802dd3ac7827ebfd97e1"
+                "reference": "f6293e1b30a2354e8428e004689671b83871edde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f3e026641cc91909d421802dd3ac7827ebfd97e1",
-                "reference": "f3e026641cc91909d421802dd3ac7827ebfd97e1",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f6293e1b30a2354e8428e004689671b83871edde",
+                "reference": "f6293e1b30a2354e8428e004689671b83871edde",
                 "shasum": ""
             },
             "require": {
@@ -826,7 +826,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.5"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.6"
             },
             "funding": [
                 {
@@ -834,7 +834,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-28T06:44:49+00:00"
+            "time": "2021-03-28T07:26:59+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
