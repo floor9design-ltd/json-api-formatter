@@ -656,7 +656,6 @@ class JsonApiFormatter
             }
 
             if ($data_resources instanceof DataResource) {
-                var_dump('here');
                 $this->setData($data_resources);
             } else {
                 foreach ($data_resources as $data_resource) {
