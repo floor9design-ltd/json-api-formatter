@@ -637,31 +637,35 @@ class JsonApiFormatter
         // clear errors: it must not be set in an dataResource response
         unset($this->base_response_array['errors']);
 
-        // if there's no resources provided, load internally
         if (!$data_resources) {
+            // if there's no resources provided, load internally
+
             $data_resources = $this->getData();
 
             // empty is not allowed::
             if (!$data_resources) {
                 throw new JsonApiFormatterException('A Data resource requires data to be generated');
             }
-        }
-
-        // catch bad data:
-        if (!($data_resources instanceof DataResource || is_array($data_resources))) {
-            $error = '$data_resources needs to be a data resource or array of data resources';
-            throw new JsonApiFormatterException($error);
-        }
-
-        if ($data_resources instanceof DataResource) {
-            $this->setData($data_resources);
         } else {
-            foreach ($data_resources as $data_resource) {
-                if (!$data_resource instanceof DataResource) {
-                    $error = '$data_resources needs to be a data resource or array of data resources';
-                    throw new JsonApiFormatterException($error);
+            // Try and load external data:
+
+            // catch bad data:
+            if (!($data_resources instanceof DataResource || is_array($data_resources))) {
+                $error = '$data_resources needs to be a data resource or array of data resources';
+                throw new JsonApiFormatterException($error);
+            }
+
+            if ($data_resources instanceof DataResource) {
+                var_dump('here');
+                $this->setData($data_resources);
+            } else {
+                foreach ($data_resources as $data_resource) {
+                    if (!$data_resource instanceof DataResource) {
+                        $error = '$data_resources needs to be a data resource or array of data resources';
+                        throw new JsonApiFormatterException($error);
+                    }
+                    $this->addData($data_resource);
                 }
-                $this->addData($data_resource);
             }
         }
 
