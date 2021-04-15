@@ -637,35 +637,15 @@ class JsonApiFormatter
         // clear errors: it must not be set in an dataResource response
         unset($this->base_response_array['errors']);
 
-        if (!$data_resources) {
-            // if there's no resources provided, load internally
+        // load if it's not been provided:
+        if ($data_resources !== null) {
+            $this->setData($data_resources);
+        }
 
-            $data_resources = $this->getData();
-
-            // empty is not allowed::
-            if (!$data_resources) {
-                throw new JsonApiFormatterException('A Data resource requires data to be generated');
-            }
-        } else {
-            // Try and load external data:
-
-            // catch bad data:
-            if (!($data_resources instanceof DataResource || is_array($data_resources))) {
-                $error = '$data_resources needs to be a data resource or array of data resources';
-                throw new JsonApiFormatterException($error);
-            }
-
-            if ($data_resources instanceof DataResource) {
-                $this->setData($data_resources);
-            } else {
-                foreach ($data_resources as $data_resource) {
-                    if (!$data_resource instanceof DataResource) {
-                        $error = '$data_resources needs to be a data resource or array of data resources';
-                        throw new JsonApiFormatterException($error);
-                    }
-                    $this->addData($data_resource);
-                }
-            }
+        // if it's still null, it needs data!:
+        if ($this->getData() === null) {
+            $message = 'Data needs to be set to a data resource or array of data resources';
+            throw new JsonApiFormatterException($message);
         }
 
         $this->autoIncludeJsonapi();
@@ -786,5 +766,6 @@ class JsonApiFormatter
 
         return true;
     }
+
 
 }

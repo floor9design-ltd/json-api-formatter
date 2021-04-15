@@ -486,9 +486,9 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        // First exception hit is 'id'
+        // Instantiates with a null:
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('A Data resource requires data to be generated');
+        $this->expectExceptionMessage('Data needs to be set to a data resource or array of data resources');
         $json_api_formatter->dataResourceResponse();
     }
 
@@ -539,6 +539,22 @@ class JsonApiFormatterTest extends TestCase
         $response = $json_api_formatter->dataResourceResponse([$data_resource, $data_resource2]);
 
         $this->assertEquals($validated_array_json, $response);
+
+        // Empty array (still valid)
+
+        $validated_array = [
+            'data' => [],
+            'meta' => (object)['status' => null],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $validated_array_json = json_encode($validated_array, true);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $response = $json_api_formatter->dataResourceResponse([]);
+
+        $this->assertEquals($validated_array_json, $response);
+
     }
 
     /**
@@ -551,7 +567,7 @@ class JsonApiFormatterTest extends TestCase
         // Single data resource
 
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('$data_resources needs to be a data resource or array of data resources');
+        $this->expectExceptionMessage('$data needs to be either a DataResource or an array of DataResource objects');
         $json_api_formatter->dataResourceResponse(new StdCLass());
     }
 
@@ -565,7 +581,7 @@ class JsonApiFormatterTest extends TestCase
         // Single data resource
 
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('$data_resources needs to be a data resource or array of data resources');
+        $this->expectExceptionMessage('$data needs to be either a DataResource or an array of DataResource objects');
         $json_api_formatter->dataResourceResponse([new StdCLass()]);
     }
 
