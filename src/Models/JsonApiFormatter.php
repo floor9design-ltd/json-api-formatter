@@ -52,12 +52,13 @@ class JsonApiFormatter
     /**
      * A clean array to populate, including the main required elements
      *
+     * @phpstan-var array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @var array
      */
     protected array $base_response_array = [
         'data' => null, // can exist as null
         'errors' => [], // must be an array
-        'meta' => null // must be an object
+        'meta' => null, // must be an object
     ];
 
     // Accessors and advanced accessors
@@ -71,6 +72,7 @@ class JsonApiFormatter
     }
 
     /**
+     * @phpstan-return array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @return array
      * @see $base_response_array
      */
@@ -80,6 +82,7 @@ class JsonApiFormatter
     }
 
     /**
+     * @phpstan-return array<DataResource>|DataResource|null
      * @return null|array|DataResource
      */
     public function getData()
@@ -90,6 +93,7 @@ class JsonApiFormatter
     /**
      * Fluently sets data to the $base_response_array['data']
      *
+     * @phpstan-param array<DataResource>|DataResource|null $data
      * @param DataResource|array|null $data
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
@@ -154,7 +158,8 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @phpstan-return array<Error>|null
+     * @return array|null
      */
     public function getErrors(): ?array
     {
@@ -164,6 +169,7 @@ class JsonApiFormatter
     /**
      * Fluently sets errors to the $base_response_array['errors']
      *
+     * @phpstan-param array<Error> $errors
      * @param array $errors
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
@@ -183,6 +189,7 @@ class JsonApiFormatter
 
     /**
      * Fluently adds error to $base_response_array['errors']
+     * @phpstan-param array<Error> $extra_errors
      * @param array $extra_errors
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
@@ -214,7 +221,7 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|stdClass
+     * @return null|Meta
      */
     public function getMeta(): ?Meta
     {
@@ -224,7 +231,7 @@ class JsonApiFormatter
     /**
      * Fluently sets meta to the $base_response_array['meta']
      *
-     * @param stdClass $meta
+     * @param Meta $meta
      * @return JsonApiFormatter
      */
     public function setMeta(Meta $meta): JsonApiFormatter
@@ -235,7 +242,7 @@ class JsonApiFormatter
 
     /**
      * Fluently adds meta to $base_response_array['meta']
-     * @param array $extra_meta
+     * @param Meta $extra_meta
      * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
@@ -275,7 +282,7 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @return Stdclass|null
      */
     public function getJsonapi(): ?StdClass
     {
@@ -285,10 +292,10 @@ class JsonApiFormatter
     /**
      * Fluently sets jsonapi to the $base_response_array['jsonapi']
      *
-     * @param object $jsonapi
+     * @param StdClass $jsonapi
      * @return JsonApiFormatter
      */
-    public function setJsonapi(object $jsonapi): JsonApiFormatter
+    public function setJsonapi(StdClass $jsonapi): JsonApiFormatter
     {
         $this->base_response_array['jsonapi'] = $jsonapi;
         return $this;
@@ -307,7 +314,7 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @return null|Links
      */
     public function getLinks(): ?Links
     {
@@ -317,7 +324,7 @@ class JsonApiFormatter
     /**
      * Fluently sets links to the $base_response_array['links']
      *
-     * @param stdClass $links
+     * @param Links $links
      * @return JsonApiFormatter
      */
     public function setLinks(Links $links): JsonApiFormatter
@@ -328,6 +335,7 @@ class JsonApiFormatter
 
     /**
      * Fluently adds an array of links items to $base_response_array['links'] object
+     * @phpstan-param array<Link> $extra_links
      * @param array $extra_links
      * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
@@ -363,7 +371,8 @@ class JsonApiFormatter
     }
 
     /**
-     * @return null|array
+     * @phpstan-return array<DataResource>|null
+     * @return array|null
      */
     public function getIncluded(): ?array
     {
@@ -373,6 +382,7 @@ class JsonApiFormatter
     /**
      * Fluently sets included to the $base_response_array['included']
      *
+     * @phpstan-param array<DataResource> $included
      * @param array $included
      * @return JsonApiFormatter
      */
@@ -384,10 +394,9 @@ class JsonApiFormatter
 
     /**
      * Fluently adds included to $base_response_array['included']
+     * @phpstan-param array<DataResource> $extra_included
      * @param array $extra_included
-     * @param bool $overwrite
      * @return JsonApiFormatter
-     * @throws JsonApiFormatterException
      */
     public function addIncluded(array $extra_included): JsonApiFormatter
     {
@@ -407,9 +416,9 @@ class JsonApiFormatter
      * Sets up the object quickly with optional items
      *
      * JsonApiFormatter constructor.
-     * @param stdClass|null $meta
+     * @param Meta|null $meta
      * @param stdClass|null $json_api
-     * @param stdClass|null $links
+     * @param Links|null $links
      */
     public function __construct(
         ?Meta $meta = null,
@@ -440,25 +449,35 @@ class JsonApiFormatter
      * Correctly encodes the string, catching issues such as:
      * "you need to specify associative array, else it is invalid json"
      *
-     * @param array|null $array $array
+     * @phpstan-param array[]|array{errors:array<Error>} $array
+     * @param array|null $array
      * @return string
+     * @throws JsonApiFormatterException
      */
-    private function correctEncode(?array $array = null): string
+    private function correctEncode(?array $array = []): string
     {
-        if ($array) {
-            $content = $array;
-        } else {
-            $content = $this->getBaseResponseArray();
+        if (!$array) {
+            $array = $this->getBaseResponseArray();
         }
 
-        // strip nulls from errors by converting to StdClass:
-        if ($content['errors'] ?? false) {
-            foreach ($content['errors'] as $key => $error) {
-                $content['errors'][$key] = (object)$error->toArray();
+        // strip nulls from errors using the toArray() functionality:
+
+        if (is_iterable($array) &&
+            ($array['errors'] ?? false) &&
+            is_iterable($array['errors'])
+        ) {
+            // rewrite errors to ensure a clean array:
+            $errors = [];
+            foreach ($array['errors'] as $key => $error) {
+                $errors[$key] = $error->toArray();
             }
+            $array['errors'] = $errors;
         }
 
-        return json_encode($content, true);
+        $encoded = json_encode($array);
+        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+
+        return $encoded;
     }
 
     // Main functionality:
@@ -545,12 +564,6 @@ class JsonApiFormatter
                     }
                 }
 
-                // format source
-                $source = $error['source'] ?? null;
-                if ($source) {
-                    $source = (object)$source;
-                }
-
                 $errors[] = new Error(
                     $error['id'] ?? null,
                     $links ?? null,
@@ -558,7 +571,7 @@ class JsonApiFormatter
                     $error['code'] ?? null,
                     $error['title'] ?? null,
                     $error['detail'] ?? null,
-                    $source
+                    (object)$error['source'] ?? null
                 );
             }
 
@@ -579,20 +592,22 @@ class JsonApiFormatter
     }
 
     /**
+     * @phpstan-param array<Error> $errors
      * @param array $errors
      * @return string
      * @throws JsonApiFormatterException
      */
-    public function errorResponse(
-        array $errors = []
-    ): string {
+    public function errorResponse(array $errors = []): string
+    {
         $this->errorResponseArray($errors);
         return $this->correctEncode();
     }
 
     /**
+     * @phpstan-param array<Error> $errors
      * @param array $errors
-     * @return string
+     * @phpstan-return array{errors?:array<Error>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
+     * @return array
      * @throws JsonApiFormatterException
      */
     public function errorResponseArray(
@@ -607,7 +622,9 @@ class JsonApiFormatter
         }
 
         // Catch empty errors array: it needs to exist!
-        if (count($this->getErrors()) == 0) {
+        if (
+            !$this->getErrors() ||
+            (is_countable($this->getErrors()) && count($this->getErrors()) == 0)) {
             throw new JsonApiFormatterException("Error responses cannot have an empty errors array");
         }
 
@@ -617,6 +634,7 @@ class JsonApiFormatter
     }
 
     /**
+     * @phpstan-param array<DataResource>|DataResource $data_resources
      * @param array|DataResource $data_resources
      * @return string
      * @throws JsonApiFormatterException
@@ -628,7 +646,9 @@ class JsonApiFormatter
     }
 
     /**
+     * @phpstan-param array<DataResource>|DataResource $data_resources
      * @param array|DataResource $data_resources
+     * @phpstan-return array{data?:array<DataResource>|DataResource|null,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @return array
      * @throws JsonApiFormatterException
      */
@@ -656,10 +676,11 @@ class JsonApiFormatter
     // other useful functionality
 
     /**
-     * Performs a quick validation  of internal setup against some basic rules.
+     * Performs a quick validation of internal setup against some basic rules.
      * eg: data and errors set.
      *
-     * @param $array
+     * @phpstan-param array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass} $array
+     * @param array $array
      * @return bool
      * @throws JsonApiFormatterException
      */
@@ -685,34 +706,38 @@ class JsonApiFormatter
      * Performs a quick validation for Data against some basic rules.
      * This is not a schema validation, "But it'll give it a shot..."
      *
-     * @param $array
+     * @phpstan-param array[]|array<array[]|string> $array
+     * @param array $array
      * @return bool
      * @throws JsonApiFormatterException
      */
     public function quickValidatorDataResourceArray(array $array): bool
     {
-        $message = 'The provided json structure does not match the json api standard - ';
-
-        // check object type:
+        $message = 'The provided array is not valid.';
 
         // singular object
         if (
-            // do OR here to allow a graceful failure that provides validation context
-            array_key_exists('id', $array) ||
-            array_key_exists('type', $array) ||
+            array_key_exists('id', $array) &&
+            array_key_exists('type', $array) &&
             array_key_exists('attributes', $array)
         ) {
             try {
                 $this->validateDataResourceArray($array);
             } catch (JsonApiFormatterException $e) {
-                throw new JsonApiFormatterException($message . $e->getMessage());
+                throw new JsonApiFormatterException($message . ' ' . $e->getMessage());
             }
         } else {
+            // multiple objects
             foreach ($array as $data_resource) {
-                try {
-                    $this->validateDataResourceArray($data_resource);
-                } catch (JsonApiFormatterException $e) {
-                    throw new JsonApiFormatterException($message . $e->getMessage());
+                if (is_array($data_resource)) {
+                    try {
+                        $this->validateDataResourceArray($data_resource);
+                    } catch (JsonApiFormatterException $e) {
+                        throw new JsonApiFormatterException($message . ' ' . $e->getMessage());
+                    }
+                } else {
+                    $detail = ' It needs to be a DataResource object in array form, or an array of DataResource objects in array form';
+                    throw new JsonApiFormatterException($message . $detail);
                 }
             }
         }
@@ -723,6 +748,7 @@ class JsonApiFormatter
     /**
      * Internal validator for a array representation of a data resource
      *
+     * @phpstan-param array{id?:string|null,type?:string|null,attributes?:array|null}|array<mixed> $data_resource_array
      * @param array $data_resource_array
      * @return bool
      * @throws JsonApiFormatterException
@@ -731,41 +757,40 @@ class JsonApiFormatter
     {
         // no id
         if (!array_key_exists('id', $data_resource_array)) {
-            $message = 'resource objects require an id';
+            $message = 'Resource objects require an id.';
             throw new JsonApiFormatterException($message);
         }
 
         // id needs to be string
         if (!is_string($data_resource_array['id'])) {
-            $message = 'a resource object id must be a string';
+            $message = 'A resource object id must be a string.';
             throw new JsonApiFormatterException($message);
         }
 
         // type required
         if (!array_key_exists('type', $data_resource_array)) {
-            $message = 'resource objects require a type';
+            $message = 'Resource objects require a type.';
             throw new JsonApiFormatterException($message);
         }
         // type needs to be a string
         if (!is_string($data_resource_array['type'])) {
-            $message = 'a resource object type must be a string';
+            $message = 'A resource object type must be a string.';
             throw new JsonApiFormatterException($message);
         }
 
         // no attributes
         if (!array_key_exists('attributes', $data_resource_array)) {
-            $message = 'resource objects require an attributes array';
+            $message = 'Resource objects require an attributes array.';
             throw new JsonApiFormatterException($message);
         }
 
         // attributes needs to be an array
         if (!is_array($data_resource_array['attributes'])) {
-            $message = 'a resource object attributes must be an array';
+            $message = 'A resource object attributes must be an array.';
             throw new JsonApiFormatterException($message);
         }
 
         return true;
     }
-
 
 }

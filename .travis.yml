@@ -24,6 +24,7 @@ before_script:
 script:
   - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/
   - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
+  - ./vendor/bin/phpstan
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

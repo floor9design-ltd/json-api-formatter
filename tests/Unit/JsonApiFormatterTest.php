@@ -258,8 +258,8 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($test_default_meta, $json_api_formatter->getMeta());
 
         // Valid get and set
-        $json_api_formatter->setMeta((object)$test_complete_meta);
-        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
+        $json_api_formatter->setMeta($test_complete_meta);
+        $this->assertEquals($json_api_formatter->getMeta(), $test_complete_meta);
 
         // unset
         $reflection = self::getMethod('getBaseResponseArray');
@@ -275,7 +275,7 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
         // make a partial and extend
-        $json_api_formatter->setMeta((object)$test_partial_meta);
+        $json_api_formatter->setMeta($test_partial_meta);
         $json_api_formatter->addMeta(new Meta(['info' => 'Request loaded in 34ms']));
         $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
 
@@ -458,6 +458,7 @@ class JsonApiFormatterTest extends TestCase
         // modified call
         $response = $reflection->invokeArgs($test_object, ['array' => $test_response_array]);
         $this->assertSame($response, json_encode($test_response_array, true));
+
     }
 
     // Main functionality : base
@@ -554,7 +555,6 @@ class JsonApiFormatterTest extends TestCase
         $response = $json_api_formatter->dataResourceResponse([]);
 
         $this->assertEquals($validated_array_json, $response);
-
     }
 
     /**
@@ -973,7 +973,7 @@ class JsonApiFormatterTest extends TestCase
         // First exception hit is 'type'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - resource objects require a type'
+            'The provided array is not valid. It needs to be a DataResource object in array form, or an array of DataResource objects in array form'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -996,7 +996,7 @@ class JsonApiFormatterTest extends TestCase
         // First exception hit is 'type'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - resource objects require a type'
+            'The provided array is not valid. Resource objects require a type'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1020,12 +1020,12 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        $bad_array = ['type' => "test"];
+        $bad_array = [['type' => "test"]];
 
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - resource objects require an id'
+            'The provided array is not valid. Resource objects require an id.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1037,12 +1037,12 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        $bad_array = ['id' => 2];
+        $bad_array = [['id' => 2]];
 
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - a resource object id must be a string'
+            'The provided array is not valid. A resource object id must be a string.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1054,12 +1054,12 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        $bad_array = ['id' => "2"];
+        $bad_array = [['id' => "2"]];
 
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - resource objects require a type'
+            'The provided array is not valid. Resource objects require a type.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1071,12 +1071,12 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        $bad_array = ['id' => "2", "type" => 2];
+        $bad_array = [['id' => "2", "type" => 2]];
 
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - a resource object type must be a string'
+            'The provided array is not valid. A resource object type must be a string.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1088,12 +1088,12 @@ class JsonApiFormatterTest extends TestCase
     {
         $json_api_formatter = new JsonApiFormatter();
 
-        $bad_array = ['id' => "2", "type" => "test"];
+        $bad_array = [['id' => "2", "type" => "test"]];
 
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - resource objects require an attributes array'
+            'The provided array is not valid. Resource objects require an attributes array.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
@@ -1110,7 +1110,7 @@ class JsonApiFormatterTest extends TestCase
         // First exception hit is 'id'
         $this->expectException(JsonApiFormatterException::class);
         $this->expectExceptionMessage(
-            'The provided json structure does not match the json api standard - a resource object attributes must be an array'
+            'The provided array is not valid. A resource object attributes must be an array.'
         );
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }

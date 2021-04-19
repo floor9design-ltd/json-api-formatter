@@ -48,40 +48,46 @@ class Links
     /**
      * Links constructor.
      * Automatically sets up the provided array as properties
+     * @phpstan-param array<Link|string>|null $array
      * @param array|null $array
      * @throws JsonApiFormatterException
      */
     public function __construct(?array $array = [])
     {
-        foreach ($array as $name => $link) {
-            $this->addLink($name, $link);
+        if(is_iterable($array)) {
+            foreach ($array as $name => $link) {
+                $this->addLink($name, $link);
+            }
         }
     }
 
     /**
      * @param string $name
      * @param string|Link $link
+     * @return Links
      * @throws JsonApiFormatterException
      */
-    public function addLink(string $name, $link)
+    public function addLink(string $name, $link): Links
     {
         // validate:
         $this->validateProperty($link);
         $this->$name = $link;
+
+        return $this;
     }
 
     /**
      * @param string $name
-     * @param string|Link $link
-     * @throws JsonApiFormatterException
+     * @return Links
      */
-    public function unsetLink(string $name)
+    public function unsetLink(string $name): Links
     {
         unset($this->$name);
+        return $this;
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function toArray(): array
     {
@@ -89,7 +95,7 @@ class Links
     }
 
     /**
-     * @param $value
+     * @param mixed|Link|string $value
      * @return bool
      * @throws JsonApiFormatterException
      */

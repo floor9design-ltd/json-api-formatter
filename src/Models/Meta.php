@@ -44,16 +44,20 @@ class Meta
     /**
      * Meta constructor.
      * Automatically sets up the provided array as properties
+     * @phpstan-param array<object|string|null>|null $array
      * @param array|null $array
      */
-    public function __construct(?array $array= []) {
-        foreach($array as $property => $value) {
-            $this->$property = $value;
+    public function __construct(?array $array = [])
+    {
+        if(is_iterable($array)) {
+            foreach ($array as $property => $value) {
+                $this->$property = $value;
+            }
         }
     }
 
     /**
-     * @return array
+     * @return array[]
      */
     public function toArray(): array
     {

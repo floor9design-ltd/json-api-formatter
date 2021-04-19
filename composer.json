@@ -24,6 +24,7 @@
     "require-dev": {
         "floor9design/testing-tools": "*",
         "mockery/mockery": "dev-master",
+        "phpstan/phpstan": "^0.12.83",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {

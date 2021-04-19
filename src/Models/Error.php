@@ -228,7 +228,7 @@ class Error
      * @param string|null $code
      * @param string|null $title
      * @param string|null $detail
-     * @param string|null $source
+     * @param object|null $source
      */
     public function __construct(
         ?string $id = null,
@@ -250,7 +250,7 @@ class Error
     }
 
     /**
-     * @return array
+     * @return array<string, object|string|null>
      */
     public function toArray(): array
     {

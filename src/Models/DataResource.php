@@ -52,6 +52,7 @@ class DataResource
     var ?string $type = null;
 
     /**
+     * @phpstan-var array[]
      * @var array|null
      */
     var ?array $attributes = null;
@@ -99,6 +100,7 @@ class DataResource
     }
 
     /**
+     * @phpstan-return array[]|null
      * @return array|null
      * @see $attributes
      */
@@ -108,6 +110,7 @@ class DataResource
     }
 
     /**
+     * @phpstan-param array[]|null $attributes
      * @param array|null $attributes
      * @return DataResource
      * @see $attributes
@@ -124,6 +127,7 @@ class DataResource
      * DataResource constructor.
      * @param string|null $id
      * @param string|null $type
+     * @phpstan-param array[]|null $attributes
      * @param array|null $attributes
      */
     public function __construct(
@@ -138,6 +142,7 @@ class DataResource
     }
 
     /**
+     * @phpstan-return array{id:string|null,type:string|null,attributes:array[]|null}
      * @return array
      */
     public function toArray(): array

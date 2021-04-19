@@ -72,6 +72,10 @@ Tests can be run as follows:
 
 * `./vendor/phpunit/phpunit/phpunit`
 
+Static analysis/code review can be performed by using [phpstan](https://phpstan.org/):
+
+* `./vendor/bin/phpstan`
+
 The following tests and also creates code coverage (usually maintained at 100%)
 
 * `./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/`
