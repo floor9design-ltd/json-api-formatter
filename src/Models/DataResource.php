@@ -100,7 +100,7 @@ class DataResource
     }
 
     /**
-     * @phpstan-return array[]|null
+     * @phpstan-return array<mixed>|null
      * @return array|null
      * @see $attributes
      */
@@ -110,7 +110,7 @@ class DataResource
     }
 
     /**
-     * @phpstan-param array[]|null $attributes
+     * @phpstan-param array<mixed>|null $attributes
      * @param array|null $attributes
      * @return DataResource
      * @see $attributes
@@ -127,7 +127,7 @@ class DataResource
      * DataResource constructor.
      * @param string|null $id
      * @param string|null $type
-     * @phpstan-param array[]|null $attributes
+     * @phpstan-param array<mixed>|null $attributes
      * @param array|null $attributes
      */
     public function __construct(
@@ -142,7 +142,7 @@ class DataResource
     }
 
     /**
-     * @phpstan-return array{id:string|null,type:string|null,attributes:array[]|null}
+     * @phpstan-return array{id:string|null,type:string|null,attributes:array<mixed>|null}
      * @return array
      */
     public function toArray(): array
