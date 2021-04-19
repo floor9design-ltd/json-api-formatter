@@ -475,7 +475,9 @@ class JsonApiFormatter
         }
 
         $encoded = json_encode($array);
-        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+        if (!$encoded) {
+            throw new JsonApiFormatterException('The provided array was not able to be encoded');
+        }
 
         return $encoded;
     }
@@ -564,6 +566,12 @@ class JsonApiFormatter
                     }
                 }
 
+                if ($error['source']) {
+                    $source = (object)$error['source'];
+                } else {
+                    $source = null;
+                }
+
                 $errors[] = new Error(
                     $error['id'] ?? null,
                     $links ?? null,
@@ -571,7 +579,7 @@ class JsonApiFormatter
                     $error['code'] ?? null,
                     $error['title'] ?? null,
                     $error['detail'] ?? null,
-                    (object)$error['source'] ?? null
+                    $source
                 );
             }
 
