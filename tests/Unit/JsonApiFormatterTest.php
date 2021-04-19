@@ -620,8 +620,8 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'errors' => [
                 // remember to clear nulls by flattening using toArray()
-                (object)$error->toArray(),
-                (object)$error2->toArray()
+                $error->toArray(),
+                $error2->toArray()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
@@ -629,7 +629,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array2 = [
             'errors' => [
                 // remember to clear nulls by flattening using toArray()
-                (object)$error2->toArray()
+                $error2->toArray()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
@@ -894,6 +894,66 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($detail, $error->getDetail());
         $this->assertEquals($links, $error->getLinks());
         $this->assertEquals($source, $error->getSource());
+    }
+
+    /**
+     * Tests that errors correctly match
+     */
+    public function testImportErrorsNullSource()
+    {
+        $error = new Error();
+        $links = new Links(
+            [
+                'http://link.com',
+                new Link(
+                    ['hello', 'world']
+                )
+            ]
+        );
+        $status = '400';
+        $code = '400';
+        $title = 'Bad request';
+        $detail = 'The request was not formed well';
+
+        $error
+            ->setStatus($status)
+            ->setCode($code)
+            ->setTitle($title)
+            ->setDetail($detail)
+            ->setLinks($links);
+
+        $json_array = [
+            'errors' =>
+                [
+                    [
+                        'status' => $status,
+                        'code' => $code,
+                        'title' => $title,
+                        'detail' => $detail,
+                        'links' => [
+                            'http://link.com',
+                            ['hello', 'world']
+                        ],
+                        'source' => null
+                    ]
+                ]
+        ];
+
+        $errors_json = json_encode($json_array, true);
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->import($errors_json);
+
+        $errors = $json_api_formatter->getErrors();
+        $error = $errors[0];
+
+        // test
+        $this->assertEquals($status, $error->getStatus());
+        $this->assertEquals($code, $error->getCode());
+        $this->assertEquals($title, $error->getTitle());
+        $this->assertEquals($detail, $error->getDetail());
+        $this->assertEquals($links, $error->getLinks());
+        $this->assertNull($error->getSource());
     }
 
     /**
