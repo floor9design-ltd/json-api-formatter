@@ -458,7 +458,6 @@ class JsonApiFormatterTest extends TestCase
         // modified call
         $response = $reflection->invokeArgs($test_object, ['array' => $test_response_array]);
         $this->assertSame($response, json_encode($test_response_array, true));
-
     }
 
     // Main functionality : base
@@ -838,7 +837,6 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testImportErrors()
     {
-        $error = new Error();
         $links = new Links(
             [
                 'http://link.com',
@@ -847,6 +845,7 @@ class JsonApiFormatterTest extends TestCase
                 )
             ]
         );
+
         $source = new StdClass();
         $source->hello = 'world';
         $status = '400';
@@ -854,13 +853,15 @@ class JsonApiFormatterTest extends TestCase
         $title = 'Bad request';
         $detail = 'The request was not formed well';
 
-        $error
-            ->setStatus($status)
-            ->setCode($code)
-            ->setTitle($title)
-            ->setDetail($detail)
-            ->setLinks($links)
-            ->setSource($source);
+        $error = new Error(
+            null,
+            $links,
+            $status,
+            $code,
+            $title,
+            $detail,
+            $source
+        );
 
         $json_array = [
             'errors' =>
@@ -901,7 +902,6 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testImportErrorsNullSource()
     {
-        $error = new Error();
         $links = new Links(
             [
                 'http://link.com',
@@ -915,12 +915,14 @@ class JsonApiFormatterTest extends TestCase
         $title = 'Bad request';
         $detail = 'The request was not formed well';
 
-        $error
-            ->setStatus($status)
-            ->setCode($code)
-            ->setTitle($title)
-            ->setDetail($detail)
-            ->setLinks($links);
+        $error = new Error(
+            null,
+            $links,
+            $status,
+            $code,
+            $title,
+            $detail
+        );
 
         $json_array = [
             'errors' =>

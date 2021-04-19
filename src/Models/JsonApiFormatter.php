@@ -564,7 +564,7 @@ class JsonApiFormatter
                     }
                 }
 
-                if ($error['source']) {
+                if ($error['source'] ?? false) {
                     $source = (object)$error['source'];
                 } else {
                     $source = null;
