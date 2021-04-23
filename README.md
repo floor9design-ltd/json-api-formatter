@@ -80,6 +80,11 @@ The following tests and also creates code coverage (usually maintained at 100%)
 
 * `./vendor/phpunit/phpunit/phpunit --coverage-html docs/tests/`
 
+Note, the following are very useful for validating/testing outputs:
+
+* [Validator](https://www.jsonschemavalidator.net/)
+* [Official definition/format](https://jsonapi.org/format/)
+
 ## Credits
 
 - [Rick](https://github.com/elb98rm)
