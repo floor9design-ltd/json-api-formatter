@@ -29,6 +29,7 @@ use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use ReflectionException;
 use StdClass;
 
 /**
@@ -147,7 +148,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testErrorsAccessors()
     {
@@ -194,7 +195,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testErrorsAccessorsSetException()
     {
@@ -211,7 +212,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testErrorsAccessorsAddException()
     {
@@ -229,7 +230,7 @@ class JsonApiFormatterTest extends TestCase
      *
      * @return void
      * @throws JsonApiFormatterException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testMetaAccessors()
     {
@@ -345,7 +346,7 @@ class JsonApiFormatterTest extends TestCase
      * Test links accessors.
      *
      * @return void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testLinksAccessors()
     {
@@ -463,7 +464,7 @@ class JsonApiFormatterTest extends TestCase
     // Main functionality : base
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testAutoIncludeJsonapi()
     {
@@ -833,6 +834,23 @@ class JsonApiFormatterTest extends TestCase
     }
 
     /**
+     * Tests that a data element correctly matches
+     */
+    public function testImportEmptyDataArray()
+    {
+        $json_array = [
+            'data' => [],
+        ];
+
+        $data_json = json_encode($json_array, true);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->import($data_json);
+
+        $this->assertEquals($json_api_formatter->getData(), []);
+    }
+
+    /**
      * Tests that errors correctly match
      */
     public function testImportErrors()
@@ -1184,7 +1202,7 @@ class JsonApiFormatterTest extends TestCase
      *
      * @param $name
      * @return mixed
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     protected static function getMethod($name)
     {

@@ -518,11 +518,17 @@ class JsonApiFormatter
         }
 
         // attempt to set up data
-        if ($decoded_json['data'] ?? false) {
+        if (
+            ($decoded_json['data'] ?? false) ||
+            ($decoded_json['data'] ?? false) === []
+        ) {
             // validate it
             $this->quickValidatorDataResourceArray($decoded_json['data']);
 
-            if ($decoded_json['data']['type'] ?? false) {
+            // specific case of an empty array
+            if ($decoded_json['data'] === []) {
+                $this->setData([]);
+            } elseif ($decoded_json['data']['type'] ?? false) {
                 // singular
                 $this->setData(
                     new DataResource(
@@ -542,6 +548,19 @@ class JsonApiFormatter
                         )
                     );
                 }
+            }
+
+            // attempt to set up included
+            foreach ($decoded_json['included'] ?? [] as $included) {
+                $this->addIncluded(
+                    [
+                        new DataResource(
+                            $included['id'],
+                            $included['type'],
+                            $included['attributes']
+                        )
+                    ]
+                );
             }
         }
 
@@ -721,12 +740,12 @@ class JsonApiFormatter
     {
         $message = 'The provided array is not valid.';
 
-        // singular object
         if (
             array_key_exists('id', $array) &&
             array_key_exists('type', $array) &&
             array_key_exists('attributes', $array)
         ) {
+            // singular object
             try {
                 $this->validateDataResourceArray($array);
             } catch (JsonApiFormatterException $e) {
