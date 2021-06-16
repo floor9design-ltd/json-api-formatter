@@ -549,19 +549,6 @@ class JsonApiFormatter
                     );
                 }
             }
-
-            // attempt to set up included
-            foreach ($decoded_json['included'] ?? [] as $included) {
-                $this->addIncluded(
-                    [
-                        new DataResource(
-                            $included['id'],
-                            $included['type'],
-                            $included['attributes']
-                        )
-                    ]
-                );
-            }
         }
 
         // attempt to set up errors
@@ -609,8 +596,20 @@ class JsonApiFormatter
         }
 
         // attempt to set up included
-        if ($decoded_json['included'] ?? false) {
-            $this->setIncluded($decoded_json['included']);
+        foreach ($decoded_json['included'] ?? [] as $included) {
+
+            // validate it
+            $this->quickValidatorDataResourceArray($included);
+
+            $this->addIncluded(
+                [
+                    new DataResource(
+                        $included['id'],
+                        $included['type'],
+                        $included['attributes']
+                    )
+                ]
+            );
         }
 
         return $this;
