@@ -44,7 +44,7 @@ class Meta
     /**
      * Meta constructor.
      * Automatically sets up the provided array as properties
-     * @phpstan-param array<object|string|null>|null $array
+     * @phpstan-param array<object|string|int|null>|null $array
      * @param array|null $array
      */
     public function __construct(?array $array = [])
