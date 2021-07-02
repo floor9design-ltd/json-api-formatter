@@ -475,7 +475,9 @@ class JsonApiFormatter
         }
 
         $encoded = json_encode($array);
-        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+        if (!$encoded) {
+            throw new JsonApiFormatterException('The provided array was not able to be encoded');
+        }
 
         return $encoded;
     }
@@ -600,7 +602,6 @@ class JsonApiFormatter
 
         // attempt to set up included
         foreach ($decoded_json['included'] ?? [] as $included) {
-
             // validate it
             $this->quickValidatorDataResourceArray($included);
 
