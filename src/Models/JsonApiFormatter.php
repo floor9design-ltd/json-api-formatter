@@ -539,6 +539,9 @@ class JsonApiFormatter
                 );
             } else {
                 // array
+
+                // clear first, else will end up with an extra array of the defaults
+                $this->unsetData();
                 foreach ($decoded_json['data'] as $datum) {
                     $this->addData(
                         new DataResource(
