@@ -30,4 +30,3 @@ after_success:
   - chmod +x codecov
   - ./codecov
 
-
