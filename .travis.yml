@@ -26,8 +26,8 @@ script:
   - ./vendor/bin/phpstan
 
 after_success:
-  #- curl -Os https://uploader.codecov.io/latest/linux/codecov
-  #- chmod +x codecov
-  #- ./codecov
-  - bash <(curl -s https://codecov.io/bash)
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov
+  - chmod +x codecov
+  - ./codecov
+  # - bash <(curl -s https://codecov.io/bash)
 
