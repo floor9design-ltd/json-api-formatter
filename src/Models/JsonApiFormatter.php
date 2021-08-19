@@ -410,6 +410,16 @@ class JsonApiFormatter
         return $this;
     }
 
+    /**
+     * Fluently unset $base_response_array['included']
+     * @return JsonApiFormatter
+     */
+    public function unsetIncluded(): JsonApiFormatter
+    {
+        unset($this->base_response_array['included']);
+        return $this;
+    }
+
     // constructor
 
     /**
@@ -481,6 +491,24 @@ class JsonApiFormatter
     }
 
     // Main functionality:
+
+    /**
+     * Resets the JsonApiFormatter formatter, clearing the data to defaults
+     * This can be useful if the class is being used as a singleton or similar service
+     *
+     * @return JsonApiFormatter
+     */
+    public function reset(): JsonApiFormatter
+    {
+        $this
+            ->unsetData()
+            ->unsetErrors()
+            ->unsetIncluded()
+            ->unsetLinks()
+            ->unsetMeta();
+
+        return $this;
+    }
 
     /**
      * Attempts to export the current contents in a valid JSON string.

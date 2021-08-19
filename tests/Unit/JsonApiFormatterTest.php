@@ -340,6 +340,13 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setIncluded($test_basic_included);
         $json_api_formatter->addIncluded([$included_company]);
         $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included);
+
+        // unset
+        $reflection = self::getMethod('getBaseResponseArray');
+        $test_object = new JsonApiFormatter();
+        $test_object->unsetIncluded();
+        $response = $reflection->invokeArgs($test_object, []);
+        $this->assertFalse(isset($response['included']));
     }
 
     /**
@@ -647,6 +654,87 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $response = $json_api_formatter->errorResponse([$error2]);
         $this->assertEquals($validated_json2, $response);
+    }
+
+    // reset
+
+    public function testReset()
+    {
+        // set up the objects
+        $data_id = "0";
+        $data_type = "test";
+        $data_attributes = ['test' => 'some_data'];
+        $data = new DataResource($data_id, $data_type, $data_attributes);
+
+        $error = new Error();
+        $error
+            ->setStatus('400')
+            ->setTitle('Bad request')
+            ->setDetail('The request was not formed well');
+
+        $included_company = (object)[
+            'type' => 'company',
+            'id' => '1',
+            'attributes' => [
+                'company' => 'Joe Bloggs Ltd',
+                'slug' => null
+            ]
+        ];
+        $included = [$included_company];
+
+        $links = new Links(
+            [
+                'self' => 'http://example.com/posts',
+                'next' => 'http://example.com/more-posts'
+            ]
+        );
+
+        $meta = new Meta(
+            [
+                'status' => '200',
+                'info' => 'Request loaded in 34ms'
+            ]
+        );
+
+        // test data
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->addData($data);
+        $json_api_formatter->reset();
+        $reflection = self::getMethod('getBaseResponseArray');
+        $response = $reflection->invokeArgs($json_api_formatter, []);
+        $this->assertFalse(isset($response['data']));
+
+        // test errors
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->addErrors([$error]);
+        $json_api_formatter->reset();
+        $reflection = self::getMethod('getBaseResponseArray');
+        $response = $reflection->invokeArgs($json_api_formatter, []);
+        $this->assertFalse(isset($response['errors']));
+
+        // test included
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->setIncluded($included);
+        $json_api_formatter->reset();
+        $reflection = self::getMethod('getBaseResponseArray');
+        $response = $reflection->invokeArgs($json_api_formatter, []);
+        $this->assertFalse(isset($response['included']));
+
+        // test links
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->setLinks($links);
+        $json_api_formatter->reset();
+        $reflection = self::getMethod('getBaseResponseArray');
+        $response = $reflection->invokeArgs($json_api_formatter, []);
+        $this->assertFalse(isset($response['links']));
+
+        // test meta
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->setMeta($meta);
+        $json_api_formatter->reset();
+        $reflection = self::getMethod('getBaseResponseArray');
+        $response = $reflection->invokeArgs($json_api_formatter, []);
+        $this->assertFalse(isset($response['meta']));
     }
 
     // Main functionality: export
