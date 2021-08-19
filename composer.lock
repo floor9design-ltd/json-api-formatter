@@ -242,12 +242,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "ef4ba5b7cd76d582ef82bdecb0be5429f943dbc3"
+                "reference": "5383370a9e186da9273d31fc07e9acd144b03a49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/ef4ba5b7cd76d582ef82bdecb0be5429f943dbc3",
-                "reference": "ef4ba5b7cd76d582ef82bdecb0be5429f943dbc3",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/5383370a9e186da9273d31fc07e9acd144b03a49",
+                "reference": "5383370a9e186da9273d31fc07e9acd144b03a49",
                 "shasum": ""
             },
             "require": {
@@ -307,7 +307,7 @@
                 "issues": "https://github.com/mockery/mockery/issues",
                 "source": "https://github.com/mockery/mockery/tree/master"
             },
-            "time": "2021-07-19T08:40:21+00:00"
+            "time": "2021-08-16T15:29:39+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2097,7 +2097,6 @@
                     "type": "github"
                 }
             ],
-            "abandoned": true,
             "time": "2020-09-28T06:45:17+00:00"
         },
         {
