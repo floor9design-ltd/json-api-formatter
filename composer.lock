@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a72dc815a3b4e879558a3f14ee88e641",
+    "content-hash": "ef6827ead3cea1f2815468901aa8a812",
     "packages": [],
     "packages-dev": [
         {
@@ -78,16 +78,16 @@
         },
         {
             "name": "floor9design/test-data-generator",
-            "version": "1.3.2",
+            "version": "1.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/floor9design-ltd/test-data-generator.git",
-                "reference": "84dddc092a4107e2045dbe4b2a140452a24a8af9"
+                "reference": "e9c530e50844ffac807f99de43fbad70ffa1b110"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/floor9design-ltd/test-data-generator/zipball/84dddc092a4107e2045dbe4b2a140452a24a8af9",
-                "reference": "84dddc092a4107e2045dbe4b2a140452a24a8af9",
+                "url": "https://api.github.com/repos/floor9design-ltd/test-data-generator/zipball/e9c530e50844ffac807f99de43fbad70ffa1b110",
+                "reference": "e9c530e50844ffac807f99de43fbad70ffa1b110",
                 "shasum": ""
             },
             "require": {
@@ -96,7 +96,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "dev-master",
-                "phpunit/phpunit": ">=8.0"
+                "phpunit/phpunit": "^9"
             },
             "type": "library",
             "autoload": {
@@ -127,9 +127,9 @@
             ],
             "support": {
                 "issues": "https://github.com/floor9design-ltd/test-data-generator/issues",
-                "source": "https://github.com/floor9design-ltd/test-data-generator/tree/1.3.2"
+                "source": "https://github.com/floor9design-ltd/test-data-generator/tree/1.3.3"
             },
-            "time": "2021-04-09T13:50:19+00:00"
+            "time": "2021-08-19T13:40:57+00:00"
         },
         {
             "name": "floor9design/testing-tools",
