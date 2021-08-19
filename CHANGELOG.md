@@ -6,9 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Under development
 
-* import functions
+* Stable release testing and testing "in the wild"
 
-## 0.1
+## 0.1 - 0.3
 
+* Upgrading structure, offering greater flexibility with objects (Meta/Information etc)
+* Tweaks and testing to ensure correct formatting in the wild
 * Full object setup including accessors and encoding
 * Initial project setup

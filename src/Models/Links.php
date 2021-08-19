@@ -11,9 +11,9 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.0
+ * @version   0.3.8
  * @link      https://www.floor9design.com
- * @since     File available since Release 1.0
+ * @since     File available since pre-release development cycle
  *
  */
 
@@ -34,11 +34,11 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.0
+ * @version   0.3.8
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
- * @since     File available since Release 1.0
+ * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
 class Links
