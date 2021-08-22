@@ -23,6 +23,7 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\Error;
+use Floor9design\JsonApiFormatter\Models\Included;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
@@ -321,28 +322,30 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testIncludedAccessors()
     {
-        $included_company = (object)[
-            'type' => 'company',
-            'id' => '1',
-            'attributes' => [
+        $included_company = new DataResource(
+            "1",
+            'company',
+            [
                 'company' => 'Joe Bloggs Ltd',
                 'slug' => null
             ]
-        ];
+        );
 
-        $test_basic_included = [$included_company];
-        $test_extended_included = [$included_company, $included_company];
+        $test_basic_included = ['first' => $included_company];
+        $test_extended_included = ['first' => $included_company, 'second' => $included_company];
+        $test_basic_included_object = new Included($test_basic_included);
+        $test_extended_included_object = new Included($test_extended_included);
 
         $json_api_formatter = new JsonApiFormatter();
 
         // Valid get and set
-        $json_api_formatter->setIncluded($test_basic_included);
-        $this->assertEquals($json_api_formatter->getIncluded(), $test_basic_included);
+        $json_api_formatter->setIncluded($test_basic_included_object);
+        $this->assertEquals($json_api_formatter->getIncluded(), $test_basic_included_object);
 
         // make a partial and extend
-        $json_api_formatter->setIncluded($test_basic_included);
-        $json_api_formatter->addIncluded([$included_company]);
-        $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included);
+        $json_api_formatter->setIncluded($test_basic_included_object);
+        $json_api_formatter->addIncluded(['second' => $included_company]);
+        $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included_object);
 
         // unset
         $reflection = self::getMethod('getBaseResponseArray');
@@ -350,6 +353,18 @@ class JsonApiFormatterTest extends TestCase
         $test_object->unsetIncluded();
         $response = $reflection->invokeArgs($test_object, []);
         $this->assertFalse(isset($response['included']));
+
+        // force add some links
+        $json_api_formatter->setIncluded($test_extended_included_object);
+        $json_api_formatter->addIncluded(['second' => $included_company], true);
+        $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included_object);
+
+        // check that addLinks catches duplicates
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage(
+            'The data resource provided clashes with existing data resources - it should be added manually'
+        );
+        $json_api_formatter->addIncluded(['second' => $included_company]);
     }
 
     /**
@@ -682,15 +697,16 @@ class JsonApiFormatterTest extends TestCase
             ->setTitle('Bad request')
             ->setDetail('The request was not formed well');
 
-        $included_company = (object)[
-            'type' => 'company',
-            'id' => '1',
-            'attributes' => [
-                'company' => 'Joe Bloggs Ltd',
-                'slug' => null
-            ]
+        $included_company_id = "1";
+        $included_company_type = "company";
+        $included_company_attributes = [
+            'company' => 'Joe Bloggs Ltd',
+            'slug' => null
         ];
-        $included = [$included_company];
+        $included_company = new DataResource(
+            $included_company_id, $included_company_type, $included_company_attributes
+        );
+        $included = new Included([$included_company]);
 
         $links = new Links(
             [
@@ -786,7 +802,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->unsetErrors();
         $json_api_formatter->addData($data);
 
-        $error_response_array = [
+        $data_resource_response_array = [
             'data' => $data,
             'meta' => [
                 'status' => null
@@ -794,7 +810,7 @@ class JsonApiFormatterTest extends TestCase
             'jsonapi' => (object)['version' => '1.0']
         ];
 
-        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
+        $this->assertSame($json_api_formatter->export(), json_encode($data_resource_response_array, true));
 
         // meta
 
@@ -810,13 +826,38 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->addData($data);
         $json_api_formatter->setMeta($meta);
 
-        $error_response_array = [
+        $meta_response_array = [
             'data' => $data,
             'meta' => $meta,
             'jsonapi' => (object)['version' => '1.0']
         ];
 
-        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
+        $this->assertSame($json_api_formatter->export(), json_encode($meta_response_array, true));
+
+        // included
+        $included_data_resource = new DataResource(
+            '2',
+            'test',
+            ['foo' => 'bar']
+        );
+
+        $included = new Included([$included_data_resource]);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $json_api_formatter->unsetErrors();
+        $json_api_formatter->addData($data);
+        $json_api_formatter->setIncluded($included);
+
+        $included_response_array = [
+            'data' => $data,
+            'meta' => [
+                'status' => null
+            ],
+            'jsonapi' => (object)['version' => '1.0'],
+            'included' => $included->toArray()
+        ];
+
+        $this->assertSame($json_api_formatter->export(), json_encode($included_response_array, true));
     }
 
     /**
@@ -1098,6 +1139,42 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->import($meta_json);
 
         $this->assertEquals($json_api_formatter->getMeta(), new Meta($json_array['meta']));
+    }
+
+    /**
+     * Tests that included correctly matches
+     */
+    public function testImportIncluded()
+    {
+        $json_array = [
+            'data' => [
+                'id' => '0',
+                'type' => 'test',
+                'attributes' => [
+                    'foo' => 'bar'
+                ]
+            ],
+            'meta' => [
+                'status' => '200'
+            ],
+            'included' => [
+                [
+                    "id" => "2",
+                    "type" => "test",
+                    "attributes" => [
+                        "foo" => "bar"
+                    ]
+                ]
+            ]
+        ];
+
+        $included_json = json_encode($json_array, true);
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->import($included_json);
+
+        $included_data_resource = new DataResource("2", "test", ["foo" => "bar"]);
+        $this->assertEquals($json_api_formatter->getIncluded(), new Included([$included_data_resource]));
     }
 
     // Main functionality : validation

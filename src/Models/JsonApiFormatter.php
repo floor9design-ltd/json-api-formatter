@@ -52,7 +52,7 @@ class JsonApiFormatter
     /**
      * A clean array to populate, including the main required elements
      *
-     * @phpstan-var array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
+     * @phpstan-var array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @var array
      */
     protected array $base_response_array = [
@@ -72,7 +72,7 @@ class JsonApiFormatter
     }
 
     /**
-     * @phpstan-return array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
+     * @phpstan-return array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @return array
      * @see $base_response_array
      */
@@ -371,10 +371,10 @@ class JsonApiFormatter
     }
 
     /**
-     * @phpstan-return array<DataResource>|null
+     * @phpstan-return Included|null
      * @return array|null
      */
-    public function getIncluded(): ?array
+    public function getIncluded(): ?Included
     {
         return $this->getBaseResponseArray()['included'] ?? null;
     }
@@ -382,11 +382,10 @@ class JsonApiFormatter
     /**
      * Fluently sets included to the $base_response_array['included']
      *
-     * @phpstan-param array<DataResource> $included
-     * @param array $included
+     * @param Included $included
      * @return JsonApiFormatter
      */
-    public function setIncluded(array $included): JsonApiFormatter
+    public function setIncluded(Included $included): JsonApiFormatter
     {
         $this->base_response_array['included'] = $included;
         return $this;
@@ -396,17 +395,26 @@ class JsonApiFormatter
      * Fluently adds included to $base_response_array['included']
      * @phpstan-param array<DataResource> $extra_included
      * @param array $extra_included
+     * @param bool $overwrite allows overwrites of existing keys
      * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
      */
-    public function addIncluded(array $extra_included): JsonApiFormatter
+    public function addIncluded(array $extra_included, bool $overwrite = false): JsonApiFormatter
     {
-        $includeds = $this->getIncluded() ?? [];
+        $included = $this->getIncluded() ?? new Included();
 
-        foreach ($extra_included as $included) {
-            $includeds[] = $included;
+        // catch duplicates
+        foreach ($extra_included as $name => $new_data_resource) {
+            if (!$overwrite && property_exists($included, $name)) {
+                throw new JsonApiFormatterException(
+                    'The data resource provided clashes with existing data resources - it should be added manually'
+                );
+            }
+
+            $included->addDataResource($name, $new_data_resource);
         }
 
-        $this->setIncluded($includeds);
+        $this->setIncluded($included);
         return $this;
     }
 
@@ -484,8 +492,19 @@ class JsonApiFormatter
             $array['errors'] = $errors;
         }
 
+        // the included array must NOT be associative:
+        if (
+            isset($array['included']) &&
+            $array['included'] instanceof Included
+        ) {
+            // overwrite as array
+            $array['included'] = $array['included']->toArray();
+        }
+
         $encoded = json_encode($array);
-        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+        if (!$encoded) {
+            throw new JsonApiFormatterException('The provided array was not able to be encoded');
+        }
 
         return $encoded;
     }
@@ -702,7 +721,7 @@ class JsonApiFormatter
     /**
      * @phpstan-param array<DataResource>|DataResource $data_resources
      * @param array|DataResource $data_resources
-     * @phpstan-return array{data?:array<DataResource>|DataResource|null,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
+     * @phpstan-return array{data?:array<DataResource>|DataResource|null,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @return array
      * @throws JsonApiFormatterException
      */
@@ -733,7 +752,7 @@ class JsonApiFormatter
      * Performs a quick validation of internal setup against some basic rules.
      * eg: data and errors set.
      *
-     * @phpstan-param array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:array<DataResource>,links?:Links,meta?:Meta|null,jsonapi?:StdClass} $array
+     * @phpstan-param array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass} $array
      * @param array $array
      * @return bool
      * @throws JsonApiFormatterException
