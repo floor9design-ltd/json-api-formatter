@@ -77,7 +77,6 @@ class DataResourceTest extends TestCase
      * Test DataResource::toArray()
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testToArray()
     {

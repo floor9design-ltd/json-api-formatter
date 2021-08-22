@@ -1,5 +1,20 @@
 # Simple use
 
+## Basic overview
+
+The main functionality is provided by: `JsonApiFormatter`.
+
+The JsonApi specification uses several objects (and arryas of objects) to encapsulate the responses. These are mapped
+to the following php items:
+
+* object: `DataResource`
+* object: `Error`
+* array: `Included`
+* object: `Link`
+* object: `Meta`
+
+## Usage
+
 Each method returns a json string. 
 
 If you use a framework such as Symfony or Laravel which prefers an array, then you can also use the `...Array()` 

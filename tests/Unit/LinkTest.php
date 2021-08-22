@@ -21,7 +21,6 @@
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Models\Link;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +46,6 @@ class LinkTest extends TestCase
      * Test link constructor.
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testConstructor()
     {
@@ -60,7 +58,6 @@ class LinkTest extends TestCase
      * Test link constructor.
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testToArray()
     {

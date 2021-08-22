@@ -83,7 +83,6 @@ class ErrorTest extends TestCase
      * Test Error::toArray()
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testToArray()
     {

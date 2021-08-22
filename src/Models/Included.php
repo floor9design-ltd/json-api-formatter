@@ -1,8 +1,8 @@
 <?php
 /**
- * Link.php
+ * Included.php
  *
- * Link class
+ * Included class
  *
  * php 7.4+
  *
@@ -20,10 +20,12 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 /**
- * Class Link
+ * Class Included
  *
- * Class to offer methods/properties to prepare data for a Link object
+ * Class to offer methods/properties to prepare data for an Included object
  * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ *
+ * Note: included should be populated by DataResource objects
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -37,23 +39,44 @@ namespace Floor9design\JsonApiFormatter\Models;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Link
+class Included
 {
     // constructor
 
     /**
-     * Link constructor.
+     * Included constructor.
      * Automatically sets up the provided array as properties
-     * @phpstan-param array<object|string|null>|null $array
+     * @phpstan-param array<DataResource>|null $array
      * @param array|null $array
      */
     public function __construct(?array $array = [])
     {
-        if(is_iterable($array)) {
-            foreach ($array as $property => $value) {
-                $this->$property = $value;
+        if (is_iterable($array)) {
+            foreach ($array as $name => $data_resource) {
+                $this->addDataResource($name, $data_resource);
             }
         }
+    }
+
+    /**
+     * @param string $name
+     * @param DataResource $data_resource
+     * @return Included
+     */
+    public function addDataResource(string $name, DataResource $data_resource): Included
+    {
+        $this->$name = $data_resource;
+        return $this;
+    }
+
+    /**
+     * @param string $name
+     * @return Included
+     */
+    public function unsetDataResource(string $name): Included
+    {
+        unset($this->$name);
+        return $this;
     }
 
     /**

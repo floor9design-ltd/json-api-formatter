@@ -23,7 +23,6 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -49,7 +48,7 @@ class LinksTest extends TestCase
      * Test link constructor.
      *
      * @return void
-     * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testConstructor()
     {
@@ -72,7 +71,7 @@ class LinksTest extends TestCase
      * Test addLinks
      *
      * @return void
-     * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testAddLinks()
     {
@@ -91,7 +90,7 @@ class LinksTest extends TestCase
      * Test unsetLinks
      *
      * @return void
-     * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testUnsetLinks()
     {
@@ -108,14 +107,14 @@ class LinksTest extends TestCase
         $links->unsetLink('string');
 
         $this->assertEquals($link, $links->object);
-        $this->assertFalse(property_exists( $links, 'string'));
+        $this->assertFalse(property_exists($links, 'string'));
     }
 
     /**
      * Test unsetLinks
      *
      * @return void
-     * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testToArray()
     {
@@ -136,7 +135,7 @@ class LinksTest extends TestCase
      * Test addLinks
      *
      * @return void
-     * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testValidate()
     {

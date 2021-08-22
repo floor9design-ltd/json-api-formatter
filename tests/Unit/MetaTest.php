@@ -21,7 +21,6 @@
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Models\Meta;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +46,6 @@ class MetaTest extends TestCase
      * Test meta constructor.
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testConstructor()
     {
@@ -60,7 +58,6 @@ class MetaTest extends TestCase
      * Test meta constructor.
      *
      * @return void
-     * @throws TestingToolsException
      */
     public function testToArray()
     {

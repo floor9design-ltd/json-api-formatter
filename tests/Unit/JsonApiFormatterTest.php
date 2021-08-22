@@ -30,6 +30,7 @@ use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use StdClass;
 
 /**
@@ -148,6 +149,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
+     * @throws JsonApiFormatterException
      * @throws ReflectionException
      */
     public function testErrorsAccessors()
@@ -195,7 +197,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
-     * @throws ReflectionException
+     * @throws JsonApiFormatterException
      */
     public function testErrorsAccessorsSetException()
     {
@@ -212,7 +214,7 @@ class JsonApiFormatterTest extends TestCase
      * Test errors accessors.
      *
      * @return void
-     * @throws ReflectionException
+     * @throws JsonApiFormatterException
      */
     public function testErrorsAccessorsAddException()
     {
@@ -315,6 +317,7 @@ class JsonApiFormatterTest extends TestCase
      * Test included accessors.
      *
      * @return void
+     * @throws ReflectionException
      */
     public function testIncludedAccessors()
     {
@@ -353,6 +356,7 @@ class JsonApiFormatterTest extends TestCase
      * Test links accessors.
      *
      * @return void
+     * @throws JsonApiFormatterException
      * @throws ReflectionException
      */
     public function testLinksAccessors()
@@ -658,6 +662,12 @@ class JsonApiFormatterTest extends TestCase
 
     // reset
 
+    /**
+     * Tests that the JsonApiFormatter can be reset
+     *
+     * @throws JsonApiFormatterException
+     * @throws ReflectionException
+     */
     public function testReset()
     {
         // set up the objects
@@ -1289,10 +1299,10 @@ class JsonApiFormatterTest extends TestCase
      * Set up reflection method
      *
      * @param $name
-     * @return mixed
+     * @return ReflectionMethod
      * @throws ReflectionException
      */
-    protected static function getMethod($name)
+    protected static function getMethod($name): ReflectionMethod
     {
         $class = new ReflectionClass(JsonApiFormatter::class);
         $method = $class->getMethod($name);
