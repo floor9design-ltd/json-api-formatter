@@ -22,6 +22,7 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\Included;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
@@ -527,17 +528,27 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $id = (string)'2';
         $id2 = (string)'3';
+        $id3 = (string)'4';
         $type = 'user';
         $attributes = [
             'name' => 'Joe Bloggs',
             'email' => 'joe@bloggs.com'
         ];
+        $array = ['hello' => 'world'];
+        $data_resource_meta = new DataResourceMeta($array);
 
         $resource_array = ['id' => $id, 'type' => $type, 'attributes' => $attributes];
         $resource_array2 = ['id' => $id2, 'type' => $type, 'attributes' => $attributes];
+        $resource_array3 = [
+            'id' => $id3,
+            'type' => $type,
+            'attributes' => $attributes,
+            'meta' => $data_resource_meta->toArray()
+        ];
 
         $data_resource = new DataResource($id, $type, $attributes);
         $data_resource2 = new DataResource($id2, $type, $attributes);
+        $data_resource3 = new DataResource($id3, $type, $attributes, $data_resource_meta);
 
         // Single data resource
 
@@ -581,6 +592,22 @@ class JsonApiFormatterTest extends TestCase
         $response = $json_api_formatter->dataResourceResponse([]);
 
         $this->assertEquals($validated_array_json, $response);
+
+        // Data resource array with data resource meta
+
+        $validated_array = [
+            'data' => [$resource_array2, $resource_array3],
+            'meta' => (object)['status' => null],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $validated_array_json = json_encode($validated_array, true);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $response = $json_api_formatter->dataResourceResponse([$data_resource2, $data_resource3]);
+
+        $this->assertEquals($validated_array_json, $response);
+
     }
 
     /**
@@ -780,7 +807,7 @@ class JsonApiFormatterTest extends TestCase
             ->setStatus('400')
             ->setTitle('Bad request')
             ->setDetail('The request was not formed well');
-
+        /*
         // errors
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetData();
@@ -796,21 +823,21 @@ class JsonApiFormatterTest extends TestCase
         ];
 
         $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
-
+        */
         // data
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetErrors();
         $json_api_formatter->addData($data);
 
         $data_resource_response_array = [
-            'data' => $data,
+            'data' => $data->toArray(),
             'meta' => [
                 'status' => null
             ],
             'jsonapi' => (object)['version' => '1.0']
         ];
 
-        $this->assertSame($json_api_formatter->export(), json_encode($data_resource_response_array, true));
+        $this->assertSame(json_encode($data_resource_response_array, true), $json_api_formatter->export());
 
         // meta
 
@@ -827,7 +854,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setMeta($meta);
 
         $meta_response_array = [
-            'data' => $data,
+            'data' => $data->toArray(),
             'meta' => $meta,
             'jsonapi' => (object)['version' => '1.0']
         ];
@@ -849,7 +876,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setIncluded($included);
 
         $included_response_array = [
-            'data' => $data,
+            'data' => $data->toArray(),
             'meta' => [
                 'status' => null
             ],

@@ -39,7 +39,12 @@ namespace Floor9design\JsonApiFormatter\Models;
  */
 class DataResource
 {
-    // Properties
+    // properties
+
+    /**
+     * @var DataResourceMeta|null
+     */
+    var ?DataResourceMeta $data_resource_meta;
 
     /**
      * @var string|null
@@ -58,6 +63,26 @@ class DataResource
     var ?array $attributes = null;
 
     // accessors
+
+    /**
+     * @return DataResourceMeta|null
+     * @see $data_resource_meta
+     */
+    public function getDataResourceMeta(): ?DataResourceMeta
+    {
+        return $this->data_resource_meta;
+    }
+
+    /**
+     * @param DataResourceMeta|null $data_resource_meta
+     * @return DataResource
+     * @see $data_resource_meta
+     */
+    public function setDataResourceMeta(?DataResourceMeta $data_resource_meta): DataResource
+    {
+        $this->data_resource_meta = $data_resource_meta;
+        return $this;
+    }
 
     /**
      * @return string|null
@@ -127,32 +152,42 @@ class DataResource
      * DataResource constructor.
      * @param string|null $id
      * @param string|null $type
-     * @phpstan-param array<mixed>|null $attributes
-     * @param array|null $attributes
+     * @param array<mixed>|null $attributes
+     * @param DataResourceMeta|null $data_resource_meta
      */
     public function __construct(
         ?string $id = null,
         ?string $type = null,
-        ?array $attributes = null
+        ?array $attributes = null,
+        ?DataResourceMeta $data_resource_meta = null
     ) {
         $this
             ->setId($id)
             ->setType($type)
-            ->setAttributes($attributes);
+            ->setAttributes($attributes)
+            ->setDataResourceMeta($data_resource_meta);
     }
 
     /**
-     * @phpstan-return array{id:string|null,type:string|null,attributes:array<mixed>|null}
+     * @phpstan-return array{id:string|null,type:string|null,attributes:array<mixed>|null,meta?:array<mixed>|null}
      * @return array
      */
     public function toArray(): array
     {
-        return [
+        // always return core:
+
+        $array = [
           'id' => $this->getId(),
           'type' => $this->getType(),
           'attributes' => $this->getAttributes()
         ];
-    }
 
+        // return DataResourceMeta if set, else clean
+        if(($this->getDataResourceMeta() instanceof DataResourceMeta)) {
+            $array['meta'] = $this->getDataResourceMeta()->toArray();
+        }
+
+        return $array;
+    }
 
 }

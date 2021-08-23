@@ -467,6 +467,8 @@ class JsonApiFormatter
      * Correctly encodes the string, catching issues such as:
      * "you need to specify associative array, else it is invalid json"
      *
+     * It also strips optional null items.
+     *
      * @phpstan-param array[]|array{errors:array<Error>} $array
      * @param array|null $array
      * @return string
@@ -499,6 +501,24 @@ class JsonApiFormatter
         ) {
             // overwrite as array
             $array['included'] = $array['included']->toArray();
+        }
+
+        // ensure that data objects are formatted
+        if (
+            ($array['data'] ?? false) &&
+            is_iterable($array['data'])
+        ) {
+            // rewrite data_resources to ensure a clean array:
+            $data_resources = [];
+            foreach ($array['data'] as $key => $data_resource) {
+                $data_resources[$key] = $data_resource->toArray();
+            }
+            $array['data'] = $data_resources;
+        } elseif(
+            ($array['data'] ?? false) &&
+            $array['data'] instanceof DataResource
+        ) {
+            $array['data'] = $array['data']->toArray();
         }
 
         $encoded = json_encode($array);
@@ -740,8 +760,8 @@ class JsonApiFormatter
         }
 
         $this->autoIncludeJsonapi();
-
         return $this->getBaseResponseArray();
+
     }
 
     // other useful functionality

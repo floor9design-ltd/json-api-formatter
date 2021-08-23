@@ -21,6 +21,7 @@
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
 use PHPUnit\Framework\TestCase;
@@ -71,6 +72,11 @@ class DataResourceTest extends TestCase
             ],
             $data_resource
         );
+
+        $array = ['hello' => 'world'];
+        $data_resource_meta = new DataResourceMeta($array);
+        $data_resource->setDataResourceMeta($data_resource_meta);
+        $this->assertEquals($data_resource_meta, $data_resource->getDataResourceMeta());
     }
 
     /**
@@ -84,6 +90,20 @@ class DataResourceTest extends TestCase
 
         $this->assertEquals(
             ["id" => "2", "type" => "test", "attributes" => ["hello" => "world"]],
+            $data_resource->toArray()
+        );
+
+        $array = ['hello' => 'world'];
+        $data_resource_meta = new DataResourceMeta($array);
+        $data_resource->setDataResourceMeta($data_resource_meta);
+
+        $this->assertEquals(
+            [
+                "id" => "2",
+                "type" => "test",
+                "attributes" => ["hello" => "world"],
+                "meta" => $array
+            ],
             $data_resource->toArray()
         );
     }
