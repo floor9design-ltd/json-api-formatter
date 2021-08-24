@@ -41,6 +41,32 @@ namespace Floor9design\JsonApiFormatter\Models;
  */
 class DataResourceMeta
 {
+    /**
+     * @var array<object|string|int|null>
+     */
+    protected array $meta = [];
+
+    /**
+     * @return array<object|string|int|null>
+     * @see $meta
+     */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
+     * @param array<object|string|int|null> $meta
+     * @return DataResourceMeta
+     * @see $meta
+     */
+    public function setMeta(array $meta): DataResourceMeta
+    {
+        $this->meta = $meta;
+        return $this;
+    }
+
+
     // constructor
 
     /**
@@ -52,18 +78,16 @@ class DataResourceMeta
     public function __construct(?array $array = [])
     {
         if(is_iterable($array)) {
-            foreach ($array as $property => $value) {
-                $this->$property = $value;
-            }
+            $this->setMeta($array);
         }
     }
 
     /**
-     * @return array[]
+     * @return array<int|object|string|null>
      */
-    public function toArray(): array
+    public function process(): array
     {
-        return (array)$this;
+        return $this->getMeta();
     }
 
 }

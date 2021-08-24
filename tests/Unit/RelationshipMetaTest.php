@@ -1,8 +1,8 @@
 <?php
 /**
- * MetaTest.php
+ * RelationshipMetaTest.php
  *
- * MetaTest class
+ * RelationshipMetaTest class
  *
  * php 7.4+
  *
@@ -20,13 +20,15 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
-use Floor9design\JsonApiFormatter\Models\Meta;
+use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
+use Floor9design\TestingTools\Exceptions\TestingToolsException;
+use Floor9design\TestingTools\Traits\AccessorTesterTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
- * MetaTest
+ * RelationshipMetaTest
  *
- * This test file tests the Meta.
+ * This test file tests the RelationshipMeta.
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Tests\Unit
@@ -38,9 +40,29 @@ use PHPUnit\Framework\TestCase;
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
  */
-class MetaTest extends TestCase
+class RelationshipMetaTest extends TestCase
 {
+    use AccessorTesterTrait;
+
     // Accessors
+
+    /**
+     * Test accessors.
+     *
+     * @return void
+     * @throws TestingToolsException
+     */
+    public function testAccessors()
+    {
+        $meta = new RelationshipMeta();
+
+        $this->accessorTestArrays(
+            [
+                'meta' => []
+            ],
+            $meta
+        );
+    }
 
     /**
      * Test meta constructor.
@@ -50,7 +72,7 @@ class MetaTest extends TestCase
     public function testConstructor()
     {
         $array = ['hello' => 'world'];
-        $meta = new Meta($array);
+        $meta = new RelationshipMeta($array);
         $this->assertEquals($meta->getMeta()['hello'], 'world');
     }
 
@@ -62,8 +84,8 @@ class MetaTest extends TestCase
     public function testProcess()
     {
         $array = ['hello' => 'world'];
-        $meta = new Meta($array);
-        $this->assertEquals($meta->process(), $array);
+        $meta = new RelationshipMeta($array);
+        $this->assertEquals($meta->process(), (object)$array);
     }
 
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * Meta.php
+ * RelationshipMeta.php
  *
- * Meta class
+ * RelationshipMeta class
  *
  * php 7.4+
  *
@@ -19,10 +19,12 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use stdClass;
+
 /**
- * Class Meta
+ * Class RelationshipMeta
  *
- * Class to offer methods/properties to prepare data for a Meta object
+ * Class to offer methods/properties to prepare data for a RelationshipMeta object
  * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
@@ -37,7 +39,7 @@ namespace Floor9design\JsonApiFormatter\Models;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Meta
+class RelationshipMeta
 {
     /**
      * @var array<object|string|int|null>
@@ -55,10 +57,10 @@ class Meta
 
     /**
      * @param array<object|string|int|null> $meta
-     * @return Meta
+     * @return RelationshipMeta
      * @see $meta
      */
-    public function setMeta(array $meta): Meta
+    public function setMeta(array $meta): RelationshipMeta
     {
         $this->meta = $meta;
         return $this;
@@ -67,24 +69,26 @@ class Meta
     // constructor
 
     /**
-     * Meta constructor.
+     * RelationshipMeta constructor.
      * Automatically sets up the provided array as properties
-     * @phpstan-param array<object|string|int|null>|null $array
-     * @param array|null $array
+     * @param array<object|string|int|null>|null $array
      */
     public function __construct(?array $array = [])
     {
         if(is_iterable($array)) {
-            $this->setMeta($array);
+            foreach ($array as $property => $value) {
+                $this->meta[$property] = $value;
+            }
         }
     }
 
     /**
-     * @return array<object|string|int|null>
+     * @return stdClass a stdClass cleaned object suitable for encoding
      */
-    public function process(): array
+    public function process(): stdClass
     {
-        return $this->getMeta();
+        $array = [];
+        return (object)$this->getMeta();
     }
 
 }

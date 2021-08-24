@@ -51,7 +51,7 @@ class DataResourceMetaTest extends TestCase
     {
         $array = ['hello' => 'world'];
         $data_resource_meta = new DataResourceMeta($array);
-        $this->assertEquals($data_resource_meta->hello, 'world');
+        $this->assertEquals($data_resource_meta->getMeta()['hello'], 'world');
     }
 
     /**
@@ -59,11 +59,11 @@ class DataResourceMetaTest extends TestCase
      *
      * @return void
      */
-    public function testToArray()
+    public function testProcess()
     {
         $array = ['hello' => 'world'];
         $data_resource_meta = new DataResourceMeta($array);
-        $this->assertEquals($data_resource_meta->toArray(), $array);
+        $this->assertEquals($data_resource_meta->process(), $array);
     }
 
 }

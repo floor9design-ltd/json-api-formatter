@@ -20,8 +20,14 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
+use Floor9design\JsonApiFormatter\Models\Relationship;
+use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
+use Floor9design\JsonApiFormatter\Models\Relationships;
+use Floor9design\JsonApiFormatter\Models\RelationshipData;
+use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
 use PHPUnit\Framework\TestCase;
@@ -53,6 +59,7 @@ class DataResourceTest extends TestCase
      *
      * @return void
      * @throws TestingToolsException
+     * @throws JsonApiFormatterException
      */
     public function testDataAccessors()
     {
@@ -77,20 +84,36 @@ class DataResourceTest extends TestCase
         $data_resource_meta = new DataResourceMeta($array);
         $data_resource->setDataResourceMeta($data_resource_meta);
         $this->assertEquals($data_resource_meta, $data_resource->getDataResourceMeta());
+
+        $links = new RelationshipLinks();
+        $data = new RelationshipData();
+        $meta = new RelationshipMeta();
+
+        $relationships = new Relationships([new Relationship($links, $data, $meta)]);
+        $data_resource->setRelationships($relationships);
+        $this->assertEquals($relationships, $data_resource->getRelationships());
     }
 
     /**
-     * Test DataResource::toArray()
+     * Test DataResource::process()
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
-    public function testToArray()
+    public function testProcess()
     {
-        $data_resource = new DataResource("2", "test", ["hello" => "world"]);
+        $data_resource = new DataResource(
+            "2",
+            "test",
+            ["hello" => "world"]
+        );
+
+        // data resource meta
 
         $this->assertEquals(
             ["id" => "2", "type" => "test", "attributes" => ["hello" => "world"]],
-            $data_resource->toArray()
+            $data_resource->process(),
+            'Basic data resource toArray failed'
         );
 
         $array = ['hello' => 'world'];
@@ -104,7 +127,33 @@ class DataResourceTest extends TestCase
                 "attributes" => ["hello" => "world"],
                 "meta" => $array
             ],
-            $data_resource->toArray()
+            $data_resource->process(),
+            'Data resource with meta toArray failed'
+        );
+
+        // data resource meta with relationships
+
+        $links = new RelationshipLinks();
+        $data = new RelationshipData();
+        $meta = new RelationshipMeta();
+
+        $relationships = new Relationships([new Relationship($links, $data, $meta)]);
+        $data_resource->setRelationships($relationships);
+
+        $array = ['hello' => 'world'];
+        $data_resource_meta = new DataResourceMeta($array);
+        $data_resource->setDataResourceMeta($data_resource_meta);
+
+        $this->assertEquals(
+            [
+                "id" => "2",
+                "type" => "test",
+                "attributes" => ["hello" => "world"],
+                "meta" => $array,
+                "relationships" => $relationships->process()
+            ],
+            $data_resource->process(),
+            'Data resource with meta and relationships toArray failed'
         );
     }
 

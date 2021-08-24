@@ -1,8 +1,8 @@
 <?php
 /**
- * DataResource.php
+ * RelationshipData.php
  *
- * DataResource class
+ * RelationshipData class
  *
  * php 7.4+
  *
@@ -19,10 +19,12 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use stdClass;
+
 /**
- * Class DataResource
+ * Class RelationshipData
  *
- * Class to offer methods/properties to prepare data for a DataResource
+ * Class to offer methods/properties to prepare data for a RelationshipData object
  * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
@@ -37,15 +39,9 @@ namespace Floor9design\JsonApiFormatter\Models;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class DataResource
+class RelationshipData
 {
     // properties
-
-    /**
-     * @phpstan-var array[]
-     * @var array|null
-     */
-    var ?array $attributes = null;
 
     /**
      * @var DataResourceMeta|null
@@ -58,38 +54,11 @@ class DataResource
     var ?string $id = null;
 
     /**
-     * @var Relationships|null
-     */
-    var ?Relationships $relationships = null;
-
-    /**
      * @var string|null
      */
     var ?string $type = null;
 
     // accessors
-
-    /**
-     * @phpstan-return array<mixed>|null
-     * @return array|null
-     * @see $attributes
-     */
-    public function getAttributes(): ?array
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * @phpstan-param array<mixed>|null $attributes
-     * @param array|null $attributes
-     * @return DataResource
-     * @see $attributes
-     */
-    public function setAttributes(?array $attributes): DataResource
-    {
-        $this->attributes = $attributes;
-        return $this;
-    }
 
     /**
      * @return DataResourceMeta|null
@@ -102,10 +71,10 @@ class DataResource
 
     /**
      * @param DataResourceMeta|null $data_resource_meta
-     * @return DataResource
+     * @return RelationshipData
      * @see $data_resource_meta
      */
-    public function setDataResourceMeta(?DataResourceMeta $data_resource_meta): DataResource
+    public function setDataResourceMeta(?DataResourceMeta $data_resource_meta): RelationshipData
     {
         $this->data_resource_meta = $data_resource_meta;
         return $this;
@@ -122,32 +91,12 @@ class DataResource
 
     /**
      * @param string|null $id
-     * @return DataResource
+     * @return RelationshipData
      * @see $id
      */
-    public function setId(?string $id): DataResource
+    public function setId(?string $id): RelationshipData
     {
         $this->id = $id;
-        return $this;
-    }
-
-    /**
-     * @return Relationships|null
-     * @see $relationships
-     */
-    public function getRelationships(): ?Relationships
-    {
-        return $this->relationships;
-    }
-
-    /**
-     * @param Relationships|null $relationships
-     * @return DataResource
-     * @see $relationships
-     */
-    public function setRelationships(?Relationships $relationships): DataResource
-    {
-        $this->relationships = $relationships;
         return $this;
     }
 
@@ -162,51 +111,45 @@ class DataResource
 
     /**
      * @param string|null $type
-     * @return DataResource
+     * @return RelationshipData
      * @see $type
      */
-    public function setType(?string $type): DataResource
+    public function setType(?string $type): RelationshipData
     {
         $this->type = $type;
         return $this;
     }
-
+    
     // constructor
 
     /**
-     * DataResource constructor.
+     * RelationshipData constructor.
+     * Automatically sets up the provided array as properties
      * @param string|null $id
      * @param string|null $type
-     * @param array<mixed>|null $attributes
      * @param DataResourceMeta|null $data_resource_meta
-     * @param Relationships|null $relationships
      */
     public function __construct(
         ?string $id = null,
         ?string $type = null,
-        ?array $attributes = null,
-        ?DataResourceMeta $data_resource_meta = null,
-        ?Relationships $relationships = null
-    ) {
+        ?DataResourceMeta $data_resource_meta = null
+    )
+    {
         $this
             ->setId($id)
             ->setType($type)
-            ->setAttributes($attributes)
-            ->setDataResourceMeta($data_resource_meta)
-            ->setRelationships($relationships);
+            ->setDataResourceMeta($data_resource_meta);
     }
 
     /**
-     * @phpstan-return array{id:string|null,type:string|null,attributes:array<mixed>|null,meta?:array<mixed>|null}
-     * @return array
+     * @return stdClass a stdClass cleaned object suitable for encoding
      */
-    public function process(): array
+    public function process(): stdClass
     {
         // always return core:
         $array = [
-          'id' => $this->getId(),
-          'type' => $this->getType(),
-          'attributes' => $this->getAttributes()
+            'id' => $this->getId(),
+            'type' => $this->getType()
         ];
 
         // return DataResourceMeta if set, else clean
@@ -214,12 +157,7 @@ class DataResource
             $array['meta'] = $this->getDataResourceMeta()->process();
         }
 
-        // return DataResourceMeta if set, else clean
-        if(($this->getRelationships() instanceof Relationships)) {
-            $array['relationships'] = $this->getRelationships()->process();
-        }
-
-        return $array;
+        return (object)$array;
     }
 
 }

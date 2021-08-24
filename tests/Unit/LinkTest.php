@@ -20,6 +20,7 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Link;
 use PHPUnit\Framework\TestCase;
 
@@ -46,24 +47,53 @@ class LinkTest extends TestCase
      * Test link constructor.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testConstructor()
     {
-        $array = ['hello' => 'world'];
+        $array = ['href' => 'http://world.com'];
         $link = new Link($array);
-        $this->assertEquals($link->hello, 'world');
+        $this->assertEquals($link->getLink(), $array);
     }
 
     /**
      * Test link constructor.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
-    public function testToArray()
+    public function testProcess()
     {
-        $array = ['hello' => 'world'];
+        // href
+        $array = ['href' => 'http://world.com'];
         $link = new Link($array);
-        $this->assertEquals($link->toArray(), $array);
+        $this->assertEquals($link->process(), $array);
+
+        // only keeps href and meta
+        $array = [
+            'href' => 'http://world.com',
+            'meta' => ['hello' => 'world'],
+            'another' => 'ignored'
+        ];
+        $link = new Link($array);
+
+        $processed = [
+            'href' => 'http://world.com',
+            'meta' => (object)['hello' => 'world']
+        ];
+
+        $this->assertEquals($link->process(), $processed);
+
+        // throws an exception if no href:
+        $array = [
+            'meta' => ['hello' => 'world'],
+        ];
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage(
+            'The provided link data should be an array containing the key href'
+        );
+        $link = new Link($array);
     }
 
 }

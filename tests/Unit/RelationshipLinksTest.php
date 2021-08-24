@@ -1,8 +1,8 @@
 <?php
 /**
- * LinksTest.php
+ * RelationshipLinksTest.php
  *
- * LinksTest class
+ * RelationshipLinksTest class
  *
  * php 7.4+
  *
@@ -22,13 +22,13 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Link;
-use Floor9design\JsonApiFormatter\Models\Links;
+use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use PHPUnit\Framework\TestCase;
 
 /**
- * LinksTest
+ * RelationshipLinksTest
  *
- * This test file tests the Links class.
+ * This test file tests the RelationshipLinks class.
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Tests\Unit
@@ -40,21 +40,9 @@ use PHPUnit\Framework\TestCase;
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
  */
-class LinksTest extends TestCase
+class RelationshipLinksTest extends TestCase
 {
-    /**
-     * tests accessors
-     */
-    public function testAccessors()
-    {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
-
-        $links = new Links();
-        $links->setLinks([$link]);
-
-        $this->assertEquals([$link], $links->getLinks());
-    }
+    // Accessors
 
     /**
      * Test link constructor.
@@ -68,7 +56,7 @@ class LinksTest extends TestCase
         $link = new Link($array);
         $string = 'a string link';
 
-        $links = new Links(
+        $links = new RelationshipLinks(
             [
                 'object' => $link,
                 'string' => $string
@@ -80,18 +68,18 @@ class LinksTest extends TestCase
     }
 
     /**
-     * Test addLinks
+     * Test addRelationshipLinks
      *
      * @return void
      * @throws JsonApiFormatterException
      */
-    public function testAddLinks()
+    public function testAddRelationshipLinks()
     {
         $array = ['href' => 'http://world.com'];
         $link = new Link($array);
         $string = 'a string link';
 
-        $links = new Links(['object' => $link]);
+        $links = new RelationshipLinks(['object' => $link]);
         $links->addLink('string', $string);
 
         $this->assertEquals($link, $links->getLinks()['object']);
@@ -99,18 +87,18 @@ class LinksTest extends TestCase
     }
 
     /**
-     * Test unsetLinks
+     * Test unsetRelationshipLinks
      *
      * @return void
      * @throws JsonApiFormatterException
      */
-    public function testUnsetLinks()
+    public function testUnsetRelationshipLinks()
     {
         $array = ['href' => 'http://world.com'];
         $link = new Link($array);
         $string = 'a string link';
 
-        $links = new Links(
+        $links = new RelationshipLinks(
             [
                 'object' => $link,
                 'string' => $string
@@ -119,11 +107,11 @@ class LinksTest extends TestCase
         $links->unsetLink('string');
 
         $this->assertEquals($link, $links->getLinks()['object']);
-        $this->assertArrayNotHasKey('string', $links->getLinks());
+        $this->assertFalse(isset($links->getLinks()['string']));
     }
 
     /**
-     * Test process()
+     * Test unsetRelationshipLinks
      *
      * @return void
      * @throws JsonApiFormatterException
@@ -134,21 +122,22 @@ class LinksTest extends TestCase
         $link = new Link($array);
         $string = 'a string link';
         $object_array = [
-            'object' => $link,
-            'string' => $string
-        ];
-        $processed_array = [
             'object' => $link->process(),
             'string' => $string
         ];
 
-        $links = new Links($object_array);
+        $links = new RelationshipLinks(
+            [
+                'object' => $link,
+                'string' => $string
+            ]
+        );
 
-        $this->assertEquals($processed_array, $links->process());
+        $this->assertEquals((object)$object_array, $links->process());
     }
 
     /**
-     * Test addLinks
+     * Test addRelationshipLinks
      *
      * @return void
      * @throws JsonApiFormatterException
@@ -159,9 +148,9 @@ class LinksTest extends TestCase
         $link = new Link($array);
         $bad_string = 2;
 
-        $links = new Links(['object' => $link]);
+        $links = new RelationshipLinks(['object' => $link]);
         $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('Links can only be populated with strings or Link objects');
+        $this->expectExceptionMessage('RelationshipLinks can only be populated with strings or Link objects');
         $links->addLink('string', $bad_string);
     }
 

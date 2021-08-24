@@ -252,7 +252,7 @@ class Error
     /**
      * @return array<string, object|string|null>
      */
-    public function toArray(): array
+    public function process(): array
     {
         // only include set values:
 

@@ -250,23 +250,26 @@ class JsonApiFormatter
     public function addMeta(Meta $extra_meta, bool $overwrite = false): JsonApiFormatter
     {
         $meta = $this->getMeta();
-        if (!$meta) {
+
+        if(!$meta) {
             $meta = new Meta();
         }
 
         // catch duplicates
-        foreach ($extra_meta->toArray() as $key => $new_meta) {
-            if (!$overwrite && property_exists($meta, $key)) {
+        $existing_meta_content = $meta->getMeta();
+        $updated_meta_content = $existing_meta_content;
+
+        foreach ($extra_meta->process() as $key => $new_meta_content) {
+            if (!$overwrite && isset($existing_meta_content[$key])) {
                 throw new JsonApiFormatterException(
                     'The meta provided clashes with existing meta - it should be added manually'
                 );
             }
 
-            $meta->$key = $new_meta;
+            $updated_meta_content[$key] = $new_meta_content;
         }
 
-
-        $this->setMeta($meta);
+        $this->setMeta(new Meta($updated_meta_content));
 
         return $this;
     }
@@ -345,15 +348,8 @@ class JsonApiFormatter
     {
         $links = $this->getLinks() ?? new Links();
 
-        // catch duplicates
         foreach ($extra_links as $name => $new_link) {
-            if (!$overwrite && property_exists($links, $name)) {
-                throw new JsonApiFormatterException(
-                    'The link provided clashes with existing links - it should be added manually'
-                );
-            }
-
-            $links->addLink($name, $new_link);
+            $links->addLink($name, $new_link, $overwrite);
         }
 
         $this->setLinks($links);
@@ -393,25 +389,15 @@ class JsonApiFormatter
 
     /**
      * Fluently adds included to $base_response_array['included']
-     * @phpstan-param array<DataResource> $extra_included
-     * @param array $extra_included
-     * @param bool $overwrite allows overwrites of existing keys
+     * @param array<DataResource> $extra_included
      * @return JsonApiFormatter
-     * @throws JsonApiFormatterException
      */
-    public function addIncluded(array $extra_included, bool $overwrite = false): JsonApiFormatter
+    public function addIncluded(array $extra_included): JsonApiFormatter
     {
         $included = $this->getIncluded() ?? new Included();
 
-        // catch duplicates
-        foreach ($extra_included as $name => $new_data_resource) {
-            if (!$overwrite && property_exists($included, $name)) {
-                throw new JsonApiFormatterException(
-                    'The data resource provided clashes with existing data resources - it should be added manually'
-                );
-            }
-
-            $included->addDataResource($name, $new_data_resource);
+        foreach ($extra_included as $new_data_resource) {
+            $included->addDataResource($new_data_resource);
         }
 
         $this->setIncluded($included);
@@ -477,10 +463,11 @@ class JsonApiFormatter
     private function correctEncode(?array $array = []): string
     {
         if (!$array) {
+            // dont change base array, use $array as output
             $array = $this->getBaseResponseArray();
         }
 
-        // strip nulls from errors using the toArray() functionality:
+        // strip nulls from errors using the process() functionality:
 
         if (is_iterable($array) &&
             ($array['errors'] ?? false) &&
@@ -489,7 +476,7 @@ class JsonApiFormatter
             // rewrite errors to ensure a clean array:
             $errors = [];
             foreach ($array['errors'] as $key => $error) {
-                $errors[$key] = $error->toArray();
+                $errors[$key] = $error->process();
             }
             $array['errors'] = $errors;
         }
@@ -500,7 +487,23 @@ class JsonApiFormatter
             $array['included'] instanceof Included
         ) {
             // overwrite as array
-            $array['included'] = $array['included']->toArray();
+            $array['included'] = $array['included']->process();
+        }
+
+        // format links
+        if(
+            ($array['links'] ?? false) &&
+            $array['links'] instanceof Links
+        ) {
+            $array['links'] = $array['links']->process();
+        }
+
+        // format meta
+        if(
+            ($array['meta'] ?? false) &&
+            $array['meta'] instanceof Meta
+        ) {
+            $array['meta'] = $array['meta']->process();
         }
 
         // ensure that data objects are formatted
@@ -511,17 +514,17 @@ class JsonApiFormatter
             // rewrite data_resources to ensure a clean array:
             $data_resources = [];
             foreach ($array['data'] as $key => $data_resource) {
-                $data_resources[$key] = $data_resource->toArray();
+                $data_resources[$key] = $data_resource->process();
             }
             $array['data'] = $data_resources;
         } elseif(
             ($array['data'] ?? false) &&
             $array['data'] instanceof DataResource
         ) {
-            $array['data'] = $array['data']->toArray();
+            $array['data'] = $array['data']->process();
         }
 
-        $encoded = json_encode($array);
+        $encoded = json_encode($array, JSON_UNESCAPED_SLASHES);
         if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
 
         return $encoded;

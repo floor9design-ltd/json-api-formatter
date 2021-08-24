@@ -1,8 +1,8 @@
 <?php
 /**
- * Links.php
+ * RelationshipLinks.php
  *
- * Links class
+ * RelationshipLinks class
  *
  * php 7.4+
  *
@@ -23,9 +23,9 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use stdClass;
 
 /**
- * Class Links
+ * Class RelationshipLinks
  *
- * Class to offer methods/properties to prepare data for a Links object
+ * Class to offer methods/properties to prepare data for a RelationshipLinks object
  * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
  *
  * Note: links should be populated by either a Link object or a string
@@ -42,15 +42,15 @@ use stdClass;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Links
+class RelationshipLinks
 {
     /**
-     * @var array<string|Link>
+     * @var array<Link|string>
      */
     protected array $links = [];
 
     /**
-     * @return array<string|Link>
+     * @return array<Link|string>
      * @see $links
      */
     public function getLinks(): array
@@ -58,20 +58,10 @@ class Links
         return $this->links;
     }
 
-    /**
-     * @param array<Link|string> $links
-     * @return Links
-     * @see $links
-     */
-    public function setLinks(array $links): Links
-    {
-        $this->links = $links;
-        return $this;
-    }
-
     // constructor
+
     /**
-     * Links constructor.
+     * RelationshipLinks constructor.
      * Automatically sets up the provided array as properties
      * @phpstan-param array<Link|string>|null $array
      * @param array|null $array
@@ -89,50 +79,26 @@ class Links
     /**
      * @param string $name
      * @param string|Link $link
-     * @param bool $overwrite
-     * @return Links
+     * @return RelationshipLinks
      * @throws JsonApiFormatterException
      */
-    public function addLink(string $name, $link, bool $overwrite = false): Links
+    public function addLink(string $name, $link): RelationshipLinks
     {
-        if(isset($this->getLinks()[$name]) && !$overwrite) {
-            $message = 'The link provided clashes with existing links - it should be added manually';
-            throw new JsonApiFormatterException($message);
-        }
-
-        if($this->validateProperty($link)) {
-            $this->links[$name] = $link;
-        }
+        // validate:
+        $this->validateProperty($link);
+        $this->links[$name] = $link;
 
         return $this;
     }
 
     /**
      * @param string $name
-     * @return Links
+     * @return RelationshipLinks
      */
-    public function unsetLink(string $name): Links
+    public function unsetLink(string $name): RelationshipLinks
     {
         unset($this->links[$name]);
         return $this;
-    }
-
-    /**
-     * @return array<array<array|stdClass|string>|string>
-     */
-    public function process(): array
-    {
-        $array = [];
-
-        foreach($this->getLinks() as $key => $link) {
-            if($link instanceof Link) {
-                $array[$key] = $link->process();
-            } elseif(is_string($link)) {
-                $array[$key] = $link;
-            }
-        }
-
-        return $array;
     }
 
     /**
@@ -142,11 +108,29 @@ class Links
      */
     private function validateProperty($value): bool
     {
-        if (!($value instanceof Link || is_string($value))) {
-            throw new JsonApiFormatterException('Links can only be populated with strings or Link objects');
+        if (
+            !($value instanceof Link || is_string($value))
+        ) {
+            throw new JsonApiFormatterException('RelationshipLinks can only be populated with strings or Link objects');
         }
 
         return true;
     }
 
+    /**
+     * @return stdClass a stdClass cleaned object suitable for encoding
+     */
+    public function process(): stdClass
+    {
+        $array = [];
+        foreach ($this->getLinks() as $key => $link) {
+            if (is_string($link)) {
+                $array[$key] = $link;
+            } else {
+                $array[$key] = $link->process();
+            }
+        }
+
+        return (object)$array;
+    }
 }

@@ -80,11 +80,11 @@ class ErrorTest extends TestCase
     }
 
     /**
-     * Test Error::toArray()
+     * Test Error::process()
      *
      * @return void
      */
-    public function testToArray()
+    public function testProcess()
     {
         $generator = new Generator();
 
@@ -108,7 +108,7 @@ class ErrorTest extends TestCase
             $array['source']
         );
 
-        $this->assertEquals($error->toArray(), $array);
+        $this->assertEquals($error->process(), $array);
     }
 
     /**
@@ -116,7 +116,7 @@ class ErrorTest extends TestCase
      *
      * @return void
      */
-    public function testToArrayNullProperties()
+    public function testProcessNullProperties()
     {
         $generator = new Generator();
 
@@ -141,23 +141,23 @@ class ErrorTest extends TestCase
         );
 
         // should do nothing
-        $this->assertEquals($error->toArray(), $array);
+        $this->assertEquals($error->process(), $array);
 
         // remove one by one, then check
         $error->setId(null);
-        $this->assertArrayNotHasKey('id', $error->toArray());
+        $this->assertArrayNotHasKey('id', $error->process());
         $error->setLinks(null);
-        $this->assertArrayNotHasKey('links', $error->toArray());
+        $this->assertArrayNotHasKey('links', $error->process());
         $error->setStatus(null);
-        $this->assertArrayNotHasKey('status', $error->toArray());
+        $this->assertArrayNotHasKey('status', $error->process());
         $error->setCode(null);
-        $this->assertArrayNotHasKey('code', $error->toArray());
+        $this->assertArrayNotHasKey('code', $error->process());
         $error->setTitle(null);
-        $this->assertArrayNotHasKey('title', $error->toArray());
+        $this->assertArrayNotHasKey('title', $error->process());
         $error->setDetail(null);
-        $this->assertArrayNotHasKey('detail', $error->toArray());
+        $this->assertArrayNotHasKey('detail', $error->process());
         $error->setSource(null);
-        $this->assertArrayNotHasKey('source', $error->toArray());
+        $this->assertArrayNotHasKey('source', $error->process());
 
     }
 }

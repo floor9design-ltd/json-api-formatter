@@ -27,6 +27,10 @@ Most use cases fit the included simple-use functions. These are described as fol
 
 * [simple usage](usage-simple.md)
 
+There is also a tutorial that builds several repsonses:
+
+* [example responses](usage-example-responses.md)
+
 ## Creating a custom object
 
 If you need to make a custom object, then this is also possible:

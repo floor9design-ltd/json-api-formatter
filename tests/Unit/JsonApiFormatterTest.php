@@ -29,6 +29,11 @@ use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
+use Floor9design\JsonApiFormatter\Models\Relationship;
+use Floor9design\JsonApiFormatter\Models\RelationshipData;
+use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
+use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
+use Floor9design\JsonApiFormatter\Models\Relationships;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -277,7 +282,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetMeta();
         $json_api_formatter->addMeta($test_complete_meta);
-        $this->assertEquals($json_api_formatter->getMeta(), (object)$test_complete_meta);
+        $this->assertEquals($test_complete_meta, $json_api_formatter->getMeta());
 
         // make a partial and extend
         $json_api_formatter->setMeta($test_partial_meta);
@@ -332,8 +337,17 @@ class JsonApiFormatterTest extends TestCase
             ]
         );
 
-        $test_basic_included = ['first' => $included_company];
-        $test_extended_included = ['first' => $included_company, 'second' => $included_company];
+        $included_company2 = new DataResource(
+            "2",
+            'company2',
+            [
+                'company' => 'Joe Bloggs Ltd',
+                'slug' => null
+            ]
+        );
+
+        $test_basic_included = [$included_company];
+        $test_extended_included = [$included_company, $included_company2];
         $test_basic_included_object = new Included($test_basic_included);
         $test_extended_included_object = new Included($test_extended_included);
 
@@ -345,7 +359,7 @@ class JsonApiFormatterTest extends TestCase
 
         // make a partial and extend
         $json_api_formatter->setIncluded($test_basic_included_object);
-        $json_api_formatter->addIncluded(['second' => $included_company]);
+        $json_api_formatter->addIncluded([$included_company2]);
         $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included_object);
 
         // unset
@@ -359,13 +373,6 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setIncluded($test_extended_included_object);
         $json_api_formatter->addIncluded(['second' => $included_company], true);
         $this->assertEquals($json_api_formatter->getIncluded(), $test_extended_included_object);
-
-        // check that addLinks catches duplicates
-        $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage(
-            'The data resource provided clashes with existing data resources - it should be added manually'
-        );
-        $json_api_formatter->addIncluded(['second' => $included_company]);
     }
 
     /**
@@ -529,13 +536,22 @@ class JsonApiFormatterTest extends TestCase
         $id = (string)'2';
         $id2 = (string)'3';
         $id3 = (string)'4';
+        $id4 = (string)'5';
         $type = 'user';
         $attributes = [
             'name' => 'Joe Bloggs',
             'email' => 'joe@bloggs.com'
         ];
+
         $array = ['hello' => 'world'];
         $data_resource_meta = new DataResourceMeta($array);
+
+        $relationship_links = new RelationshipLinks();
+        $relationship_data = new RelationshipData('2', 'test');
+        $relationship_meta = new RelationshipMeta();
+        $relationships = new Relationships(
+            ['foo' => new Relationship($relationship_links, $relationship_data, $relationship_meta)]
+        );
 
         $resource_array = ['id' => $id, 'type' => $type, 'attributes' => $attributes];
         $resource_array2 = ['id' => $id2, 'type' => $type, 'attributes' => $attributes];
@@ -543,12 +559,19 @@ class JsonApiFormatterTest extends TestCase
             'id' => $id3,
             'type' => $type,
             'attributes' => $attributes,
-            'meta' => $data_resource_meta->toArray()
+            'meta' => $data_resource_meta->process()
+        ];
+        $resource_array4 = [
+            'id' => $id4,
+            'type' => $type,
+            'attributes' => $attributes,
+            'relationships' => $relationships->process()
         ];
 
         $data_resource = new DataResource($id, $type, $attributes);
         $data_resource2 = new DataResource($id2, $type, $attributes);
         $data_resource3 = new DataResource($id3, $type, $attributes, $data_resource_meta);
+        $data_resource4 = new DataResource($id4, $type, $attributes, null, $relationships);
 
         // Single data resource
 
@@ -608,6 +631,20 @@ class JsonApiFormatterTest extends TestCase
 
         $this->assertEquals($validated_array_json, $response);
 
+        // Data resource array with relationships
+
+        $validated_array = [
+            'data' => [$resource_array, $resource_array4],
+            'meta' => (object)['status' => null],
+            'jsonapi' => (object)['version' => '1.0']
+        ];
+
+        $validated_array_json = json_encode($validated_array, true);
+
+        $json_api_formatter = new JsonApiFormatter();
+        $response = $json_api_formatter->dataResourceResponse([$data_resource, $data_resource4]);
+
+        $this->assertEquals($validated_array_json, $response);
     }
 
     /**
@@ -672,17 +709,17 @@ class JsonApiFormatterTest extends TestCase
         // make 2 manually checked correct arrays:
         $validated_array = [
             'errors' => [
-                // remember to clear nulls by flattening using toArray()
-                $error->toArray(),
-                $error2->toArray()
+                // remember to clear nulls by flattening using process()
+                $error->process(),
+                $error2->process()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
         ];
         $validated_array2 = [
             'errors' => [
-                // remember to clear nulls by flattening using toArray()
-                $error2->toArray()
+                // remember to clear nulls by flattening using process()
+                $error2->process()
             ],
             'meta' => (object)['status' => null],
             'jsonapi' => (object)['version' => '1.0']
@@ -807,15 +844,15 @@ class JsonApiFormatterTest extends TestCase
             ->setStatus('400')
             ->setTitle('Bad request')
             ->setDetail('The request was not formed well');
-        /*
+
         // errors
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetData();
         $json_api_formatter->addErrors([$error]);
 
         $error_response_array = [
-            // remember to clear nulls by flattening using toArray()
-            'errors' => [(object)$error->toArray()],
+            // remember to clear nulls by flattening using process()
+            'errors' => [(object)$error->process()],
             'meta' => [
                 'status' => null
             ],
@@ -823,14 +860,14 @@ class JsonApiFormatterTest extends TestCase
         ];
 
         $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
-        */
+
         // data
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->unsetErrors();
         $json_api_formatter->addData($data);
 
         $data_resource_response_array = [
-            'data' => $data->toArray(),
+            'data' => $data->process(),
             'meta' => [
                 'status' => null
             ],
@@ -854,8 +891,8 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setMeta($meta);
 
         $meta_response_array = [
-            'data' => $data->toArray(),
-            'meta' => $meta,
+            'data' => $data->process(),
+            'meta' => $meta->process(),
             'jsonapi' => (object)['version' => '1.0']
         ];
 
@@ -876,12 +913,12 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->setIncluded($included);
 
         $included_response_array = [
-            'data' => $data->toArray(),
+            'data' => $data->process(),
             'meta' => [
                 'status' => null
             ],
             'jsonapi' => (object)['version' => '1.0'],
-            'included' => $included->toArray()
+            'included' => $included->process()
         ];
 
         $this->assertSame($json_api_formatter->export(), json_encode($included_response_array, true));
@@ -962,7 +999,7 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->import($data_json);
 
-        $this->assertEquals($json_api_formatter->getData()->toArray(), $json_array['data']);
+        $this->assertEquals($json_api_formatter->getData()->process(), $json_array['data']);
     }
 
     /**
@@ -995,8 +1032,8 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->import($data_json);
 
-        $this->assertEquals($json_api_formatter->getData()[0]->toArray(), $data_array1);
-        $this->assertEquals($json_api_formatter->getData()[1]->toArray(), $data_array2);
+        $this->assertEquals($json_api_formatter->getData()[0]->process(), $data_array1);
+        $this->assertEquals($json_api_formatter->getData()[1]->process(), $data_array2);
     }
 
     /**
@@ -1025,7 +1062,7 @@ class JsonApiFormatterTest extends TestCase
             [
                 'http://link.com',
                 new Link(
-                    ['hello', 'world']
+                    ['href' => 'http://world.com']
                 )
             ]
         );
@@ -1057,7 +1094,7 @@ class JsonApiFormatterTest extends TestCase
                         'detail' => $detail,
                         'links' => [
                             'http://link.com',
-                            ['hello', 'world']
+                            ['href' => 'http://world.com']
                         ],
                         'source' => ['hello' => 'world']
                     ]
@@ -1090,7 +1127,7 @@ class JsonApiFormatterTest extends TestCase
             [
                 'http://link.com',
                 new Link(
-                    ['hello', 'world']
+                    ['href' => 'http://world.com']
                 )
             ]
         );
@@ -1118,7 +1155,7 @@ class JsonApiFormatterTest extends TestCase
                         'detail' => $detail,
                         'links' => [
                             'http://link.com',
-                            ['hello', 'world']
+                            ['href' => 'http://world.com']
                         ],
                         'source' => null
                     ]

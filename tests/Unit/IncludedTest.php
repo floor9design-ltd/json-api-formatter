@@ -52,9 +52,9 @@ class IncludedTest extends TestCase
     public function testConstructor()
     {
         $data_resource = new DataResource("2", "test", ["hello" => "world"]);
-        $included = new Included(['test' => $data_resource]);
+        $included = new Included([$data_resource]);
 
-        $this->assertEquals($data_resource, $included->test);
+        $this->assertEquals([$data_resource], $included->getDataResources());
     }
 
     /**
@@ -62,16 +62,18 @@ class IncludedTest extends TestCase
      *
      * @return void
      */
-    public function testAddDataResource()
+    public function testAccessors()
     {
         $data_resource = new DataResource("2", "test", ["hello" => "world"]);
         $data_resource2 = new DataResource("2", "test", ["foo" => "bar"]);
 
-        $included = new Included(['first' => $data_resource]);
-        $included->addDataResource('second', $data_resource2);
+        $included = new Included([$data_resource]);
+        $included->addDataResource($data_resource2);
 
-        $this->assertEquals($data_resource, $included->first);
-        $this->assertEquals($data_resource2, $included->second);
+        $this->assertEquals([$data_resource,$data_resource2], $included->getDataResources());
+
+        $included->setDataResources([$data_resource2]);
+        $this->assertEquals([$data_resource2], $included->getDataResources());
     }
 
     /**
@@ -79,38 +81,16 @@ class IncludedTest extends TestCase
      *
      * @return void
      */
-    public function testUnsetDataResource()
+    public function testProcess()
     {
         $data_resource = new DataResource("2", "test", ["hello" => "world"]);
         $data_resource2 = new DataResource("2", "test", ["foo" => "bar"]);
 
-        $included = new Included(['first' => $data_resource, 'second' => $data_resource2]);
+        $included = new Included([$data_resource, $data_resource2]);
 
-        $included->unsetDataResource('first');
+        $object_array = [$data_resource->process(),$data_resource2->process()];
 
-        $this->assertEquals($data_resource2, $included->second);
-        $this->assertFalse(property_exists($included, 'first'));
-    }
-
-    /**
-     * Test unsetDataResource
-     *
-     * @return void
-     * @throws TestingToolsException
-     */
-    public function testToArray()
-    {
-        $data_resource = new DataResource("2", "test", ["hello" => "world"]);
-        $data_resource2 = new DataResource("2", "test", ["foo" => "bar"]);
-
-        $included = new Included(['first' => $data_resource, 'second' => $data_resource2]);
-
-        $object_array = [
-            'first' => $data_resource,
-            'second' => $data_resource2
-        ];
-
-        $this->assertEquals($object_array, $included->toArray());
+        $this->assertEquals($object_array, $included->process());
     }
 
 }

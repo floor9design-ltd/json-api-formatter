@@ -41,6 +41,31 @@ namespace Floor9design\JsonApiFormatter\Models;
  */
 class Included
 {
+    /**
+     * @var array<DataResource>
+     */
+    var array $data_resources = [];
+
+    /**
+     * @return array<DataResource>
+     * @see $data_resources
+     */
+    public function getDataResources(): array
+    {
+        return $this->data_resources;
+    }
+
+    /**
+     * @param array<DataResource> $data_resources
+     * @return Included
+     * @see $data_resources
+     */
+    public function setDataResources(array $data_resources): Included
+    {
+        $this->data_resources = $data_resources;
+        return $this;
+    }
+
     // constructor
 
     /**
@@ -52,39 +77,34 @@ class Included
     public function __construct(?array $array = [])
     {
         if (is_iterable($array)) {
-            foreach ($array as $name => $data_resource) {
-                $this->addDataResource($name, $data_resource);
+            foreach ($array as $data_resource) {
+                $this->addDataResource($data_resource);
             }
         }
     }
 
     /**
-     * @param string $name
      * @param DataResource $data_resource
      * @return Included
      */
-    public function addDataResource(string $name, DataResource $data_resource): Included
+    public function addDataResource(DataResource $data_resource): Included
     {
-        $this->$name = $data_resource;
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @return Included
-     */
-    public function unsetDataResource(string $name): Included
-    {
-        unset($this->$name);
+        $this->data_resources[] = $data_resource;
         return $this;
     }
 
     /**
      * @return array[]
      */
-    public function toArray(): array
+    public function process(): array
     {
-        return (array)$this;
+        $array = [];
+
+        foreach($this->getDataResources() as $data_resource){
+            $array[] = $data_resource->process();
+        }
+
+        return $array;
     }
 
 }
