@@ -11,7 +11,7 @@
 [![Packagist Downloads](https://img.shields.io/packagist/dt/floor9design/json-api-formatter?style=plastic)](https://packagist.org/packages/floor9design/json-api-formatter)
 
 
-A set classes that allow for creating JSON API compliant objects
+A set of classes that allow for creating JSON API compliant objects
 
 ## Introduction
 
