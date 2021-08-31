@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Under development
 
 * Stable release testing and testing "in the wild"
+* Prep for production version 1.0
 
-## 0.1 - 0.3
+## 0.1 - 0.5
 
 * Upgrading structure, offering greater flexibility with objects (Meta/Information etc)
 * Tweaks and testing to ensure correct formatting in the wild
