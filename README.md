@@ -27,7 +27,7 @@ The classes offer:
 
 * easy methods to wrap and unwrap content
 * default values and settings out of the box, improving the quality of response
-* fluent programming approach, allowing objects to be build on the fly
+* fluent programming approach, allowing objects to be built on the fly
 
 ## Install
 
