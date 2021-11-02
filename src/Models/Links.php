@@ -59,7 +59,7 @@ class Links
     }
 
     /**
-     * @param array<Link|string> $links
+     * @param array<string|Link> $links
      * @return Links
      * @see $links
      */
@@ -118,7 +118,7 @@ class Links
     }
 
     /**
-     * @return array<array<array|stdClass|string>|string>
+     * @return array<array<array<int|float|string>|stdClass|string>|string>
      */
     public function process(): array
     {

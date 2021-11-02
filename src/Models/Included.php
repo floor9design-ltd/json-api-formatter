@@ -94,7 +94,7 @@ class Included
     }
 
     /**
-     * @return array[]
+     * @return array<array{id:string|null,type:string|null,attributes:array<mixed>|null,meta?:array<mixed>|null}>
      */
     public function process(): array
     {

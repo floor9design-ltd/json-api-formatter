@@ -42,8 +42,7 @@ class DataResource
     // properties
 
     /**
-     * @phpstan-var array[]
-     * @var array|null
+     * @var array<mixed>|null
      */
     var ?array $attributes = null;
 

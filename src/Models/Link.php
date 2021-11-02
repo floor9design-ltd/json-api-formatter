@@ -43,14 +43,14 @@ use stdClass;
 class Link
 {
     /**
-     * @var array<string|array|stdClass>
+     * @var array<string|array<int|float|string>|stdClass>
      */
     protected array $link = [];
 
     // accessors
 
     /**
-     * @return array<string|array|stdClass>
+     * @return array<string|array<int|float|string>|stdClass>
      * @see $link
      */
     public function getLink(): array
@@ -59,7 +59,7 @@ class Link
     }
 
     /**
-     * @param array<string|array> $link
+     * @param array<string|array<int|float|string>> $link
      * @return Link
      * @throws JsonApiFormatterException
      * @see $link
@@ -75,7 +75,7 @@ class Link
     /**
      * Link constructor.
      * Automatically sets up the provided array as properties
-     * @phpstan-param array<array|string>|null $array
+     * @phpstan-param array<array<int|float|string>|string>|null $array
      * @param array|null $array
      * @throws JsonApiFormatterException
      */
@@ -89,7 +89,7 @@ class Link
     /**
      * Validates the link
      *
-     * @param array<string|array> $link
+     * @param array<array<int|float|string>|string> $link
      * @return array<string, stdClass|string>
      * @throws JsonApiFormatterException
      */
@@ -118,7 +118,7 @@ class Link
     }
 
     /**
-     * @return array<array|stdClass|string>
+     * @return array<string|array<int|float|string>|stdClass>
      */
     public function process(): array
     {

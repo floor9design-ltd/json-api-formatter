@@ -72,8 +72,7 @@ class JsonApiFormatter
     }
 
     /**
-     * @phpstan-return array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
-     * @return array
+     * @return array{data?:array<DataResource>|DataResource|null,errors?:array<Error>,included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}
      * @see $base_response_array
      */
     protected function getBaseResponseArray(): array
@@ -454,9 +453,7 @@ class JsonApiFormatter
      * "you need to specify associative array, else it is invalid json"
      *
      * It also strips optional null items.
-     *
-     * @phpstan-param array[]|array{errors:array<Error>} $array
-     * @param array|null $array
+     * @param array{data?:array<DataResource>|DataResource|null, errors?:array<Error>, included?:Included,links?:Links,meta?:Meta|null,jsonapi?:StdClass}|null $array
      * @return string
      * @throws JsonApiFormatterException
      */
@@ -469,8 +466,8 @@ class JsonApiFormatter
 
         // strip nulls from errors using the process() functionality:
 
-        if (is_iterable($array) &&
-            ($array['errors'] ?? false) &&
+        if (
+            isset($array['errors']) &&
             is_iterable($array['errors'])
         ) {
             // rewrite errors to ensure a clean array:
@@ -492,7 +489,7 @@ class JsonApiFormatter
 
         // format links
         if(
-            ($array['links'] ?? false) &&
+            isset($array['links']) &&
             $array['links'] instanceof Links
         ) {
             $array['links'] = $array['links']->process();
@@ -500,7 +497,7 @@ class JsonApiFormatter
 
         // format meta
         if(
-            ($array['meta'] ?? false) &&
+            isset($array['meta']) &&
             $array['meta'] instanceof Meta
         ) {
             $array['meta'] = $array['meta']->process();
@@ -508,7 +505,7 @@ class JsonApiFormatter
 
         // ensure that data objects are formatted
         if (
-            ($array['data'] ?? false) &&
+            isset($array['data']) &&
             is_iterable($array['data'])
         ) {
             // rewrite data_resources to ensure a clean array:
@@ -518,7 +515,7 @@ class JsonApiFormatter
             }
             $array['data'] = $data_resources;
         } elseif(
-            ($array['data'] ?? false) &&
+            isset($array['data']) &&
             $array['data'] instanceof DataResource
         ) {
             $array['data'] = $array['data']->process();
@@ -581,7 +578,7 @@ class JsonApiFormatter
         $decoded_json = json_decode($json, true);
 
         // not json
-        if (!$decoded_json) {
+        if (!$decoded_json || !is_array($decoded_json)) {
             throw new JsonApiFormatterException('The provided json was not valid');
         }
 
@@ -800,8 +797,7 @@ class JsonApiFormatter
      * Performs a quick validation for Data against some basic rules.
      * This is not a schema validation, "But it'll give it a shot..."
      *
-     * @phpstan-param array[]|array<array[]|string> $array
-     * @param array $array
+     * @param array{id?:string|null,type?:string|null,attributes?:array|null}|array<mixed> $array
      * @return bool
      * @throws JsonApiFormatterException
      */
