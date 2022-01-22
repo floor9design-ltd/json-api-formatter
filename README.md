@@ -15,7 +15,7 @@ A set of classes that allow for creating JSON API compliant objects
 
 ## Introduction
 
-The JSON API has a precise response format. This set of classes allows these to be easy created and interrogated,
+The JSON API has a precise response format. This set of classes allows these to be easily created and interrogated,
 meaning easy and reliable output/input processing. 
 
 ## Features
