@@ -56,6 +56,7 @@ The following methods are available to manually change the object:
 If you are creating the objects fluently, the following `add` methods can be used to avoid get/set syntactic hassle.
 
 * `addData()` 
+* `addDataAttribute()`
 * `addErrors()`
 * `addMeta()`
 
