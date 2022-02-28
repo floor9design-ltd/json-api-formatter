@@ -157,6 +157,31 @@ class JsonApiFormatter
     }
 
     /**
+     * Fluently adds an item to a single DataResource.
+     * Often DataResources are built on the fly, and sometimes these need to be added on the fly... this is simply a
+     * convenient method to do this.
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return JsonApiFormatter
+     * @throws JsonApiFormatterException
+     */
+    public function addDataAttribute(string $key, $value) : JsonApiFormatter
+    {
+        if(!$this->getData() || !($this->getData() instanceof DataResource)) {
+            $message = 'addDataAttribute() can only be used with a single DataResource';
+            throw new JsonApiFormatterException($message);
+        }
+
+        $attributes = $this->getData()->getAttributes();
+        $attributes[$key] = $value;
+
+        $this->getData()->setAttributes($attributes);
+
+        return $this;
+    }
+
+    /**
      * @phpstan-return array<Error>|null
      * @return array|null
      */

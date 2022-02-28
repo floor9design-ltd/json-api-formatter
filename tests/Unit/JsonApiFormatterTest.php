@@ -81,11 +81,18 @@ class JsonApiFormatterTest extends TestCase
     public function testDataAccessors()
     {
         $json_api_formatter = new JsonApiFormatter();
-        $test_single_object = new DataResource('1', 'data', ['attributes' => ['some_data']]);
-        $test_another_single_object = new DataResource('2', 'data', ['attributes' => ['more_data']]);
+        $test_single_object = new DataResource('1', 'data', [0 => 'some_data']);
+        $test_another_single_object = new DataResource('2', 'data', [0 => 'more_data']);
         $test_array = [$test_single_object, $test_another_single_object];
-        $test_final_single_object = new DataResource('3', 'data', ['attributes' => ['even_more_data']]);
+        $test_final_single_object = new DataResource('3', 'data', [0 => 'even_more_data']);
         $test_final_array = [$test_single_object, $test_another_single_object, $test_final_single_object];
+        $test_added_key = 'foo';
+        $test_added_value = 'bar';
+        $test_single_object_added = new DataResource(
+            '1',
+            'data',
+            [0 => 'some_data', $test_added_key => $test_added_value]
+        );
 
         // Valid get and set
         $json_api_formatter->setData($test_single_object);
@@ -116,6 +123,18 @@ class JsonApiFormatterTest extends TestCase
         $test_object->unsetData();
         $response = $reflection->invokeArgs($test_object, []);
         $this->assertFalse(isset($response['data']));
+
+        // add to a DataResource
+        $json_api_formatter->setData($test_single_object);
+        $json_api_formatter->addDataAttribute($test_added_key, $test_added_value);
+        $this->assertEquals($test_single_object_added, $json_api_formatter->getData());
+
+        // add to a DataResource: exception
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('addDataAttribute() can only be used with a single DataResource');
+        $json_api_formatter->setData($test_array);
+        $json_api_formatter->addDataAttribute('foo', 'bar');
+
     }
 
     /**
