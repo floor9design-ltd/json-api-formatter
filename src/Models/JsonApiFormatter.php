@@ -547,9 +547,7 @@ class JsonApiFormatter
         }
 
         $encoded = json_encode($array, JSON_UNESCAPED_SLASHES);
-        if (!$encoded) {
-            throw new JsonApiFormatterException('The provided array was not able to be encoded');
-        }
+        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
 
         return $encoded;
     }
