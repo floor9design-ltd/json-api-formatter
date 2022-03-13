@@ -166,9 +166,9 @@ class JsonApiFormatter
      * @return JsonApiFormatter
      * @throws JsonApiFormatterException
      */
-    public function addDataAttribute(string $key, $value) : JsonApiFormatter
+    public function addDataAttribute(string $key, $value): JsonApiFormatter
     {
-        if(!$this->getData() || !($this->getData() instanceof DataResource)) {
+        if (!$this->getData() || !($this->getData() instanceof DataResource)) {
             $message = 'addDataAttribute() can only be used with a single DataResource';
             throw new JsonApiFormatterException($message);
         }
@@ -275,7 +275,7 @@ class JsonApiFormatter
     {
         $meta = $this->getMeta();
 
-        if(!$meta) {
+        if (!$meta) {
             $meta = new Meta();
         }
 
@@ -513,7 +513,7 @@ class JsonApiFormatter
         }
 
         // format links
-        if(
+        if (
             isset($array['links']) &&
             $array['links'] instanceof Links
         ) {
@@ -521,7 +521,7 @@ class JsonApiFormatter
         }
 
         // format meta
-        if(
+        if (
             isset($array['meta']) &&
             $array['meta'] instanceof Meta
         ) {
@@ -539,7 +539,7 @@ class JsonApiFormatter
                 $data_resources[$key] = $data_resource->process();
             }
             $array['data'] = $data_resources;
-        } elseif(
+        } elseif (
             isset($array['data']) &&
             $array['data'] instanceof DataResource
         ) {
@@ -547,7 +547,9 @@ class JsonApiFormatter
         }
 
         $encoded = json_encode($array, JSON_UNESCAPED_SLASHES);
-        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+        if (!$encoded) {
+            throw new JsonApiFormatterException('The provided array was not able to be encoded');
+        }
 
         return $encoded;
     }
@@ -738,9 +740,7 @@ class JsonApiFormatter
         }
 
         // Catch empty errors array: it needs to exist!
-        if (
-            !$this->getErrors() ||
-            (is_countable($this->getErrors()) && count($this->getErrors()) == 0)) {
+        if (!$this->getErrors()) {
             throw new JsonApiFormatterException("Error responses cannot have an empty errors array");
         }
 
@@ -786,7 +786,6 @@ class JsonApiFormatter
 
         $this->autoIncludeJsonapi();
         return $this->getBaseResponseArray();
-
     }
 
     // other useful functionality
