@@ -115,7 +115,7 @@
                 {
                     "name": "Rick Morice",
                     "email": "rick@floor9design.com",
-                    "homepage": "https://floor9design.com",
+                    "homepage": "http://floor9design.com",
                     "role": "Developer"
                 }
             ],
@@ -171,7 +171,7 @@
                 {
                     "name": "Rick Morice",
                     "email": "rick@floor9design.com",
-                    "homepage": "https://floor9design.com",
+                    "homepage": "http://floor9design.com",
                     "role": "Developer"
                 }
             ],
@@ -2411,5 +2411,5 @@
         "php": ">=7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.1.0"
 }
