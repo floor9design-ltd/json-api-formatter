@@ -6,6 +6,24 @@ There are comprehensive accessors, as well basic defaults. To see these in detai
 Note: when manually creating the objects, they should be formed as per structure of a json api type.
 These classes offer basic validation, but it is not comprehensive.
 
+## A quick background
+
+The various parts of a response are mapped to models. For example, a `data resource` maps to a `DataResource` class.
+
+The available classes are:
+
+* `DataResource`
+  * ...and its child meta objects:`DataResourceMeta`
+* `Included`
+* `Links`
+  * ...and its child link objects: `Link`
+* `Meta`
+* `Relationships`
+  * ...and its child `Relationship`  
+    * ...and their child objects: `RelationshipData`, `RelationshipLinks`, `RelationshipMeta`
+
+These map to the JSONAPI structures as described in the spec.
+
 ## Example Approach
 
 Here is an example of fluently populating then exporting a json api response: 
