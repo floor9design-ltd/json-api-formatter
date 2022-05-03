@@ -244,12 +244,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "a9f8f899357a2bc924d7dd62ef45e49eefa6f771"
+                "reference": "c72ff6fbda9a3cd80c4dc242d25f636fcc52bc6d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/a9f8f899357a2bc924d7dd62ef45e49eefa6f771",
-                "reference": "a9f8f899357a2bc924d7dd62ef45e49eefa6f771",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/c72ff6fbda9a3cd80c4dc242d25f636fcc52bc6d",
+                "reference": "c72ff6fbda9a3cd80c4dc242d25f636fcc52bc6d",
                 "shasum": ""
             },
             "require": {
@@ -309,7 +309,7 @@
                 "issues": "https://github.com/mockery/mockery/issues",
                 "source": "https://github.com/mockery/mockery/tree/master"
             },
-            "time": "2022-04-26T08:54:32+00:00"
+            "time": "2022-04-29T07:53:10+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2411,5 +2411,5 @@
         "php": ">=7.4"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }
