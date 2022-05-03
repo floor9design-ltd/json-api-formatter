@@ -905,4 +905,32 @@ class JsonApiFormatter
         return true;
     }
 
+    /**
+     * Checks to see if the loaded contents are for a DataResource response
+     *
+     * @return bool
+     */
+    public function isDataResourceResponse(): bool
+    {
+        if($this->getData() && !$this->getErrors()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks to see if the loaded contents are for an Error response
+     *
+     * @return bool
+     */
+    public function isErrorResponse(): bool
+    {
+        if(!$this->getData() && $this->getErrors()) {
+            return true;
+        }
+
+        return false;
+    }
+
 }

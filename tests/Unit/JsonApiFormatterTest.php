@@ -1453,6 +1453,54 @@ class JsonApiFormatterTest extends TestCase
         $json_api_formatter->quickValidatorDataResourceArray($bad_array);
     }
 
+    /**
+     * @throws JsonApiFormatterException
+     */
+    public function testIsDataResourceResponse()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->setData(new DataResource('1', 'test', ['hello' => 'world']));
+
+        $this->assertTrue(
+            $json_api_formatter->isDataResourceResponse(),
+            'isDataResourceResponse did not find a data response'
+        );
+
+        $json_api_formatter->reset();
+
+        $json_api_formatter->setErrors([new Error('0')]);
+
+        $this->assertFalse(
+            $json_api_formatter->isDataResourceResponse(),
+            'isDataResourceResponse found a data response when it should not have'
+        );
+    }
+
+    /**
+     * @throws JsonApiFormatterException
+     */
+    public function testIsErrorResponse()
+    {
+        $json_api_formatter = new JsonApiFormatter();
+
+        $json_api_formatter->setData(new DataResource('1', 'test', ['hello' => 'world']));
+
+        $this->assertFalse(
+            $json_api_formatter->isErrorResponse(),
+            'isDataResourceResponse found an error response when it should not have'
+        );
+
+        $json_api_formatter->reset();
+
+        $json_api_formatter->setErrors([new Error('0')]);
+
+        $this->assertTrue(
+            $json_api_formatter->isErrorResponse(),
+            'isDataResourceResponse did not find an error response'
+        );
+    }
+
     // Non testing functions
 
     /**
