@@ -252,8 +252,8 @@ class Error
      * @param string|null $code
      * @param string|null $title
      * @param string|null $detail
-     * @param object|null $source
-     * @param object|null $meta
+     * @param Source|null $source
+     * @param Meta|null $meta
      */
     public function __construct(
         ?string $id = null,
@@ -262,8 +262,8 @@ class Error
         ?string $code = null,
         ?string $title = null,
         ?string $detail = null,
-        ?object $source = null,
-        ?object $meta = null
+        ?Source $source = null,
+        ?Meta $meta = null
     ) {
         $this
             ->setId($id)
@@ -278,6 +278,7 @@ class Error
 
     /**
      * @return array<string, object|string|null>
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
