@@ -76,6 +76,11 @@ class Error
      */
     var ?object $source = null;
 
+    /**
+     * @var Meta|null
+     */
+    var ?Meta $meta = null;
+
     // accessors
 
     /**
@@ -218,6 +223,23 @@ class Error
         return $this;
     }
 
+    /**
+     * @return Meta|null
+     * @see $meta
+     */
+    public function getMeta(): ?Meta
+    {
+        return $this->meta;
+    }
+
+    /**
+     * @param Meta|null $meta
+     */
+    public function setMeta(?Meta $meta): void
+    {
+        $this->meta = $meta;
+    }
+
     // constructor
 
     /**
@@ -229,6 +251,7 @@ class Error
      * @param string|null $title
      * @param string|null $detail
      * @param object|null $source
+     * @param object|null $meta
      */
     public function __construct(
         ?string $id = null,
@@ -237,7 +260,8 @@ class Error
         ?string $code = null,
         ?string $title = null,
         ?string $detail = null,
-        ?object $source = null
+        ?object $source = null,
+        ?object $meta = null
     ) {
         $this
             ->setId($id)
@@ -246,7 +270,8 @@ class Error
             ->setCode($code)
             ->setTitle($title)
             ->setDetail($detail)
-            ->setSource($source);
+            ->setSource($source)
+            ->setMeta($meta);
     }
 
     /**
@@ -284,6 +309,10 @@ class Error
 
         if($this->getSource()) {
             $return['source'] = $this->getSource();
+        }
+
+        if($this->getMeta()) {
+            $return['meta'] = $this->getMeta();
         }
 
         return $return;

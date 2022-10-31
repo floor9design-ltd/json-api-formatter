@@ -22,6 +22,7 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\Links;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\TestDataGenerator\Generator;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
@@ -77,6 +78,10 @@ class ErrorTest extends TestCase
         $source = new StdClass();
         $error->setSource($source);
         $this->assertEquals($source, $error->getSource());
+
+        $meta = new Meta();
+        $error->setMeta($meta);
+        $this->assertEquals($meta, $error->getMeta());
     }
 
     /**
@@ -96,6 +101,7 @@ class ErrorTest extends TestCase
             'title' => $generator->randomString(),
             'detail' => $generator->randomString(),
             'source' => new StdClass,
+            'meta' => new Meta()
         ];
 
         $error = new Error(
@@ -105,7 +111,8 @@ class ErrorTest extends TestCase
             $array['code'],
             $array['title'],
             $array['detail'],
-            $array['source']
+            $array['source'],
+            $array['meta']
         );
 
         $this->assertEquals($error->process(), $array);
