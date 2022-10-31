@@ -55,11 +55,31 @@ The following arguments are required:
 
 * `errors` : array of error objects
 
+The error object is constructed as follows:
+
+* `id` : id for the error resource (string)
+* `links` : `Links` object  for the data resource
+* `status` : status for the error resource (string)
+* `code`  : code for the error (string)
+* `title` : title of the error (string)
+* `detail` : detail of the error resource (string)
+* `source` : `Source` object containing references to the primary source of the error
+* `meta` : `Meta` object for the error resource
+
+These are individually optional but at least one of them is required
+
 ```php
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
+use Floor9design\JsonApiFormatter\Models\Error;
 
 // an example error:
-$error = (object)['test' => 'error'];
+$error = new Error(
+    '12656',
+    null,
+    'Content error',                                
+    'There was a problem with the quote content',
+    400
+);
 $errors = [$error];
 
 $json_api_response = new JsonApiFormatter();

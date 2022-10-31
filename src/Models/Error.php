@@ -74,9 +74,9 @@ class Error
     var ?string $detail = null;
 
     /**
-     * @var object|null
+     * @var Source|null
      */
-    var ?object $source = null;
+    var ?Source $source = null;
 
     /**
      * @var Meta|null
@@ -206,20 +206,20 @@ class Error
     }
 
     /**
-     * @return object|null
+     * @return Source|null
      * @see $source
      */
-    public function getSource(): ?object
+    public function getSource(): ?Source
     {
         return $this->source;
     }
 
     /**
-     * @param object|null $source
+     * @param Source|null $source
      * @return Error
      * @see $source
      */
-    public function setSource(?object $source): Error
+    public function setSource(?Source $source): Error
     {
         $this->source = $source;
         return $this;

@@ -34,6 +34,7 @@ use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\JsonApiFormatter\Models\Relationships;
+use Floor9design\JsonApiFormatter\Models\Source;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use ReflectionException;
@@ -1086,8 +1087,9 @@ class JsonApiFormatterTest extends TestCase
             ]
         );
 
-        $source = new StdClass();
-        $source->hello = 'world';
+        $source = new Source(
+            ['hello' => 'world']
+        );
         $status = '400';
         $code = '400';
         $title = 'Bad request';
