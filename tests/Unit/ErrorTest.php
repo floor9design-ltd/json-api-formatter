@@ -20,6 +20,7 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
@@ -122,6 +123,7 @@ class ErrorTest extends TestCase
      * Test Error::toArray
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testProcessNullProperties()
     {
@@ -135,6 +137,7 @@ class ErrorTest extends TestCase
             'title' => $generator->randomString(),
             'detail' => $generator->randomString(),
             'source' => new StdClass,
+            'meta' => new Meta()
         ];
 
         $error = new Error(
@@ -144,7 +147,8 @@ class ErrorTest extends TestCase
             $array['code'],
             $array['title'],
             $array['detail'],
-            $array['source']
+            $array['source'],
+            $array['meta']
         );
 
         // should do nothing
@@ -153,6 +157,10 @@ class ErrorTest extends TestCase
         // remove one by one, then check
         $error->setId(null);
         $this->assertArrayNotHasKey('id', $error->process());
+
+        // set it again so that the others don't error due to being empty:
+        $error->setId($array['id']);
+
         $error->setLinks(null);
         $this->assertArrayNotHasKey('links', $error->process());
         $error->setStatus(null);
@@ -165,6 +173,12 @@ class ErrorTest extends TestCase
         $this->assertArrayNotHasKey('detail', $error->process());
         $error->setSource(null);
         $this->assertArrayNotHasKey('source', $error->process());
+        $error->setMeta(null);
+        $this->assertArrayNotHasKey('meta', $error->process());
 
+        // now check for exception when empty:
+        $error->setId(null);
+        $this->expectException(JsonApiFormatterException::class);
+        $error->process();
     }
 }

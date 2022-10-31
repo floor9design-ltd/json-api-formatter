@@ -19,6 +19,8 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+
 /**
  * Class Error
  *
@@ -313,6 +315,11 @@ class Error
 
         if($this->getMeta()) {
             $return['meta'] = $this->getMeta();
+        }
+
+        // Spec 11.2 : An error object MAY have the following members, and MUST contain at least one of...
+        if(count($return) == 0) {
+            throw new JsonApiFormatterException('Errors must contain at least one member.');
         }
 
         return $return;
