@@ -76,9 +76,9 @@ use Floor9design\JsonApiFormatter\Models\Error;
 $error = new Error(
     '12656',
     null,
-    'Content error',                                
-    'There was a problem with the quote content',
-    400
+    'Access error',                                
+    'Im sorry Dave, Im afraid I cant do that',
+    403
 );
 $errors = [$error];
 
