@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   0.5.0
+ * @version   1.1.1
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -33,7 +33,7 @@ use stdClass;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   0.5.0
+ * @version   1.1.1
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
@@ -454,7 +454,7 @@ class JsonApiFormatter
         ?Links $links = null
     ) {
         // Cant form an object before instantiation, so do it here:
-        $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
+        $this->base_response_array['jsonapi'] = (object)['version' => '1.1'];
 
         if ($meta ?? false) {
             $this->setMeta($meta);
