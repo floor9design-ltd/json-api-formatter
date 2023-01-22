@@ -59,8 +59,8 @@ The error object is constructed as follows:
 
 * `id` : id for the error resource (string)
 * `links` : `Links` object  for the data resource
-* `status` : status for the error resource (string)
-* `code`  : code for the error (string)
+* `status` : http status for the error resource (string)
+* `code`  : application-specific error code (string)
 * `title` : title of the error (string)
 * `detail` : detail of the error resource (string)
 * `source` : `Source` object containing references to the primary source of the error
@@ -76,9 +76,10 @@ use Floor9design\JsonApiFormatter\Models\Error;
 $error = new Error(
     '12656',
     null,
-    'Access error',                                
+    '403',
+    'HAL-9000-NOPE'
+    'Access error',
     'Im sorry Dave, Im afraid I cant do that',
-    403
 );
 $errors = [$error];
 
