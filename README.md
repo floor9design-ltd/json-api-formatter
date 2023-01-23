@@ -16,7 +16,25 @@ A set of classes that allow for creating JSON API compliant objects
 ## Introduction
 
 The JSON API has a precise response format. This set of classes allows these to be easily created and interrogated,
-meaning easy and reliable output/input processing. 
+meaning easy and reliable output/input processing.
+
+Output is as simple as:
+
+```php
+use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
+
+// Some example data:
+$id = "2"; 
+$type = 'test';
+$attributes = ['test' => 'data'];
+
+$json_api_response = new JsonApiFormatter();
+
+$response = $json_api_response->dataResourceResponse($id, $type, $attributes); 
+// a json-api string, good for direct output 
+```
+
+For more examples, see [usage](docs/project/usage.md).
 
 ## Features
 
