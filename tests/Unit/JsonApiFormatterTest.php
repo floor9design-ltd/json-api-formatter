@@ -529,7 +529,7 @@ class JsonApiFormatterTest extends TestCase
         // basic call
         $response = $reflection->invokeArgs($test_object, []);
 
-        $this->assertEquals("1.0", $response['jsonapi']->version ?? '');
+        $this->assertEquals("1.1", $response['jsonapi']->version ?? '');
     }
 
     // Main functionality : data resources
@@ -599,7 +599,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'data' => $resource_array,
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_json = json_encode($validated_array, true);
@@ -611,7 +611,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'data' => [$resource_array, $resource_array2],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_array_json = json_encode($validated_array, true);
@@ -626,7 +626,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'data' => [],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_array_json = json_encode($validated_array, true);
@@ -641,7 +641,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'data' => [$resource_array2, $resource_array3],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_array_json = json_encode($validated_array, true);
@@ -656,7 +656,7 @@ class JsonApiFormatterTest extends TestCase
         $validated_array = [
             'data' => [$resource_array, $resource_array4],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_array_json = json_encode($validated_array, true);
@@ -734,7 +734,7 @@ class JsonApiFormatterTest extends TestCase
                 $error2->process()
             ],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
         $validated_array2 = [
             'errors' => [
@@ -742,7 +742,7 @@ class JsonApiFormatterTest extends TestCase
                 $error2->process()
             ],
             'meta' => (object)['status' => null],
-            'jsonapi' => (object)['version' => '1.0']
+            'jsonapi' => (object)['version' => '1.1']
         ];
 
         $validated_json = json_encode($validated_array, true);

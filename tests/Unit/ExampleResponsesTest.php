@@ -57,7 +57,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseSingleResource()
     {
-        $validated_json = '{"data":{"id":"NCC-1701-A","type":"starship","attributes":{"name":"Enterprise"}},"meta":{"status":null},"jsonapi":{"version":"1.0"}}';
+        $validated_json = '{"data":{"id":"NCC-1701-A","type":"starship","attributes":{"name":"Enterprise"}},"meta":{"status":null},"jsonapi":{"version":"1.1"}}';
 
         // instantiate a new instance of the formatter:
         $json_api_formatter = new JsonApiFormatter();
@@ -78,7 +78,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseResponseMeta()
     {
-        $validated_json = '{"data":{"id":"XD-1","type":"starship","attributes":{"name":"Discovery One"}},"meta":{"status":"200"},"jsonapi":{"version":"1.0"}}';
+        $validated_json = '{"data":{"id":"XD-1","type":"starship","attributes":{"name":"Discovery One"}},"meta":{"status":"200"},"jsonapi":{"version":"1.1"}}';
 
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
@@ -104,7 +104,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseResourceMeta()
     {
-        $validated_json = '{"data":{"id":"ECF-270","type":"starship","attributes":{"name":"Rocinante"},"meta":{"previous_name":"MCRN Tachi"}},"meta":{"status":null},"jsonapi":{"version":"1.0"}}';
+        $validated_json = '{"data":{"id":"ECF-270","type":"starship","attributes":{"name":"Rocinante"},"meta":{"previous_name":"MCRN Tachi"}},"meta":{"status":null},"jsonapi":{"version":"1.1"}}';
 
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
@@ -128,7 +128,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseResourceLinks()
     {
-        $validated_json = '{"data":{"id":"unregistered","type":"battlecruiser","attributes":{"name":"Hyperion"}},"meta":{"status":null},"jsonapi":{"version":"1.0"},"links":{"self":"https://starcraft.fandom.com/wiki/Hyperion","support":{"href":"https://starcraft.fandom.com/wiki/Viking"}}}';
+        $validated_json = '{"data":{"id":"unregistered","type":"battlecruiser","attributes":{"name":"Hyperion"}},"meta":{"status":null},"jsonapi":{"version":"1.1"},"links":{"self":"https://starcraft.fandom.com/wiki/Hyperion","support":{"href":"https://starcraft.fandom.com/wiki/Viking"}}}';
 
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
@@ -159,7 +159,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseResourceIncluded()
     {
-        $validated_json = '{"data":{"id":"0896-24609","type":"shuttle","attributes":{"name":"Starbug"}},"meta":{"status":null},"jsonapi":{"version":"1.0"},"included":[{"id":"JMCRD","type":"mining_freighter","attributes":{"name":"Red Dwarf"}}]}';
+        $validated_json = '{"data":{"id":"0896-24609","type":"shuttle","attributes":{"name":"Starbug"}},"meta":{"status":null},"jsonapi":{"version":"1.1"},"included":[{"id":"JMCRD","type":"mining_freighter","attributes":{"name":"Red Dwarf"}}]}';
 
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
@@ -187,7 +187,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseResourceRelationships()
     {
-        $validated_json = '{"data":{"id":"red-5","type":"x-wing","attributes":{"pilot":"Luke Skywalker"},"relationships":{"wingman":{"data":{"id":"red-2","type":"x-wing"},"links":{"good_scene":"https://www.youtube.com/watch?v=eEeTWVru1qc"},"meta":{"pilot":"Wedge Antilles"}},"backup":{"data":{"id":"red-october","type":"submarine "},"links":{"good_meme":{"href":"https://www.youtube.com/watch?v=CF18ojCoo5k"}},"meta":{"captain":"Marko Aleksandrovich Ramius"}}}},"meta":{"status":null},"jsonapi":{"version":"1.0"}}';
+        $validated_json = '{"data":{"id":"red-5","type":"x-wing","attributes":{"pilot":"Luke Skywalker"},"relationships":{"wingman":{"data":{"id":"red-2","type":"x-wing"},"links":{"good_scene":"https://www.youtube.com/watch?v=eEeTWVru1qc"},"meta":{"pilot":"Wedge Antilles"}},"backup":{"data":{"id":"red-october","type":"submarine "},"links":{"good_meme":{"href":"https://www.youtube.com/watch?v=CF18ojCoo5k"}},"meta":{"captain":"Marko Aleksandrovich Ramius"}}}},"meta":{"status":null},"jsonapi":{"version":"1.1"}}';
 
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
@@ -234,7 +234,7 @@ class ExampleResponsesTest extends TestCase
      */
     public function testDataResponseMultipleObjects()
     {
-        $validated_json = '{"data":[{"id":"BSG75","type":"battlestar","attributes":{"name":"Galactica"}},{"id":"BSG62","type":"battlestar","attributes":{"name":"Pegasus"}}],"meta":{"status":null},"jsonapi":{"version":"1.0"}}';
+        $validated_json = '{"data":[{"id":"BSG75","type":"battlestar","attributes":{"name":"Galactica"}},{"id":"BSG62","type":"battlestar","attributes":{"name":"Pegasus"}}],"meta":{"status":null},"jsonapi":{"version":"1.1"}}';
 
         // instantiate a new instance of the formatter:
         $json_api_formatter = new JsonApiFormatter();

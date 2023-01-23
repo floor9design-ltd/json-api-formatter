@@ -26,7 +26,7 @@ use stdClass;
  * Class JsonApiFormatter
  *
  * Class to offer methods/properties to format items ready for a Json Api request.
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -336,7 +336,7 @@ class JsonApiFormatter
     public function autoIncludeJsonapi(): JsonApiFormatter
     {
         // Cant form an object before instantiation, so do it here:
-        $this->base_response_array['jsonapi'] = (object)['version' => '1.0'];
+        $this->base_response_array['jsonapi'] = (object)['version' => '1.1'];
         return $this;
     }
 
