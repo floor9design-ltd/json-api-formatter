@@ -117,6 +117,9 @@ class ErrorTest extends TestCase
             $array['meta']
         );
 
+        // meta is processed
+        $array['meta'] = $array['meta']->process();
+
         $this->assertEquals($error->process(), $array);
     }
 
@@ -152,8 +155,11 @@ class ErrorTest extends TestCase
             $array['meta']
         );
 
+        // meta is processed
+        $array['meta'] = $array['meta']->process();
+
         // should do nothing
-        $this->assertEquals($error->process(), $array);
+        $this->assertEquals($array, $error->process());
 
         // remove one by one, then check
         $error->setId(null);

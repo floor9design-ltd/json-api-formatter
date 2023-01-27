@@ -315,7 +315,7 @@ class Error
         }
 
         if($this->getMeta()) {
-            $return['meta'] = $this->getMeta();
+            $return['meta'] = $this->getMeta()->process();
         }
 
         // Spec 11.2 : An error object MAY have the following members, and MUST contain at least one of...
