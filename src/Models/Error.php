@@ -277,7 +277,7 @@ class Error
     }
 
     /**
-     * @return array<string, object|string|null>
+     * @return array<mixed>
      * @throws JsonApiFormatterException
      */
     public function process(): array
