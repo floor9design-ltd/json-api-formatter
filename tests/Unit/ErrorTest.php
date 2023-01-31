@@ -90,6 +90,7 @@ class ErrorTest extends TestCase
      * Test Error::process()
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testProcess()
     {
@@ -117,7 +118,8 @@ class ErrorTest extends TestCase
             $array['meta']
         );
 
-        // meta is processed
+        // some items are processed
+        $array['links'] = $array['links']->process();
         $array['meta'] = $array['meta']->process();
 
         $this->assertEquals($error->process(), $array);
@@ -155,7 +157,8 @@ class ErrorTest extends TestCase
             $array['meta']
         );
 
-        // meta is processed
+        // some items are processed
+        $array['links'] = $array['links']->process();
         $array['meta'] = $array['meta']->process();
 
         // should do nothing
