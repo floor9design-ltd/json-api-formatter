@@ -121,7 +121,7 @@ class ErrorTest extends TestCase
         // some items are processed
         $array['links'] = (object)$array['links']->process();
         $array['source'] = $array['source']->process();
-        $array['meta'] = $array['meta']->process();
+        $array['meta'] = (object)$array['meta']->process();
 
         $this->assertEquals($error->process(), $array);
     }
@@ -161,7 +161,7 @@ class ErrorTest extends TestCase
         // some items are processed
         $array['links'] = (object)$array['links']->process();
         $array['source'] = $array['source']->process();
-        $array['meta'] = $array['meta']->process();
+        $array['meta'] = (object)$array['meta']->process();
 
         // should do nothing
         $this->assertEquals($array, $error->process());

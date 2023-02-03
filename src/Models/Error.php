@@ -311,7 +311,7 @@ class Error
         }
 
         if($this->getMeta()) {
-            $return['meta'] = $this->getMeta()->process();
+            $return['meta'] = (object)$this->getMeta()->process();
         }
 
         if($this->getLinks()) {
