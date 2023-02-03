@@ -311,7 +311,7 @@ class Error
         }
 
         if($this->getSource()) {
-            $return['source'] = $this->getSource();
+            $return['source'] = $this->getSource()->process();
         }
 
         if($this->getMeta()) {
