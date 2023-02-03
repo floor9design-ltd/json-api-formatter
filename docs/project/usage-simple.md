@@ -1,24 +1,30 @@
 # Simple use
 
+Note, there is a lot to learn about JSONAPI, you may find the linked examples an easy way to learn these.
+
 ## Basic overview
 
 The main functionality is provided by: `JsonApiFormatter`.
 
-The JsonApi specification uses several objects (and arryas of objects) to encapsulate the responses. These are mapped
+The JsonApi specification uses several objects (and arrays of objects) to encapsulate the responses. These are mapped
 to the following php items:
 
 * object: `DataResource`
 * object: `Error`
 * array: `Included`
 * object: `Link`
+* object: `Source`
 * object: `Meta`
 
 ## Usage
 
-Each method returns a json string. 
+The main methods return a json string. 
 
 If you use a framework such as Symfony or Laravel which prefers an array, then you can also use the `...Array()` 
-methods which are also exposed. Remember to check that your implementation is correctly encoding these. 
+methods which are also exposed. Remember to check that your implementation is correctly encoding these - often they 
+are incorrect. You may prefer to use the preformatted code responses:
+
+* [framework responses](framework_responses.md)
 
 ## data resources
 
@@ -51,23 +57,6 @@ $response = $json_api_response->dataResourceResponseArray($id, $type, $attribute
 
 Errors can be quickly created using the `errorResponse()` function.
 
-The following arguments are required:
-
-* `errors` : array of error objects
-
-The error object is constructed as follows:
-
-* `id` : id for the error resource (string)
-* `links` : `Links` object  for the data resource
-* `status` : http status for the error resource (string)
-* `code`  : application-specific error code (string)
-* `title` : title of the error (string)
-* `detail` : detail of the error resource (string)
-* `source` : `Source` object containing references to the primary source of the error
-* `meta` : `Meta` object for the error resource
-
-These are individually optional but at least one of them is required
-
 ```php
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Error;
@@ -77,7 +66,7 @@ $error = new Error(
     '12656',
     null,
     '403',
-    'HAL-9000-NOPE'
+    'HAL-9000-NOPE',
     'Access error',
     'Im sorry Dave, Im afraid I cant do that',
 );
@@ -92,4 +81,7 @@ $response = $json_api_response->errorResponseArray($errors);
 // an array 
 ```
 
+See more detail at:
+
+* [error documentation](errors.md)
 

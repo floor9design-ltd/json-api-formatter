@@ -34,6 +34,8 @@ $response = $json_api_response->dataResourceResponse($id, $type, $attributes);
 // a json-api string, good for direct output 
 ```
 
+Other responses and elements, such as errors, meta data, links and source elements are all supported. 
+
 For more examples, see [usage](docs/project/usage.md).
 
 ## Features
