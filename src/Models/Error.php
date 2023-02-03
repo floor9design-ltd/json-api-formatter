@@ -291,7 +291,7 @@ class Error
         }
 
         if($this->getLinks()) {
-            $return['links'] = $this->getLinks()->process();
+            $return['links'] = (object)$this->getLinks()->process();
         }
 
         if($this->getStatus()) {
