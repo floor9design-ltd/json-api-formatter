@@ -290,10 +290,6 @@ class Error
             $return['id'] = $this->getId();
         }
 
-        if($this->getLinks()) {
-            $return['links'] = (object)$this->getLinks()->process();
-        }
-
         if($this->getStatus()) {
             $return['status'] = $this->getStatus();
         }
@@ -316,6 +312,10 @@ class Error
 
         if($this->getMeta()) {
             $return['meta'] = $this->getMeta()->process();
+        }
+
+        if($this->getLinks()) {
+            $return['links'] = (object)$this->getLinks()->process();
         }
 
         // Spec 11.2 : An error object MAY have the following members, and MUST contain at least one of...
