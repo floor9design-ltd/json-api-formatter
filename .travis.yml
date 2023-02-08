@@ -11,25 +11,43 @@
 # @link      https://github.com/floor9design-ltd/json-api-formatter
 # @link      https://floor9design.com
 # @since     File available since pre-release development cycle
+os: linux
 language: php
-dist: jammy
-php:
-  - '8.2.0'
+jobs:
+  include:
+    - dist: jammy
+      php:
+        - '8.2.0'
 
-addons:
-  apt:
-    update: true
-    packages:
-      - libonig-dev
+      addons:
+        apt:
+          update: true
+          packages:
+            - libonig-dev
 
-before_script:
-  - travis_retry composer self-update
-  - travis_retry composer install --no-interaction
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --no-interaction
 
-script:
-  - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
-  - ./vendor/bin/phpstan
+      script:
+        - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
+        - ./vendor/bin/phpstan
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
+
+    - dist: jammy
+      php:
+        - '8.1'
+
+      before_script:
+        - travis_retry composer self-update
+        - travis_retry composer install --no-interaction
+
+      script:
+        - XDEBUG_MODE=coverage ./vendor/phpunit/phpunit/phpunit --coverage-text --coverage-clover=coverage.clover
+        - ./vendor/bin/phpstan
+
+      after_success:
+        - bash <(curl -s https://codecov.io/bash)
 
