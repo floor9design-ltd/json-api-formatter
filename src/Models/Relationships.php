@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.1.1
+ * @version   1.3.0
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -34,7 +34,7 @@ use stdClass;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.1.1
+ * @version   1.3.0
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/

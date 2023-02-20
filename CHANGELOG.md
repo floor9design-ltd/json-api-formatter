@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.0 - 1.3.0
+
+* Support for PhpUnit 10 
+* Ongoing tweaks/improvements to functionality
+* Fixing missing edge case requirements (advanced nested elements etc)
+* Fixing some edge case json-api validation problems
+
 ## 1.0.0
 
 * Initial release following 6 months production beta testing
