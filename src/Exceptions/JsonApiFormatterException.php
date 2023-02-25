@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.0
+ * @version   1.3.1
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -29,7 +29,7 @@ use Exception;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.0
+ * @version   1.3.1
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
