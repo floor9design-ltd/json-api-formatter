@@ -19,6 +19,8 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+
 /**
  * Class DataResource
  *
@@ -201,6 +203,8 @@ class DataResource
      */
     public function process(): array
     {
+        $this->validate();
+
         // always return core:
         $array = [
           'id' => $this->getId(),
@@ -219,6 +223,23 @@ class DataResource
         }
 
         return $array;
+    }
+
+    /**
+     * Validates the DataResource structure
+     *
+     * @return DataResource
+     * @throws JsonApiFormatterException
+     */
+    protected function validate(): DataResource
+    {
+        if(($this->getId() === null) || ($this->getType() === null)) {
+            $message = 'The DataResource was not formed well. ';
+            $message .= 'Definition 7.2: A resource object MUST contain at least the following top-level members: id, type';
+            throw new JsonApiFormatterException($message);
+        }
+
+        return $this;
     }
 
 }

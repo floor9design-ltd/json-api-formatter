@@ -59,7 +59,6 @@ class DataResourceTest extends TestCase
      *
      * @return void
      * @throws TestingToolsException
-     * @throws JsonApiFormatterException
      */
     public function testDataAccessors()
     {
@@ -98,7 +97,6 @@ class DataResourceTest extends TestCase
      * Test DataResource::process()
      *
      * @return void
-     * @throws JsonApiFormatterException
      */
     public function testProcess()
     {
@@ -157,4 +155,35 @@ class DataResourceTest extends TestCase
         );
     }
 
+    /**
+     * Test DataResource::validate() with no ID
+     *
+     * @return void
+     */
+    public function testValidateNoId()
+    {
+        $data_resource = new DataResource(null, 'test');
+        $message = 'The DataResource was not formed well. ';
+        $message .= 'Definition 7.2: A resource object MUST contain at least the following top-level members: id, type';
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage($message);
+        $data_resource->process();
+    }
+
+    /**
+     * Test DataResource::validate() with no type
+     *
+     * @return void
+     */
+    public function testValidateNoType()
+    {
+        $data_resource = new DataResource('0');
+        $message = 'The DataResource was not formed well. ';
+        $message .= 'Definition 7.2: A resource object MUST contain at least the following top-level members: id, type';
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage($message);
+        $data_resource->process();
+    }
 }
