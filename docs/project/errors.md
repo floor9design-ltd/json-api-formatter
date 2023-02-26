@@ -9,7 +9,7 @@ From JSON API documentation:
 Error responses are an array of Error objects. You can choose whether to collect errors or return at the first 
 opportunity.
 
-An error object may have the following members, and must contain at least one of:
+> An error object may have the following members, and must contain at least one of:
 
 | member | detail                                                                                              | type   |
 |--------|-----------------------------------------------------------------------------------------------------|--------|

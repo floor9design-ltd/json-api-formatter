@@ -25,17 +25,23 @@ $json_api_response = new JsonApiFormatter();
 
 Most use cases fit the included simple-use functions. These are described as follows:
 
-* [simple usage](usage-simple.md)
+* [simple usage](usage_simple.md)
 
-There is also a tutorial that builds several responses:
+If you prefer to learn by example, there is also a tutorial that builds several responses:
 
-* [example responses](usage-example-responses.md)
+* [example responses](usage_example_responses.md)
+
+## Class reference
+
+Each class is explained in detail here:
+
+* [class reference](class_rererence.md)
 
 ## Creating a custom object
 
 If you need to make a custom object, then this is also possible:
 
-* [custom usage](usage-custom.md)
+* [custom usage](usage_custom.md)
 
 ## Outside the JSON packet
 

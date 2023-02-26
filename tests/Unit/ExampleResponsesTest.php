@@ -47,7 +47,7 @@ use PHPUnit\Framework\TestCase;
  * @version   1.3.1
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
- * @see       /docs/project/usage-example-responses.md
+ * @see       /docs/project/usage_example_responses.md
  * @since     File available since Release 1.0
  */
 class ExampleResponsesTest extends TestCase

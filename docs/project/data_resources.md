@@ -1,5 +1,8 @@
 # DataResource objects
 
+From JSON API documentation:
+* Specification: [specification](https://jsonapi.org/format/#document-resource-objects)
+
 The `DataResource` object maps to a [resource object](https://jsonapi.org/format/#document-resource-objects).
 These are used to create the `data` section of data: the document's primary data.
 
@@ -23,9 +26,24 @@ A `DataResource` object accepts the following instantiation arguments:
 These are all optional to allow dynamic construction of the object. However, from the documentation:
 
 > A resource object MUST contain at least the following top-level members:
-> * id
-> * type
- 
+
+| member | detail                                                                                            | type   |
+|--------|---------------------------------------------------------------------------------------------------|--------|
+| id     | a unique identifier for this particular occurrence of the problem                                 | string |
+| type   | a type member is used to describe resource objects that share common attributes and relationships | string |
+
+> In addition, a resource object MAY contain any of these top-level members:
+
+| member        | detail                                                      | type          |
+|---------------|-------------------------------------------------------------|---------------|
+| attributes    | A associative array (*) representing an `attributes` object | array         |
+| relationships | [relationships object](relationships.md)                    | Relationships |
+| links         | [links object](links.md)                                    | Links         |
+| meta          | [meta object](meta.md)                                      | Meta          |
+
+(*) Note: in JSON this is an object, but within php it is simpler and more appropriate to use an associative array as 
+this is all it is.
+
 ## Example usage
 
 An example basic instantiation might be:
@@ -41,7 +59,7 @@ $data_resource = new DataResource(
 );
 ```
 
-As per the [example responses](usage-example-responses.md), this can be processed quickly to be a JSON object:
+As per the [example responses](usage_example_responses.md), this can be processed quickly to be a JSON object:
 
 ```php 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
