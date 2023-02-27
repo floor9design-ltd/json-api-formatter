@@ -3,7 +3,7 @@
 From JSON API documentation:
 * Specification: [specification](https://jsonapi.org/format/#document-resource-objects)
 
-The `DataResource` object maps to a [resource object](https://jsonapi.org/format/#document-resource-objects).
+The `DataResource` object maps to a `resource object`.
 These are used to create the `data` section of data: the document's primary data.
 
 Note: JSON API is designed so that related data/relationships can be nested here. Metadata and other items live 
@@ -23,7 +23,7 @@ A `DataResource` object accepts the following instantiation arguments:
     }
 ```
 
-These are all optional to allow dynamic construction of the object. However, from the documentation:
+These are optional to allow dynamic construction of the object. However, from the documentation:
 
 > A resource object MUST contain at least the following top-level members:
 
