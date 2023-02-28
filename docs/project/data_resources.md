@@ -18,7 +18,8 @@ A `DataResource` object accepts the following instantiation arguments:
         ?array $attributes = null,
         ?DataResourceMeta $data_resource_meta = null,
         ?Relationships $relationships = null
-    ) {
+    ) 
+    {
         // ...
     }
 ```

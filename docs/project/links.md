@@ -11,7 +11,8 @@ These are used to create the `links` section of the packet. From the documentati
 A `Links` object accepts the following instantiation arguments:
 
 ```php
-    public function __construct(?array $array = []) {
+    public function __construct(?array $array = []) 
+    {
         // ...
     }
 ```
