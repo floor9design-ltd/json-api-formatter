@@ -45,17 +45,17 @@ class Relationship
     /**
      * @var RelationshipData|null
      */
-    var ?RelationshipData $data;
+    public ?RelationshipData $data;
 
     /**
      * @var RelationshipLinks|null
      */
-    var ?RelationshipLinks $links = null;
+    public ?RelationshipLinks $links = null;
 
     /**
      * @var RelationshipMeta|null
      */
-    var ?RelationshipMeta $meta;
+    public ?RelationshipMeta $meta;
 
     // accessors
 

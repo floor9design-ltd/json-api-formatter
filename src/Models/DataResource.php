@@ -46,27 +46,27 @@ class DataResource
     /**
      * @var array<mixed>|null
      */
-    var ?array $attributes = null;
+    public ?array $attributes = null;
 
     /**
      * @var DataResourceMeta|null
      */
-    var ?DataResourceMeta $data_resource_meta = null;
+    public ?DataResourceMeta $data_resource_meta = null;
 
     /**
      * @var string|null
      */
-    var ?string $id = null;
+    public ?string $id = null;
 
     /**
      * @var Relationships|null
      */
-    var ?Relationships $relationships = null;
+    public ?Relationships $relationships = null;
 
     /**
      * @var string|null
      */
-    var ?string $type = null;
+    public ?string $type = null;
 
     // accessors
 
