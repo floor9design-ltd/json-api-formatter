@@ -20,11 +20,11 @@
     ],
     "require": {
         "ext-json": "*",
-        "php" : ">=7.4"
+        "php" : ">=8.0"
     },
     "require-dev": {
-        "floor9design/testing-tools": "^1.3",
-        "mockery/mockery": "dev-master",
+        "floor9design/testing-tools": "^1.4",
+        "mockery/mockery": "dev-main",
         "phpstan/phpstan": "^1.0.0",
         "phpunit/phpunit": "^10|^9"
     },

@@ -18,7 +18,7 @@ The object can then be instantiated:
 // Example PSR-4 include
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 ```
 
 ## Simple use
@@ -50,8 +50,8 @@ The JSON API requires a specific `Content-Type` header, which can be loaded by `
 ```php
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 
-$json_api_response = new JsonApiFormatter();
-$content_type = $json_api_response->getContentType();
+$json_api_formatter = new JsonApiFormatter();
+$content_type = $json_api_formatter->getContentType();
 // application/vnd.api+json
 ```
 

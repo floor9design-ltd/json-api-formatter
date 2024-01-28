@@ -36,9 +36,9 @@ $id = "2";
 $type = 'test';
 $attributes = ['test' => 'data'];
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response
+$response = $json_api_formatter
     // unset the items that are not relevant
     ->unsetErrors()
     ->unsetLinks()

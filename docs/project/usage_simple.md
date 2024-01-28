@@ -44,12 +44,12 @@ $id = "2";
 $type = 'test';
 $attributes = ['test' => 'data'];
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response->dataResourceResponse($id, $type, $attributes); 
+$response = $json_api_formatter->dataResourceResponse($id, $type, $attributes); 
 // a json string, good for direct output 
 
-$response = $json_api_response->dataResourceResponseArray($id, $type, $attributes); 
+$response = $json_api_formatter->dataResourceResponseArray($id, $type, $attributes); 
 // an array 
 ```
 
@@ -72,12 +72,12 @@ $error = new Error(
 );
 $errors = [$error];
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response->errorResponse($errors);
+$response = $json_api_formatter->errorResponse($errors);
 // a json string, good for direct output 
 
-$response = $json_api_response->errorResponseArray($errors);
+$response = $json_api_formatter->errorResponseArray($errors);
 // an array 
 ```
 

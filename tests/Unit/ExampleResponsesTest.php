@@ -4,14 +4,14 @@
  *
  * ExampleResponsesTest class
  *
- * php 7.4+
+ * php 8.0+
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Tests\Unit
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
@@ -44,7 +44,7 @@ use PHPUnit\Framework\TestCase;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @see       /docs/project/usage_example_responses.md
@@ -141,11 +141,7 @@ class ExampleResponsesTest extends TestCase
         $links = new Links(
             [
                 'self' => 'https://starcraft.fandom.com/wiki/Hyperion',
-                'support' => new Link(
-                    [
-                        'href' => 'https://starcraft.fandom.com/wiki/Viking',
-                    ]
-                )
+                'support' => new Link('https://starcraft.fandom.com/wiki/Viking')
             ]
         );
         $json_api_formatter->setLinks($links);
@@ -211,7 +207,7 @@ class ExampleResponsesTest extends TestCase
         // alternate link build
         $relationship_two_links = new RelationshipLinks(
             [
-                'good_meme' => new Link(['href' => 'https://www.youtube.com/watch?v=CF18ojCoo5k'])
+                'good_meme' => new Link('https://www.youtube.com/watch?v=CF18ojCoo5k')
             ]
         );
         $relationship_two = new Relationship(

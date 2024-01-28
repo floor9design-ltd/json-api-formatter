@@ -4,14 +4,14 @@
  *
  * RelationshipLinksTest class
  *
- * php 7.4+
+ * php 8.0+
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Tests\Unit
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
@@ -35,7 +35,7 @@ use PHPUnit\Framework\TestCase;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
@@ -52,8 +52,7 @@ class RelationshipLinksTest extends TestCase
      */
     public function testConstructor()
     {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
+        $link = new Link('http://world.com');
         $string = 'a string link';
 
         $links = new RelationshipLinks(
@@ -75,8 +74,7 @@ class RelationshipLinksTest extends TestCase
      */
     public function testAddRelationshipLinks()
     {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
+        $link = new Link('http://world.com');
         $string = 'a string link';
 
         $links = new RelationshipLinks(['object' => $link]);
@@ -94,8 +92,7 @@ class RelationshipLinksTest extends TestCase
      */
     public function testUnsetRelationshipLinks()
     {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
+        $link = new Link('http://world.com');
         $string = 'a string link';
 
         $links = new RelationshipLinks(
@@ -118,8 +115,7 @@ class RelationshipLinksTest extends TestCase
      */
     public function testProcess()
     {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
+        $link = new Link('http://world.com');
         $string = 'a string link';
         $object_array = [
             'object' => $link->process(),
@@ -144,8 +140,7 @@ class RelationshipLinksTest extends TestCase
      */
     public function testValidate()
     {
-        $array = ['href' => 'http://world.com'];
-        $link = new Link($array);
+        $link = new Link('http://world.com');
         $bad_string = 2;
 
         $links = new RelationshipLinks(['object' => $link]);

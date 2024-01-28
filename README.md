@@ -74,8 +74,13 @@ git clone git@github.com:floor9design-ltd/json-api-formatter.git
 ## Usage
 
 This is discussed in the usage document.
-
 * [usage](docs/project/usage.md)
+
+## Class reference
+
+The class documentation is located in the class reference:
+
+* [class reference](docs/project/class_rererence.md)
 
 ## Setup
 
@@ -85,7 +90,7 @@ however is most appropriate.
 
 ## Testing
 
-[![Build Status](https://img.shields.io/travis/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.com/github/floor9design-ltd/json-api-formatter)
+[![Build Status](https://img.shields.io/travis/com/floor9design-ltd/json-api-formatter?style=plastic)](https://travis-ci.com/github/floor9design-ltd/json-api-formatter)
 [![Build Status](https://img.shields.io/codecov/c/github/floor9design-ltd/json-api-formatter?style=plastic)](https://codecov.io/gh/floor9design-ltd/json-api-formatter)
 
 Tests can be run as follows:

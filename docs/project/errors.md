@@ -43,12 +43,12 @@ $error = new Error(
 );
 $errors = [$error];
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response->errorResponse($errors);
+$response = $json_api_formatter->errorResponse($errors);
 // a json string, good for direct output 
 
-$response_array = $json_api_response->errorResponseArray($errors);
+$response_array = $json_api_formatter->errorResponseArray($errors);
 // an array 
 ```
 
@@ -123,9 +123,9 @@ $error_complex = new Error(
 );
 
 $errors = [$error_basic, $error_complex];
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response->errorResponse($errors);
+$response = $json_api_formatter->errorResponse($errors);
 ```
 
 `$response` is:

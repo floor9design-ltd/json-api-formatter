@@ -4,14 +4,14 @@
  *
  * Links class
  *
- * php 7.4+
+ * php 8.0+
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -20,6 +20,8 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\LinkInterface;
+use Floor9design\JsonApiFormatter\Interfaces\ProcessesInterface;
 use stdClass;
 
 /**
@@ -35,7 +37,7 @@ use stdClass;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/

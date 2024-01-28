@@ -4,14 +4,14 @@
  *
  * JsonApiFormatter class
  *
- * php 7.4+
+ * php 8.0+
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -33,7 +33,7 @@ use stdClass;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   1.3.1
+ * @version   2.0.0
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
@@ -657,7 +657,19 @@ class JsonApiFormatter
                         if (is_string($link)) {
                             $links->addLink($key, $link);
                         } else {
-                            $new_link = new Link($link);
+                            $href = $link['href'] ?? null;
+                            $rel = $link['rel'] ?? null;
+                            $title = $link['title'] ?? null;
+                            $type = $link['type'] ?? null;
+                            $hreflang = $link['hreflang'] ?? null;
+
+                            if($link['meta'] ?? false) {
+                                //$meta = $link['meta'] => $meta->process()
+                            } else {
+                                $meta = null;
+                            }
+
+                            $new_link = new Link($href, $rel, $title, $type, $hreflang, $meta);
                             $links->addLink($key, $new_link);
                         }
                     }
