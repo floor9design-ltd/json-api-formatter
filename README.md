@@ -28,9 +28,9 @@ $id = "2";
 $type = 'test';
 $attributes = ['test' => 'data'];
 
-$json_api_response = new JsonApiFormatter();
+$json_api_formatter = new JsonApiFormatter();
 
-$response = $json_api_response->dataResourceResponse($id, $type, $attributes); 
+$response = $json_api_formatter->dataResourceResponse($id, $type, $attributes); 
 // a json-api string, good for direct output 
 ```
 
