@@ -24,7 +24,7 @@ use Floor9design\JsonApiFormatter\Models\Link;
 /**
  * Class LinkInterface
  *
- * Interface for Links objects.
+ * Interface for Link objects.
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -41,10 +41,9 @@ use Floor9design\JsonApiFormatter\Models\Link;
 interface LinkInterface
 {
     /**
-     * Process a Link into an array ready for json encoding
+     * Process a Link into an array ready for JSON encoding
      *
      * @return array<string,array<mixed>>
      */
     public function process(): array;
-
 }

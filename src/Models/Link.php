@@ -27,7 +27,7 @@ use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
  * Class Link
  *
  * Class to offer methods/properties to prepare data for a Link object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -419,7 +419,7 @@ class Link implements LinkInterface
      * @throws JsonApiFormatterException
      */
     public function __construct(
-        string $href = null,
+        string $href,
         ?Link $described_by = null,
         ?string $rel = null,
         ?string $title = null,

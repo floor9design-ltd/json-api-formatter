@@ -11,13 +11,21 @@ The `Link` object maps to a `link object`.
 A `Link` object accepts the following instantiation arguments:
 
 ```php
-    public function __construct(?array $array = [])
+    public function __construct(
+        string $href = null,
+        ?Link $described_by = null,
+        ?string $rel = null,
+        ?string $title = null,
+        ?string $type = null,
+        null|array|string $hreflang = null,
+        ?MetaInterface $meta = null
+    )
     {
         // ...
     }
 ```
 
-These are optional to allow dynamic construction of the object. However, from the documentation:
+All apart from `$href` are optional to allow dynamic construction of the object. From the documentation:
 
 > A link object MUST contain the following member:
 
@@ -36,6 +44,18 @@ These are optional to allow dynamic construction of the object. However, from th
 | hreflang    | a string or an array of strings indicating the language(s) of the link's target               | array&vert;string |
 | meta        | a [Meta](meta.md) object containing non-standard meta-information about the link              | Meta              |
 
+## Fluent creation:
+
+Methods are available for fluent creation:
+
+* `$link->setHref($href)`
+* `$link->setDescribedBy($described_by)`
+* `$link->setRel($rel)`
+* `$link->setTitle($title)`
+* `$link->setType($type)`
+* `$link->setHreflang($hreflang)`
+* `$link->setMeta($meta)`
+
 ## Example
 
 A `Link` object could be constructed as follows:
@@ -53,3 +73,7 @@ $link = new Link(
     new Meta(['comment' => 'One of the best role-call scenes ever'])
 );
 ```
+
+There are more examples on [Links](links.md)
+
+
