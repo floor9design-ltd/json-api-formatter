@@ -58,7 +58,7 @@ class LinkTest extends TestCase
      */
     public function testInheritance(): void
     {
-        $link = new Link();
+        $link = new Link('test');
         $this->assertInstanceOf(
             LinkInterface::class,
             $link,
@@ -74,7 +74,7 @@ class LinkTest extends TestCase
     public function testAccessors(): void
     {
         $generator = new Generator();
-        $link = new Link();
+        $link = new Link('test');
 
         // generic tests
 
@@ -130,7 +130,7 @@ class LinkTest extends TestCase
      */
     public function testValidationRel(): void
     {
-        $link = new Link();
+        $link = new Link('test');
 
         $invalid_rel = 'not_valid_rel';
         $this->expectException(JsonApiFormatterException::class);
@@ -147,7 +147,7 @@ class LinkTest extends TestCase
     public function testConstructor(): void
     {
         $generator = new Generator();
-        $link = new Link();
+        $link = new Link('test');
 
         $rel_types = $link->getLinkRelationTypes();
         $valid_rel = array_rand($rel_types);
@@ -222,7 +222,7 @@ class LinkTest extends TestCase
     public function testProcess(): void
     {
         $generator = new Generator();
-        $link = new Link();
+        $link = new Link('test');
 
         $rel_types = $link->getLinkRelationTypes();
         $valid_rel = array_rand($rel_types);
@@ -271,13 +271,5 @@ class LinkTest extends TestCase
             $link->process(),
             'The link did not process correctly'
         );
-
-        // incomplete
-        $link = new Link();
-        $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('A link must contain the href element');
-        $link->process();
-
     }
-
 }

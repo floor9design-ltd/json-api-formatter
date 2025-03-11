@@ -48,7 +48,7 @@ class Link implements LinkInterface
      * a string whose value is a URI-reference [RFC3986 Section 4.1] pointing to the link's target.
      * @var string|null
      */
-    protected ?string $href = null;
+    protected string $href;
 
     /**
      * a string indicating the link's relation type. The string MUST be a valid link relation type.
@@ -228,10 +228,10 @@ class Link implements LinkInterface
     // accessors
 
     /**
-     * @return string|null
+     * @return string
      * @see $href
      */
-    public function getHref(): ?string
+    public function getHref(): string
     {
         return $this->href;
     }
@@ -410,6 +410,7 @@ class Link implements LinkInterface
      * Link constructor.
      *
      * @param string|null $href
+     * @param Link|null $described_by
      * @param string|null $rel
      * @param string|null $title
      * @param string|null $type
@@ -418,7 +419,7 @@ class Link implements LinkInterface
      * @throws JsonApiFormatterException
      */
     public function __construct(
-        ?string $href = null,
+        string $href = null,
         ?Link $described_by = null,
         ?string $rel = null,
         ?string $title = null,
@@ -447,37 +448,18 @@ class Link implements LinkInterface
     }
 
     /**
-     * Validates the link object before processing
-     *
-     * @return bool
-     */
-    protected function validateLink(): bool
-    {
-        // link object must contain href
-        if ($this->getHref()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @return array<string, array<mixed>|string|null>
      * @throws JsonApiFormatterException
      */
     public function process(): array
     {
-        if (!$this->validateLink()) {
-            throw new JsonApiFormatterException('A link must contain the href element');
-        }
-
         $response = ['href' => $this->getHref()];
 
         if ($this->getRel()) {
             $response['rel'] = $this->getRel();
         }
 
-        if($this->getDescribedBy()) {
+        if ($this->getDescribedBy()) {
             $response['describedby'] = $this->getDescribedBy()->process();
         }
 
