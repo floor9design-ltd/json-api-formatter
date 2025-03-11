@@ -23,7 +23,6 @@ namespace Examples\Errors;
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use PHPUnit\Framework\TestCase;
 
 /**
