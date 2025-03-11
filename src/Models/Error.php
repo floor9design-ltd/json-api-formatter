@@ -25,7 +25,7 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
  * Class Error
  *
  * Class to offer methods/properties to prepare data for an Error
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -46,42 +46,42 @@ class Error
     /**
      * @var string|null
      */
-    var ?string $id = null;
+    protected ?string $id = null;
 
     /**
      * @var Links|null
      */
-    var ?Links $links = null;
+    protected ?Links $links = null;
 
     /**
      * @var string|null
      */
-    var ?string $status = null;
+    protected ?string $status = null;
 
     /**
      * @var string|null
      */
-    var ?string $code = null;
+    protected ?string $code = null;
 
     /**
      * @var string|null
      */
-    var ?string $title = null;
+    protected ?string $title = null;
 
     /**
      * @var string|null
      */
-    var ?string $detail = null;
+    protected ?string $detail = null;
 
     /**
      * @var Source|null
      */
-    var ?Source $source = null;
+    protected ?Source $source = null;
 
     /**
      * @var Meta|null
      */
-    var ?Meta $meta = null;
+    protected ?Meta $meta = null;
 
     // accessors
 
@@ -286,40 +286,40 @@ class Error
 
         $return = [];
 
-        if($this->getId()) {
+        if ($this->getId()) {
             $return['id'] = $this->getId();
         }
 
-        if($this->getStatus()) {
+        if ($this->getStatus()) {
             $return['status'] = $this->getStatus();
         }
 
-        if($this->getCode()) {
+        if ($this->getCode()) {
             $return['code'] = $this->getCode();
         }
 
-        if($this->getTitle()) {
+        if ($this->getTitle()) {
             $return['title'] = $this->getTitle();
         }
 
-        if($this->getDetail()) {
+        if ($this->getDetail()) {
             $return['detail'] = $this->getDetail();
         }
 
-        if($this->getSource()) {
+        if ($this->getSource()) {
             $return['source'] = $this->getSource()->process();
         }
 
-        if($this->getMeta()) {
+        if ($this->getMeta()) {
             $return['meta'] = (object)$this->getMeta()->process();
         }
 
-        if($this->getLinks()) {
+        if ($this->getLinks()) {
             $return['links'] = (object)$this->getLinks()->process();
         }
 
-        // Spec 11.2 : An error object MAY have the following members, and MUST contain at least one of...
-        if(count($return) == 0) {
+        // Spec 11.2: An error object MAY have the following members, and MUST contain at least one of...
+        if (count($return) == 0) {
             throw new JsonApiFormatterException('Errors must contain at least one member.');
         }
 

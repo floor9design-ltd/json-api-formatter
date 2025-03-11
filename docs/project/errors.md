@@ -6,8 +6,12 @@ From JSON API documentation:
 * Specification: [specification](https://jsonapi.org/format/#errors)
 * Example: [example](https://jsonapi.org/examples/#error-objects)
 
+## Errors
+
 Error responses are an array of Error objects. You can choose whether to collect errors or return at the first 
 opportunity.
+
+## The `Error` object
 
 > An error object may have the following members, and must contain at least one of:
 
@@ -46,7 +50,8 @@ $errors = [$error];
 $json_api_formatter = new JsonApiFormatter();
 
 $response = $json_api_formatter->errorResponse($errors);
-// a json string, good for direct output 
+// a JSON string, good for direct output 
+// $response = '{"errors":[{"id":"12656","status":"403" ... '
 
 $response_array = $json_api_formatter->errorResponseArray($errors);
 // an array 
@@ -73,6 +78,8 @@ $response_array = $json_api_formatter->errorResponseArray($errors);
     }
 }
 ```
+
+This is shown in [SimpleUsageTest](../../tests/Unit/Examples/Errors/SimpleUsageTest.php)
 
 ## Advanced usage
 
