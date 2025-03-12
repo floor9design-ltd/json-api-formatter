@@ -20,15 +20,14 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
-use Floor9design\JsonApiFormatter\Interfaces\LinkInterface;
-use Floor9design\JsonApiFormatter\Interfaces\ProcessesInterface;
+use Floor9design\JsonApiFormatter\Interfaces\LinksInterface;
 use stdClass;
 
 /**
  * Class Links
  *
  * Class to offer methods/properties to prepare data for a Links object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * Note: links should be populated by either a Link object or a string
  *
@@ -44,7 +43,7 @@ use stdClass;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Links
+class Links implements LinksInterface
 {
     /**
      * @var array<string|Link>
@@ -72,6 +71,7 @@ class Links
     }
 
     // constructor
+
     /**
      * Links constructor.
      * Automatically sets up the provided array as properties
@@ -97,12 +97,12 @@ class Links
      */
     public function addLink(string $name, $link, bool $overwrite = false): Links
     {
-        if(isset($this->getLinks()[$name]) && !$overwrite) {
+        if (isset($this->getLinks()[$name]) && !$overwrite) {
             $message = 'The link provided clashes with existing links - it should be added manually';
             throw new JsonApiFormatterException($message);
         }
 
-        if($this->validateProperty($link)) {
+        if ($this->validateProperty($link)) {
             $this->links[$name] = $link;
         }
 
@@ -121,15 +121,16 @@ class Links
 
     /**
      * @return array<array<array<int|float|string>|stdClass|string>|string>
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
         $array = [];
 
-        foreach($this->getLinks() as $key => $link) {
-            if($link instanceof Link) {
+        foreach ($this->getLinks() as $key => $link) {
+            if ($link instanceof Link) {
                 $array[$key] = $link->process();
-            } elseif(is_string($link)) {
+            } elseif (is_string($link)) {
                 $array[$key] = $link;
             }
         }

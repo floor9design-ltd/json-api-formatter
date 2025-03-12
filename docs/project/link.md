@@ -56,6 +56,10 @@ Methods are available for fluent creation:
 * `$link->setHreflang($hreflang)`
 * `$link->setMeta($meta)`
 
+The class also exposes:
+
+* `$link->process()`: returns a validated array link
+
 ## Example
 
 A `Link` object could be constructed as follows:

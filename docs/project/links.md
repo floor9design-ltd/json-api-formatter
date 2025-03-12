@@ -17,14 +17,29 @@ A `Links` object accepts the following instantiation arguments:
     }
 ```
 
-These are optional to allow dynamic construction of the object. The array should be an array of Link` objects. 
+The array made from any of the following: 
 
-These can be modified using 
+| type            | detail                                                                |
+|-----------------|-----------------------------------------------------------------------|
+| string          | a string whose value is a URI-reference pointing to the link’s target |                        | string            |
+| a `Link` object | a [Link](link.md) object                                              |
+| null            | null if the link does not exist                                       |
 
-* `setLinks()`
-* `addLink()`
-* `unsetLink()`
+The naming of these should be considered:
+
+> link’s relation type SHOULD be inferred from the name of the link unless the link is a link object and the link 
+> object has a rel member.
+
+Example names might be `self`, `related`
+
+## Fluent creation
+
+Methods are available for fluent creation:
+
+* `$links->setLinks()`
+* `$links->addLink()`
+* `$links->unsetLink()`
 
 The class also exposes:
 
-* `process()`: returns a validated array of the data section
+* `$links->process()`: returns a validated array of the links and link objects contained
