@@ -20,6 +20,7 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
 
@@ -52,6 +53,22 @@ class MetaTest extends TestCase
         $array = ['hello' => 'world'];
         $meta = new Meta($array);
         $this->assertEquals($meta->getMeta()['hello'], 'world');
+    }
+
+    /**
+     * Test meta interfaces.
+     *
+     * @return void
+     */
+    public function testInheritance(): void
+    {
+        $array = ['hello' => 'world'];
+        $meta = new Meta($array);
+        $this->assertInstanceOf(
+            MetaInterface::class,
+            $meta,
+            'The Meta was not an instance of MetaInterface'
+        );
     }
 
     /**

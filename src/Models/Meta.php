@@ -25,7 +25,7 @@ use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
  * Class Meta
  *
  * Class to offer methods/properties to prepare data for a Meta object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -75,7 +75,7 @@ class Meta implements MetaInterface
      */
     public function __construct(?array $array = [])
     {
-        if(is_iterable($array)) {
+        if (is_iterable($array)) {
             $this->setMeta($array);
         }
     }
