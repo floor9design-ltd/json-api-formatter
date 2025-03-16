@@ -91,6 +91,7 @@ class RelationshipsTest extends TestCase
      * Test Relationships interfaces.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testInheritance(): void
     {
