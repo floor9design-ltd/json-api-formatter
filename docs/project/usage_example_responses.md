@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a tutorial that works through many of the basics. It is echoed in the unit test `ExampleResponsesTest` and is 
+This is a tutorial that works through many of the basics. It is echoed in the unit test `ExampleResponsesTest` and is
 designed to give a working overview of the classes.
 
 Remember: this software confirms to the JSONAPI standard, so it's a good idea to keep the definition/references nearby.
@@ -18,7 +18,7 @@ Data responses are the main use case for an API.
 
 ### Data Response : Single resource
 
-Single data resources simple as it comes really: 
+Single data resources simple as it comes really:
 
 ```php
 // include classes
@@ -37,7 +37,9 @@ $data_resource = new DataResource(
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -51,10 +53,11 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   }
 }
 ```
+
 Note that this is separate to the entire response meta (see below).
 
 ### Data Response : Adding response meta
@@ -84,7 +87,9 @@ $json_api_formatter->setMeta($meta);
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -98,18 +103,19 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": "200"
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   }
 }
 ```
+
 ### Data Response : Single resource with resource meta
 
-Single data resources can have their own meta (`DataResourceMeta`):
+Single data resources can have their own meta (`Meta`):
 
 ```php
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\DataResource;
-use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
+use Floor9design\JsonApiFormatter\Models\Meta;
 
 $json_api_formatter = new JsonApiFormatter();
 $data_resource = new DataResource(
@@ -119,14 +125,16 @@ $data_resource = new DataResource(
 );
 
 // Assign the meta to the data resource
-$data_resource_meta = new DataResourceMeta(
+$data_resource_meta = new Meta(
     ['previous_name' => 'MCRN Tachi']
 );
-$data_resource->setDataResourceMeta($data_resource_meta);
+$data_resource->setMeta($data_resource_meta);
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -143,10 +151,11 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   }
 }
 ```
+
 ### Data Response : Single resource with response links
 
 Single data resources can offer links relevant to the response
@@ -177,7 +186,9 @@ $json_api_formatter->setLinks($links);
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -191,7 +202,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   },
   "links": {
     "self": "https://starcraft.fandom.com/wiki/Hyperion",
@@ -201,9 +212,11 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
   }
 }
 ```
-### Data Response : Single resource with some included data 
+
+### Data Response: Single resource with some included data
 
 Single data resources can offer included data resources.
+
 ```php
 // include classes
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
@@ -229,7 +242,9 @@ $json_api_formatter->setIncluded($included);
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -243,7 +258,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   },
   "included": [
     {
@@ -256,10 +271,12 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
   ]
 }
 ```
+
 ### Data Response : Single resource with relationships
 
 Single data resources can offer relationships. These also can have links and meta relevant to the included
 resources. Note that the relationship data resource is limited.
+
 ```php
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\DataResource;
@@ -307,7 +324,9 @@ $data_resource->setRelationships($relationships);
 
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": {
@@ -349,10 +368,11 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   }
 }
 ```
+
 ### Data Response : Multiple objects
 
 The data resource can be either a `DataResource` or an array of `DataResources`.
@@ -381,7 +401,9 @@ $data_resource2 = new DataResource(
 $response = $json_api_formatter->dataResourceResponse([$data_resource, $data_resource2]);
 
 ```
+
 `$response` is the following json:
+
 ```json
 {
   "data": [
@@ -404,6 +426,6 @@ $response = $json_api_formatter->dataResourceResponse([$data_resource, $data_res
     "status": null
   },
   "jsonapi": {
-    "version": "1.0"
+    "version": "1.1"
   }
 }

@@ -22,7 +22,6 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
-use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\Included;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
@@ -135,7 +134,6 @@ class JsonApiFormatterTest extends TestCase
         $this->expectExceptionMessage('addDataAttribute() can only be used with a single DataResource');
         $json_api_formatter->setData($test_array);
         $json_api_formatter->addDataAttribute('foo', 'bar');
-
     }
 
     /**
@@ -564,7 +562,7 @@ class JsonApiFormatterTest extends TestCase
         ];
 
         $array = ['hello' => 'world'];
-        $data_resource_meta = new DataResourceMeta($array);
+        $data_resource_meta = new Meta($array);
 
         $relationship_links = new RelationshipLinks();
         $relationship_data = new RelationshipData('2', 'test');

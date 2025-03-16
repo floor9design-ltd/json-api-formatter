@@ -21,7 +21,6 @@
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Models\DataResource;
-use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
 use Floor9design\JsonApiFormatter\Models\Included;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Link;
@@ -114,10 +113,10 @@ class ExampleResponsesTest extends TestCase
         );
 
         // Assign the meta to the data resource
-        $data_resource_meta = new DataResourceMeta(
+        $meta = new Meta(
             ['previous_name' => 'MCRN Tachi']
         );
-        $data_resource->setDataResourceMeta($data_resource_meta);
+        $data_resource->setMeta($meta);
 
         $response = $json_api_formatter->dataResourceResponse($data_resource);
         $this->assertEquals($validated_json, $response);
@@ -195,7 +194,8 @@ class ExampleResponsesTest extends TestCase
         // each relationship is similar to a separate object, with slightly less content in the main data resource
         $relationship_one_data = new RelationshipData('red-2', 'x-wing');
         $relationship_one_meta = new RelationshipMeta(['pilot' => 'Wedge Antilles']);
-        $relationship_one_links = new RelationshipLinks(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']);
+        $relationship_one_links = new RelationshipLinks(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']
+        );
         $relationship_one = new Relationship(
             $relationship_one_links,
             $relationship_one_data,

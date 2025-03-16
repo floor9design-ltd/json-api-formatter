@@ -20,12 +20,13 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
 
 /**
  * Class DataResource
  *
  * Class to offer methods/properties to prepare data for a DataResource
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -49,9 +50,9 @@ class DataResource
     public ?array $attributes = null;
 
     /**
-     * @var DataResourceMeta|null
+     * @var MetaInterface|null
      */
-    public ?DataResourceMeta $data_resource_meta = null;
+    public ?MetaInterface $meta = null;
 
     /**
      * @var string|null
@@ -93,22 +94,22 @@ class DataResource
     }
 
     /**
-     * @return DataResourceMeta|null
-     * @see $data_resource_meta
+     * @return MetaInterface|null
+     * @see $meta
      */
-    public function getDataResourceMeta(): ?DataResourceMeta
+    public function getMeta(): ?MetaInterface
     {
-        return $this->data_resource_meta;
+        return $this->meta;
     }
 
     /**
-     * @param DataResourceMeta|null $data_resource_meta
+     * @param MetaInterface|null $meta
      * @return DataResource
-     * @see $data_resource_meta
+     * @see $meta
      */
-    public function setDataResourceMeta(?DataResourceMeta $data_resource_meta): DataResource
+    public function setMeta(?MetaInterface $meta): DataResource
     {
-        $this->data_resource_meta = $data_resource_meta;
+        $this->meta = $meta;
         return $this;
     }
 
@@ -179,27 +180,28 @@ class DataResource
      * @param string|null $id
      * @param string|null $type
      * @param array<mixed>|null $attributes
-     * @param DataResourceMeta|null $data_resource_meta
+     * @param MetaInterface|null $meta
      * @param Relationships|null $relationships
      */
     public function __construct(
         ?string $id = null,
         ?string $type = null,
         ?array $attributes = null,
-        ?DataResourceMeta $data_resource_meta = null,
+        ?MetaInterface $meta = null,
         ?Relationships $relationships = null
     ) {
         $this
             ->setId($id)
             ->setType($type)
             ->setAttributes($attributes)
-            ->setDataResourceMeta($data_resource_meta)
+            ->setMeta($meta)
             ->setRelationships($relationships);
     }
 
     /**
      * @phpstan-return array{id:string|null,type:string|null,attributes:array<mixed>|null,meta?:array<mixed>|null}
      * @return array
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
@@ -212,12 +214,12 @@ class DataResource
           'attributes' => $this->getAttributes()
         ];
 
-        // return DataResourceMeta if set, else clean
-        if(($this->getDataResourceMeta() instanceof DataResourceMeta)) {
-            $array['meta'] = $this->getDataResourceMeta()->process();
+        // return Meta if set, else clean
+        if(($this->getMeta() instanceof MetaInterface)) {
+            $array['meta'] = $this->getMeta()->process();
         }
 
-        // return DataResourceMeta if set, else clean
+        // return Meta if set, else clean
         if(($this->getRelationships() instanceof Relationships)) {
             $array['relationships'] = $this->getRelationships()->process();
         }

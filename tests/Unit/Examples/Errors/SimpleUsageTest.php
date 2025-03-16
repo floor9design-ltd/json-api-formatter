@@ -1,8 +1,8 @@
 <?php
 /**
- * SimpleUsageTest.php
+ * SimpleDataResponseTest.php
  *
- * SimpleUsageTest class
+ * SimpleDataResponseTest class
  *
  * php 8.0+
  *
@@ -26,7 +26,7 @@ use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * SimpleUsageTest
+ * SimpleDataResponseTest
  *
  * This runs the test in /docs/project/errors.md
  *

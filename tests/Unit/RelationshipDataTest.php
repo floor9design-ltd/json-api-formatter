@@ -20,7 +20,7 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
-use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
@@ -67,9 +67,9 @@ class RelationshipDataTest extends TestCase
         );
 
         $array = ['hello' => 'world'];
-        $relationship_data_meta = new DataResourceMeta($array);
-        $relationship_data->setDataResourceMeta($relationship_data_meta);
-        $this->assertEquals($relationship_data_meta, $relationship_data->getDataResourceMeta());
+        $relationship_data_meta = new Meta($array);
+        $relationship_data->setMeta($relationship_data_meta);
+        $this->assertEquals($relationship_data_meta, $relationship_data->getMeta());
     }
 
     /**
@@ -93,8 +93,8 @@ class RelationshipDataTest extends TestCase
         );
 
         $array = ['hello' => 'world'];
-        $relationship_data_meta = new DataResourceMeta($array);
-        $relationship_data->setDataResourceMeta($relationship_data_meta);
+        $relationship_data_meta = new Meta($array);
+        $relationship_data->setMeta($relationship_data_meta);
 
         $this->assertEquals(
             (object)[

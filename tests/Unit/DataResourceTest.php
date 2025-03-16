@@ -22,7 +22,7 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
-use Floor9design\JsonApiFormatter\Models\DataResourceMeta;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
@@ -80,9 +80,9 @@ class DataResourceTest extends TestCase
         );
 
         $array = ['hello' => 'world'];
-        $data_resource_meta = new DataResourceMeta($array);
-        $data_resource->setDataResourceMeta($data_resource_meta);
-        $this->assertEquals($data_resource_meta, $data_resource->getDataResourceMeta());
+        $meta = new Meta($array);
+        $data_resource->setMeta($meta);
+        $this->assertEquals($meta, $data_resource->getMeta());
 
         $links = new RelationshipLinks();
         $data = new RelationshipData();
@@ -115,8 +115,8 @@ class DataResourceTest extends TestCase
         );
 
         $array = ['hello' => 'world'];
-        $data_resource_meta = new DataResourceMeta($array);
-        $data_resource->setDataResourceMeta($data_resource_meta);
+        $meta = new Meta($array);
+        $data_resource->setMeta($meta);
 
         $this->assertEquals(
             [
@@ -139,8 +139,8 @@ class DataResourceTest extends TestCase
         $data_resource->setRelationships($relationships);
 
         $array = ['hello' => 'world'];
-        $data_resource_meta = new DataResourceMeta($array);
-        $data_resource->setDataResourceMeta($data_resource_meta);
+        $meta = new Meta($array);
+        $data_resource->setMeta($meta);
 
         $this->assertEquals(
             [

@@ -7,7 +7,7 @@
  * php 8.0+
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit\Example\Links
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -18,21 +18,22 @@
  *
  */
 
-namespace Examples\Links;
+namespace Examples\Meta;
 
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use PHPUnit\Framework\TestCase;
 
 /**
  * SimpleDataResponseTest
  *
- * This runs the test in /docs/project/links.md
+ * This runs the test in /docs/project/meta.md
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit\Example\Links
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Meta
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -41,30 +42,30 @@ use PHPUnit\Framework\TestCase;
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
  */
-class SimpleUsageTest extends TestCase
+class SimpleDataResponseTest extends TestCase
 {
     /**
      * Data Response : Adding response links
      */
-    public function testSimpleUsage()
+    public function testSimpleDataResponse()
     {
         $json_api_formatter = new JsonApiFormatter();
         $data_resource = new DataResource(
-            'unregistered',
-            'battlecruiser',
-            ['name' => 'Hyperion']
+            'XD-1',
+            'starship',
+            ['name' => 'Discovery One']
         );
 
-        $links = new Links(
-            [
-                'self' => 'https://starcraft.fandom.com/wiki/Hyperion',
-                'support' => new Link('https://starcraft.fandom.com/wiki/Viking')
-            ]
+        // set up the meta
+        $meta = new Meta(
+            ['status' => '200']
         );
-        $json_api_formatter->setLinks($links);
+
+        // if you wish to overwrite existing content, use setMeta, else use addMeta
+        $json_api_formatter->setMeta($meta);
 
         $response = $json_api_formatter->dataResourceResponse($data_resource);
-        $this->assertEquals($this->getExpectedJson(), $response);
+        $this->assertSame($this->getExpectedJson(), $response);
     }
 
     /**
@@ -72,6 +73,6 @@ class SimpleUsageTest extends TestCase
      */
     protected function getExpectedJson(): string
     {
-        return '{"data":{"id":"unregistered","type":"battlecruiser","attributes":{"name":"Hyperion"}},"meta":{"status":null},"jsonapi":{"version":"1.1"},"links":{"self":"https://starcraft.fandom.com/wiki/Hyperion","support":{"href":"https://starcraft.fandom.com/wiki/Viking"}}}';
+        return '{"data":{"id":"XD-1","type":"starship","attributes":{"name":"Discovery One"}},"meta":{"status":"200"},"jsonapi":{"version":"1.1"}}';
     }
 }
