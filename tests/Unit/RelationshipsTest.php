@@ -21,6 +21,7 @@
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
@@ -68,7 +69,7 @@ class RelationshipsTest extends TestCase
     }
 
     /**
-     * Test link constructor.
+     * Test Relationships constructor.
      *
      * @return void
      * @throws JsonApiFormatterException
@@ -84,6 +85,28 @@ class RelationshipsTest extends TestCase
         $relationships = new Relationships(['test' => $relationship]);
 
         $this->assertEquals($relationship, $relationships->getRelationships()['test']);
+    }
+
+    /**
+     * Test Relationships interfaces.
+     *
+     * @return void
+     */
+    public function testInheritance(): void
+    {
+        $links = new RelationshipLinks(['test' => 'link']);
+        $data = new RelationshipData("2", "test");
+        $meta = new RelationshipMeta();
+
+        $relationship = new Relationship($links, $data, $meta);
+
+        $relationships = new Relationships(['test' => $relationship]);
+
+        $this->assertInstanceOf(
+            RelationshipsInterface::class,
+            $relationships,
+            'The Relationships was not an instance of RelationshipsInterface'
+        );
     }
 
     /**
@@ -179,6 +202,6 @@ class RelationshipsTest extends TestCase
             'test2' => $relationship2->process()
         ];
 
-        $this->assertEquals((object)$object_array, $relationships->process());
+        $this->assertEquals($object_array, $relationships->process());
     }
 }
