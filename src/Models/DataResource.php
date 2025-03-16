@@ -20,6 +20,7 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\DataResourceInterface;
 use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
 
 /**
@@ -40,7 +41,7 @@ use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class DataResource
+class DataResource implements DataResourceInterface
 {
     // properties
 
@@ -84,10 +85,10 @@ class DataResource
     /**
      * @phpstan-param array<mixed>|null $attributes
      * @param array|null $attributes
-     * @return DataResource
+     * @return DataResourceInterface
      * @see $attributes
      */
-    public function setAttributes(?array $attributes): DataResource
+    public function setAttributes(?array $attributes): DataResourceInterface
     {
         $this->attributes = $attributes;
         return $this;
@@ -104,10 +105,10 @@ class DataResource
 
     /**
      * @param MetaInterface|null $meta
-     * @return DataResource
+     * @return DataResourceInterface
      * @see $meta
      */
-    public function setMeta(?MetaInterface $meta): DataResource
+    public function setMeta(?MetaInterface $meta): DataResourceInterface
     {
         $this->meta = $meta;
         return $this;
@@ -124,10 +125,10 @@ class DataResource
 
     /**
      * @param string|null $id
-     * @return DataResource
+     * @return DataResourceInterface
      * @see $id
      */
-    public function setId(?string $id): DataResource
+    public function setId(?string $id): DataResourceInterface
     {
         $this->id = $id;
         return $this;
@@ -144,10 +145,10 @@ class DataResource
 
     /**
      * @param Relationships|null $relationships
-     * @return DataResource
+     * @return DataResourceInterface
      * @see $relationships
      */
-    public function setRelationships(?Relationships $relationships): DataResource
+    public function setRelationships(?Relationships $relationships): DataResourceInterface
     {
         $this->relationships = $relationships;
         return $this;
@@ -164,10 +165,10 @@ class DataResource
 
     /**
      * @param string|null $type
-     * @return DataResource
+     * @return DataResourceInterface
      * @see $type
      */
-    public function setType(?string $type): DataResource
+    public function setType(?string $type): DataResourceInterface
     {
         $this->type = $type;
         return $this;
@@ -185,7 +186,7 @@ class DataResource
      */
     public function __construct(
         ?string $id = null,
-        ?string $type = null,
+        string $type = null,
         ?array $attributes = null,
         ?MetaInterface $meta = null,
         ?Relationships $relationships = null
@@ -209,18 +210,18 @@ class DataResource
 
         // always return core:
         $array = [
-          'id' => $this->getId(),
-          'type' => $this->getType(),
-          'attributes' => $this->getAttributes()
+            'id' => $this->getId(),
+            'type' => $this->getType(),
+            'attributes' => $this->getAttributes()
         ];
 
         // return Meta if set, else clean
-        if(($this->getMeta() instanceof MetaInterface)) {
+        if (($this->getMeta() instanceof MetaInterface)) {
             $array['meta'] = $this->getMeta()->process();
         }
 
         // return Meta if set, else clean
-        if(($this->getRelationships() instanceof Relationships)) {
+        if (($this->getRelationships() instanceof Relationships)) {
             $array['relationships'] = $this->getRelationships()->process();
         }
 
@@ -230,14 +231,14 @@ class DataResource
     /**
      * Validates the DataResource structure
      *
-     * @return DataResource
+     * @return DataResourceInterface
      * @throws JsonApiFormatterException
      */
-    protected function validate(): DataResource
+    protected function validate(): DataResourceInterface
     {
-        if(($this->getId() === null) || ($this->getType() === null)) {
+        if ($this->getType() === null) {
             $message = 'The DataResource was not formed well. ';
-            $message .= 'Definition 7.2: A resource object MUST contain at least the following top-level members: id, type';
+            $message .= 'Definition 7.2: A resource object MUST contain at least the following top-level members: type';
             throw new JsonApiFormatterException($message);
         }
 

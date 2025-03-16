@@ -33,6 +33,10 @@ These are optional to allow dynamic construction of the object. However, from th
 | id     | a unique identifier for this particular occurrence of the problem                                 | string |
 | type   | a type member is used to describe resource objects that share common attributes and relationships | string |
 
+> Exception: The id member is not required when the resource object originates at the client and represents a new 
+> resource to be created on the server. In that case, a client MAY include a lid member to uniquely identify the 
+> resource by type locally within the document.
+
 > In addition, a resource object MAY contain any of these top-level members:
 
 | member        | detail                                                      | type          |
