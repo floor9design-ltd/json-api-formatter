@@ -30,7 +30,7 @@ The naming of these should be considered:
 > link’s relation type SHOULD be inferred from the name of the link unless the link is a link object and the link 
 > object has a rel member.
 
-Example names might be `self`, `related`
+Example names might be `self`, `related`. A good example of `links` would be pagination or related record links.
 
 ## Fluent creation
 
@@ -43,3 +43,51 @@ Methods are available for fluent creation:
 The class also exposes:
 
 * `$links->process()`: returns a validated array of the links and link objects contained
+
+The following shows a basic data object with two `Link`s inside a `Links` object. 
+
+```php
+    $json_api_formatter = new JsonApiFormatter();
+    $data_resource = new DataResource(
+        'unregistered',
+        'battlecruiser',
+        ['name' => 'Hyperion']
+    );
+
+    $links = new Links(
+        [
+            'self' => 'https://starcraft.fandom.com/wiki/Hyperion',
+            'support' => new Link('https://starcraft.fandom.com/wiki/Viking')
+        ]
+    );
+    $json_api_formatter->setLinks($links);
+    $response = $json_api_formatter->dataResourceResponse($data_resource);
+```
+
+Outputs:
+
+```json
+
+{
+    "data": {
+        "id": "unregistered",
+        "type": "battlecruiser",
+        "attributes": {
+            "name": "Hyperion"
+        }
+    },
+    "meta": {
+        "status": null
+    },
+    "jsonapi": {
+        "version": "1.1"
+    },
+    "links": {
+        "self": "https://starcraft.fandom.com/wiki/Hyperion",
+        "support": {
+            "href": "https://starcraft.fandom.com/wiki/Viking"
+        }
+    }
+}
+
+```
