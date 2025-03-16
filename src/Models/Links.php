@@ -20,8 +20,8 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\LinkInterface;
 use Floor9design\JsonApiFormatter\Interfaces\LinksInterface;
-use stdClass;
 
 /**
  * Class Links
@@ -51,7 +51,7 @@ class Links implements LinksInterface
     protected array $links = [];
 
     /**
-     * @return array<string|Link>
+     * @return array<string|LinkInterface>
      * @see $links
      */
     public function getLinks(): array
@@ -60,11 +60,11 @@ class Links implements LinksInterface
     }
 
     /**
-     * @param array<string|Link> $links
+     * @param array<string|LinkInterface> $links
      * @return Links
      * @see $links
      */
-    public function setLinks(array $links): Links
+    public function setLinks(array $links): LinksInterface
     {
         $this->links = $links;
         return $this;
@@ -90,12 +90,12 @@ class Links implements LinksInterface
 
     /**
      * @param string $name
-     * @param string|Link $link
+     * @param string|LinkInterface|null $link
      * @param bool $overwrite
-     * @return Links
+     * @return LinksInterface
      * @throws JsonApiFormatterException
      */
-    public function addLink(string $name, $link, bool $overwrite = false): Links
+    public function addLink(string $name, string|LinkInterface|null $link, bool $overwrite = false): LinksInterface
     {
         if (isset($this->getLinks()[$name]) && !$overwrite) {
             $message = 'The link provided clashes with existing links - it should be added manually';
@@ -111,16 +111,16 @@ class Links implements LinksInterface
 
     /**
      * @param string $name
-     * @return Links
+     * @return LinksInterface
      */
-    public function unsetLink(string $name): Links
+    public function unsetLink(string $name): LinksInterface
     {
         unset($this->links[$name]);
         return $this;
     }
 
     /**
-     * @return array<array<array<int|float|string>|stdClass|string>|string>
+     * @return array<array<string, array|string|null>|string>
      * @throws JsonApiFormatterException
      */
     public function process(): array
@@ -128,7 +128,7 @@ class Links implements LinksInterface
         $array = [];
 
         foreach ($this->getLinks() as $key => $link) {
-            if ($link instanceof Link) {
+            if ($link instanceof LinkInterface) {
                 $array[$key] = $link->process();
             } elseif (is_string($link)) {
                 $array[$key] = $link;
@@ -145,8 +145,10 @@ class Links implements LinksInterface
      */
     private function validateProperty($value): bool
     {
-        if (!($value instanceof Link || is_string($value))) {
-            throw new JsonApiFormatterException('Links can only be populated with strings or Link objects');
+        if (!
+        ($value instanceof Link || is_string($value) || is_null($value))
+        ) {
+            throw new JsonApiFormatterException('Links can only be populated with strings, Link objects or null');
         }
 
         return true;

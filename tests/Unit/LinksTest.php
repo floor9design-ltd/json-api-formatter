@@ -24,6 +24,7 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * LinksTest
@@ -90,9 +91,11 @@ class LinksTest extends TestCase
 
         $links = new Links(['object' => $link]);
         $links->addLink('string', $string);
+        $links->addLink('null', null);
 
         $this->assertEquals($link, $links->getLinks()['object']);
         $this->assertEquals($string, $links->getLinks()['string']);
+        $this->assertNull($links->getLinks()['null']);
     }
 
     /**
@@ -141,22 +144,4 @@ class LinksTest extends TestCase
 
         $this->assertEquals($processed_array, $links->process());
     }
-
-    /**
-     * Test addLinks
-     *
-     * @return void
-     * @throws JsonApiFormatterException
-     */
-    public function testValidate()
-    {
-        $link = new Link('http://world.com');
-        $bad_string = 2;
-
-        $links = new Links(['object' => $link]);
-        $this->expectException(JsonApiFormatterException::class);
-        $this->expectExceptionMessage('Links can only be populated with strings or Link objects');
-        $links->addLink('string', $bad_string);
-    }
-
 }

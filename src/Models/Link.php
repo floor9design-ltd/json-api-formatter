@@ -46,7 +46,7 @@ class Link implements LinkInterface
 {
     /**
      * a string whose value is a URI-reference [RFC3986 Section 4.1] pointing to the link's target.
-     * @var string|null
+     * @var string
      */
     protected string $href;
 
@@ -60,9 +60,9 @@ class Link implements LinkInterface
 
     /**
      * a link to a description document (e.g. OpenAPI or JSON Schema) for the link target
-     * @var Link|null
+     * @var LinkInterface|null
      */
-    protected ?Link $described_by = null;
+    protected ?LinkInterface $described_by = null;
 
     /**
      * List of all valid relation types
@@ -238,11 +238,11 @@ class Link implements LinkInterface
 
     /**
      * @param string|null $href
-     * @return Link
+     * @return LinkInterface
      * @see $href
      *
      */
-    public function setHref(?string $href): Link
+    public function setHref(?string $href): LinkInterface
     {
         $this->href = $href;
         return $this;
@@ -259,11 +259,11 @@ class Link implements LinkInterface
 
     /**
      * @param string|null $rel
-     * @return Link
+     * @return LinkInterface
      * @throws JsonApiFormatterException
      * @see $rel
      */
-    public function setRel(?string $rel): Link
+    public function setRel(?string $rel): LinkInterface
     {
         if (
             // null is allowed
@@ -281,7 +281,7 @@ class Link implements LinkInterface
     }
 
     /**
-     * @return Link|null
+     * @return LinkInterface|null
      * @see $described_by
      *
      */
@@ -292,11 +292,11 @@ class Link implements LinkInterface
 
     /**
      * @param Link|null $described_by
-     * @return Link
+     * @return LinkInterface
      * @see $described_by
      *
      */
-    public function setDescribedBy(?Link $described_by): Link
+    public function setDescribedBy(?Link $described_by): LinkInterface
     {
         $this->described_by = $described_by;
         return $this;
@@ -314,11 +314,11 @@ class Link implements LinkInterface
 
     /**
      * @param array<string> $link_relation_types
-     * @return Link
+     * @return LinkInterface
      * @see $link_relation_types
      *
      */
-    public function setLinkRelationTypes(array $link_relation_types): Link
+    public function setLinkRelationTypes(array $link_relation_types): LinkInterface
     {
         $this->link_relation_types = $link_relation_types;
         return $this;
@@ -335,10 +335,10 @@ class Link implements LinkInterface
 
     /**
      * @param string|null $title
-     * @return Link
+     * @return LinkInterface
      * @see $title
      */
-    public function setTitle(?string $title): Link
+    public function setTitle(?string $title): LinkInterface
     {
         $this->title = $title;
         return $this;
@@ -355,10 +355,10 @@ class Link implements LinkInterface
 
     /**
      * @param string|null $type
-     * @return Link
+     * @return LinkInterface
      * @see $type
      */
-    public function setType(?string $type): Link
+    public function setType(?string $type): LinkInterface
     {
         $this->type = $type;
         return $this;
@@ -375,10 +375,10 @@ class Link implements LinkInterface
 
     /**
      * @param array<string>|string|null $hreflang
-     * @return Link
+     * @return LinkInterface
      * @see $hreflang
      */
-    public function setHreflang(array|string|null $hreflang): Link
+    public function setHreflang(array|string|null $hreflang): LinkInterface
     {
         $this->hreflang = $hreflang;
         return $this;
@@ -395,10 +395,10 @@ class Link implements LinkInterface
 
     /**
      * @param MetaInterface|null $meta
-     * @return Link
+     * @return LinkInterface
      * @see $meta
      */
-    public function setMeta(?MetaInterface $meta): Link
+    public function setMeta(?MetaInterface $meta): LinkInterface
     {
         $this->meta = $meta;
         return $this;
@@ -420,7 +420,7 @@ class Link implements LinkInterface
      */
     public function __construct(
         string $href,
-        ?Link $described_by = null,
+        ?LinkInterface $described_by = null,
         ?string $rel = null,
         ?string $title = null,
         ?string $type = null,
