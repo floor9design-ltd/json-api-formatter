@@ -7,7 +7,7 @@
  * php 8.0+
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Example\Errors
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -35,7 +35,7 @@ use PHPUnit\Framework\TestCase;
  * This runs the test in /docs/project/errors.md
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Example\Errors
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
