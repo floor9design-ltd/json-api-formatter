@@ -29,7 +29,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * SimpleUsageTest
  *
- * This runs the test in /docs/project/errors.md
+ * This runs the test in /docs/project/links.md
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Tests\Unit
