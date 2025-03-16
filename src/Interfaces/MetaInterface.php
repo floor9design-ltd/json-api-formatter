@@ -7,7 +7,7 @@
  * php 8.0+
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Models
+ * @package   Floor9design\JsonApiFormatter\Interfaces
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -24,10 +24,10 @@ use Floor9design\JsonApiFormatter\Models\Meta;
 /**
  * Class MetaInterface
  *
- * Interface for Links objects.
+ * Interface for Meta objects.
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Models
+ * @package   Floor9design\JsonApiFormatter\Interfaces
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
