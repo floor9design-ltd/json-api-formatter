@@ -95,6 +95,7 @@ class Relationships implements RelationshipsInterface
      * @param string $name
      * @param RelationshipInterface|array<RelationshipInterface> $relationship
      * @return RelationshipsInterface
+     * @throws JsonApiFormatterException
      */
     public function addRelationship(string $name, Relationship|array $relationship): RelationshipsInterface
     {

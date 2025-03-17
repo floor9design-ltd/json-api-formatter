@@ -40,7 +40,7 @@ Methods are available for fluent creation:
 
 The class also exposes:
 
-* `$Relationships->process()`: returns a validated array of the Relationships and Relationship objects contained
+* `$relationships->process()`: returns a validated array of the Relationships and Relationship objects contained
 
 The following shows a basic data object with two `Link`s inside a `Links` object.
 
