@@ -47,13 +47,17 @@ class SourceTest extends TestCase
      * Test source constructor.
      *
      * @return void
-     * @throws JsonApiFormatterException
      */
     public function testConstructor()
     {
-        $array = ['pointer' => '/data'];
-        $source = new Source($array);
-        $this->assertEquals($source->getSource(), $array);
+        $pointer = '/data';
+        $parameter = 'test-parameter';
+        $header = 'test-header';
+
+        $source = new Source($pointer, $parameter, $header);
+        $this->assertEquals($pointer, $source->getPointer());
+        $this->assertEquals($parameter, $source->getParameter());
+        $this->assertEquals($header, $source->getHeader());
     }
 
     /**
@@ -64,8 +68,16 @@ class SourceTest extends TestCase
      */
     public function testProcess()
     {
-        $array = ['pointer' => '/data'];
-        $source = new Source($array);
+        $pointer = '/data';
+        $parameter = 'test-parameter';
+        $header = 'test-header';
+
+        $array = [
+            'pointer' => $pointer,
+            'parameter' => $parameter,
+            'header' => $header,
+        ];
+        $source = new Source($pointer, $parameter, $header);
         $this->assertEquals($source->process(), $array);
     }
 

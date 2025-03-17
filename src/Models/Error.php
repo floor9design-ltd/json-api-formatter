@@ -20,6 +20,7 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\ErrorInterface;
 
 /**
  * Class Error
@@ -39,7 +40,7 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Error
+class Error implements ErrorInterface
 {
     // Properties
 
@@ -96,10 +97,10 @@ class Error
 
     /**
      * @param string|null $id
-     * @return Error
+     * @return ErrorInterface
      * @see $id
      */
-    public function setId(?string $id): Error
+    public function setId(?string $id): ErrorInterface
     {
         $this->id = $id;
         return $this;
@@ -116,10 +117,10 @@ class Error
 
     /**
      * @param Links|null $links
-     * @return Error
+     * @return ErrorInterface
      * @see $links
      */
-    public function setLinks(?Links $links): Error
+    public function setLinks(?Links $links): ErrorInterface
     {
         $this->links = $links;
         return $this;
@@ -136,10 +137,10 @@ class Error
 
     /**
      * @param string|null $status
-     * @return Error
+     * @return ErrorInterface
      * @see $status
      */
-    public function setStatus(?string $status): Error
+    public function setStatus(?string $status): ErrorInterface
     {
         $this->status = $status;
         return $this;
@@ -156,10 +157,10 @@ class Error
 
     /**
      * @param string|null $code
-     * @return Error
+     * @return ErrorInterface
      * @see $code
      */
-    public function setCode(?string $code): Error
+    public function setCode(?string $code): ErrorInterface
     {
         $this->code = $code;
         return $this;
@@ -176,10 +177,10 @@ class Error
 
     /**
      * @param string|null $title
-     * @return Error
+     * @return ErrorInterface
      * @see $title
      */
-    public function setTitle(?string $title): Error
+    public function setTitle(?string $title): ErrorInterface
     {
         $this->title = $title;
         return $this;
@@ -196,10 +197,10 @@ class Error
 
     /**
      * @param string|null $detail
-     * @return Error
+     * @return ErrorInterface
      * @see $detail
      */
-    public function setDetail(?string $detail): Error
+    public function setDetail(?string $detail): ErrorInterface
     {
         $this->detail = $detail;
         return $this;
@@ -216,10 +217,10 @@ class Error
 
     /**
      * @param Source|null $source
-     * @return Error
+     * @return ErrorInterface
      * @see $source
      */
-    public function setSource(?Source $source): Error
+    public function setSource(?Source $source): ErrorInterface
     {
         $this->source = $source;
         return $this;

@@ -1070,9 +1070,7 @@ class JsonApiFormatterTest extends TestCase
             ]
         );
 
-        $source = new Source(
-            ['hello' => 'world']
-        );
+        $source = new Source('/hello', 'paramter-test','header-test');
         $status = '400';
         $code = '400';
         $title = 'Bad request';
@@ -1100,7 +1098,11 @@ class JsonApiFormatterTest extends TestCase
                             'http://link.com',
                             ['href' => 'http://world.com']
                         ],
-                        'source' => ['hello' => 'world']
+                        'source' => [
+                            'pointer' => '/hello',
+                            'parameter' => 'paramter-test',
+                            'header' => 'header-test'
+                        ]
                     ]
                 ]
         ];

@@ -26,6 +26,7 @@ use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 /**
  * RelationshipTest
@@ -57,13 +58,23 @@ class RelationshipTest extends TestCase
         $relationship->setLinks($links);
         $this->assertEquals($links, $relationship->getLinks());
 
-        $data = new DataResource();
-        $relationship->setData($data);
-        $this->assertEquals($data, $relationship->getData());
-
         $meta = new Meta();
         $relationship->setMeta($meta);
         $this->assertEquals($meta, $relationship->getMeta());
+
+        // test single resource
+        $data = new DataResource('2', 'test');
+        $relationship->setData($data);
+        $this->assertEquals($data, $relationship->getData());
+
+        $data2 = new DataResource('3', 'test');
+        $relationship->setData([$data, $data2]);
+        $this->assertEquals([$data, $data2], $relationship->getData());
+
+        // test validation
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('Data must be instance of or array of DataResourceInterface objects');
+        $relationship->setData([$data, new stdClass()]);
     }
 
     /**

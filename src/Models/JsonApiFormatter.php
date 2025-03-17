@@ -676,7 +676,11 @@ class JsonApiFormatter
                 }
 
                 if ($error['source'] ?? false) {
-                    $source = new Source($error['source']);
+                    $source = new Source(
+                        $error['source']['pointer'] ?? null,
+                            $error['source']['parameter'] ?? null,
+                            $error['source']['header'] ?? null,
+                    );
                 } else {
                     $source = null;
                 }

@@ -129,18 +129,8 @@ class Relationships implements RelationshipsInterface
     {
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
-            if(is_array($relationship)) {
-                $relationship_array = [];
-                foreach($relationship as $relationship_array_item) {
-                    $relationship_array[] = $relationship_array_item->process();
-                }
-                $array[$key] = $relationship_array;
-
-            } else {
-                $array[$key] = $relationship->process();
-            }
+            $array[$key] = $relationship->process();
         }
-
         return $array;
     }
 

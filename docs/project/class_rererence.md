@@ -9,7 +9,7 @@ All structures are based around a `JsonApiFormatter` object
 This is constructed of a number of subclasses
 
 * [DataResource](data_resources.md)
-* [Errors](errors.md)
+* [Errors](errors.md) and the related [Source](source.md)
 * [Links](links.md) and the related [Link](link.md)
 * [Meta](meta.md)
 * [Relationships](relationships.md)

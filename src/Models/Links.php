@@ -102,9 +102,7 @@ class Links implements LinksInterface
             throw new JsonApiFormatterException($message);
         }
 
-        if ($this->validateProperty($link)) {
-            $this->links[$name] = $link;
-        }
+        $this->links[$name] = $link;
 
         return $this;
     }
@@ -136,22 +134,6 @@ class Links implements LinksInterface
         }
 
         return $array;
-    }
-
-    /**
-     * @param mixed|Link|string $value
-     * @return bool
-     * @throws JsonApiFormatterException
-     */
-    private function validateProperty($value): bool
-    {
-        if (!
-        ($value instanceof Link || is_string($value) || is_null($value))
-        ) {
-            throw new JsonApiFormatterException('Links can only be populated with strings, Link objects or null');
-        }
-
-        return true;
     }
 
 }

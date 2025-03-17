@@ -68,11 +68,7 @@ class AdvancedUsageTest extends TestCase
                 new Link('https://www.youtube.com/watch?v=c8N72t7aScY')
             ]
         );
-        $source = new Source(
-            [
-                'pointer' => '/data/'
-            ]
-        );
+        $source = new Source('/data/');
         $meta = new Meta (
             [
                 'book' => '2001, A Space Odyssey',

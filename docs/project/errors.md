@@ -3,12 +3,13 @@
 ## Background
 
 From JSON API documentation:
+
 * Specification: [specification](https://jsonapi.org/format/#errors)
 * Example: [example](https://jsonapi.org/examples/#error-objects)
 
 ## Errors
 
-Error responses are an array of Error objects. You can choose whether to collect errors or return at the first 
+Error responses are an array of Error objects. You can choose whether to collect errors or return at the first
 opportunity.
 
 ## The `Error` object
@@ -83,7 +84,7 @@ This is shown in [SimpleUsageTest](../../tests/Unit/Examples/Errors/SimpleUsageT
 
 ## Advanced usage
 
-Note that both the `Error` and `JsonApiFormatter` object can dynamically build their content. This can be useful when 
+Note that both the `Error` and `JsonApiFormatter` object can dynamically build their content. This can be useful when
 a system suffers a recoverable error and wishes to continue. Use the `addErrors()` method to do this.
 
 The following adds a simple error, as well as a more complex one:
@@ -108,11 +109,7 @@ $links = new Links(
         new Link('https://www.youtube.com/watch?v=c8N72t7aScY')
     ]
 );
-$source = new Source(
-    [
-        'pointer' => '/data/'
-    ]
-);
+$source = new Source('/data/');
 $meta = new Meta (
     [
         'book' => '2001, A Space Odyssey',
@@ -179,6 +176,3 @@ $response = $json_api_formatter->errorResponse($errors);
 ```
 
 This is shown in [AdvancedUsageTest](../../tests/Unit/Examples/Errors/AdvancedUsageTest.php)
-
-
-
