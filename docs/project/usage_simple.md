@@ -9,24 +9,24 @@ The main functionality is provided by: `JsonApiFormatter`.
 The JsonApi specification uses several objects (and arrays of objects) to encapsulate the responses. These are mapped
 to the following php items:
 
-* object: `DataResource`
-* object: `Error`
-* array: `Included`
-* object: `Link`
-* object: `Source`
-* object: `Meta`
+| item           | concept                                                |
+|----------------|--------------------------------------------------------|
+| `DataResource` | A place where data lives                               |
+| `Relationship` | Details about a relationship (but not the actual data) |
+| `Included`     | Included relevant or requested data                    |
+| `Link`         | A link to another resource (internal or external)      |
+| `Meta`         | Meta data                                              |
+| `Error`        | An error                                               |
+| `Source`       | Details about the source of an error                   |
+
+Several of these have "collection classes", for example: `Errors` and `Error`. These have rules or other setups that 
+elevate them above a basic array.
 
 ## Usage
 
 The main methods return a json string. 
 
-If you use a framework such as Symfony or Laravel which prefers an array, then you can also use the `...Array()` 
-methods which are also exposed. Remember to check that your implementation is correctly encoding these - often they 
-are incorrect. You may prefer to use the preformatted code responses:
-
-* [framework responses](framework_responses.md)
-
-## data resources
+## Example of a basic data resources response
 
 Data resources can be quickly created using the `dataResourceResponse()` function.
 
@@ -53,7 +53,12 @@ $response = $json_api_formatter->dataResourceResponseArray($id, $type, $attribut
 // an array 
 ```
 
-## errors
+This is enough for most use cases, but JSON API has a lot of extra features. You can learn about these in:
+
+* [class reference](class_rererence.md)
+* [example responses](usage_example_responses.md)
+
+## Example of an error response
 
 Errors can be quickly created using the `errorResponse()` function.
 

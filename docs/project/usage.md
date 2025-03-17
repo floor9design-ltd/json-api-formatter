@@ -37,12 +37,6 @@ Each class is explained in detail here:
 
 * [class reference](class_rererence.md)
 
-## Creating a custom object
-
-If you need to make a custom object, then this is also possible:
-
-* [custom usage](usage_custom.md)
-
 ## Outside the JSON packet
 
 The JSON API requires a specific `Content-Type` header, which can be loaded by `getContentType()`:
@@ -54,11 +48,3 @@ $json_api_formatter = new JsonApiFormatter();
 $content_type = $json_api_formatter->getContentType();
 // application/vnd.api+json
 ```
-
-The `dataResourceResponse()` returns a JSON API compliant json string.
-
-## An example response in Laravel
-
-Many people use the frameworks. There are "cheat sheet" examples in:
-
-* [framework responses](framework_responses.md)

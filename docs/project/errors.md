@@ -27,6 +27,19 @@ opportunity.
 | source | [source object](source.md) used used to indicate which part of the request document caused the error | Source |
 | meta   | [meta object](meta.md)                                                                               | Meta   |
 
+## Fluent creation:
+
+Methods are available for fluent creation:
+
+* `$error->setId($id)`
+* `$error->setLinks($links)`
+* `$error->setStatus($status)`
+* `$error->setCode($code)`
+* `$error->setTitle($title)`
+* `$error->setDetail($detail)`
+* `$error->setSource($source)`
+* `$error->setMeta($meta)`
+
 ## Simple usage
 
 In many cases, a simple return is required. For example, a 403.

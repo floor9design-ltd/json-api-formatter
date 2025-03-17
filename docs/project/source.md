@@ -17,6 +17,14 @@ From JSON API documentation:
 | parameter | a string indicating which URI query parameter caused the error.                     | string |
 | header    | a string indicating the name of a single request header which caused the error      | string |
 
+## Fluent creation:
+
+Methods are available for fluent creation:
+
+* `$source->setPointer($pointer)`
+* `$source->setParameter($parameter)`
+* `$source->setHeader($header)`
+
 ## Simple usage
 
 These are used inside `Error`s. Here is an example response:

@@ -2,8 +2,10 @@
 
 ## Introduction
 
-This is a tutorial that works through many of the basics. It is echoed in the unit test `ExampleResponsesTest` and is
-designed to give a working overview of the classes.
+This is a tutorial that works through many of the basics.
+
+For real world coding examples, refer to the [class reference](class_rererence.md). Each object has examples as well 
+as a link to the Unit tests that run these very examples.
 
 Remember: this software confirms to the JSONAPI standard, so it's a good idea to keep the definition/references nearby.
 These code snippets will create validated code from the provided web validator.
@@ -60,7 +62,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
 
 Note that this is separate to the entire response meta (see below).
 
-### Data Response : Adding response meta
+### Data Response: Adding response meta
 
 The response can offer meta information. By default there is already basic request information included, but this can
 be extended or overwritten.
@@ -108,7 +110,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
 }
 ```
 
-### Data Response : Single resource with resource meta
+### Data Response: Single resource with resource meta
 
 Single data resources can have their own meta (`Meta`):
 
@@ -156,7 +158,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
 }
 ```
 
-### Data Response : Single resource with response links
+### Data Response: Single resource with response links
 
 Single data resources can offer links relevant to the response
 
@@ -272,20 +274,12 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
 }
 ```
 
-### Data Response : Single resource with relationships
+### Data Response: Single resource with relationships
 
 Single data resources can offer relationships. These also can have links and meta relevant to the included
-resources. Note that the relationship data resource is limited.
+resources. Note that the relationship data resource is limited - it is the relationship, not the relationship objects.
 
 ```php
-use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
-use Floor9design\JsonApiFormatter\Models\DataResource;
-use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
-use Floor9design\JsonApiFormatter\Models\Relationships
-
 $json_api_formatter = new JsonApiFormatter();
 $data_resource = new DataResource(
     'red-5',
@@ -294,26 +288,28 @@ $data_resource = new DataResource(
 );
 
 // each relationship is similar to a separate object, with slightly less content in the main data resource
-$relationship_one_data = new RelationshipData('red-2', 'x-wing');
-$relationship_one_meta = new RelationshipMeta(['pilot' => 'Wedge Antilles']);
-$relationship_one_links = new RelationshipLinks(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']);
+$relationship_one_data = new DataResource('red-2', 'x-wing');
+$relationship_one_meta = new Meta(['pilot' => 'Wedge Antilles']);
+$relationship_one_links = new Links(
+    ['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']
+);
 $relationship_one = new Relationship(
-    $relationship_one_links,
     $relationship_one_data,
+    $relationship_one_links,
     $relationship_one_meta
 );
 
-$relationship_two_data = new RelationshipData('red-october', 'submarine ');
-$relationship_two_meta = new RelationshipMeta(['captain' => 'Marko Aleksandrovich Ramius']);
+$relationship_two_data = new DataResource('red-october', 'submarine');
+$relationship_two_meta = new Meta(['captain' => 'Marko Aleksandrovich Ramius']);
 // alternate link build
-$relationship_two_links = new RelationshipLinks(
+$relationship_two_links = new Links(
     [
-        'good_meme' => new Link(['href' => 'https://www.youtube.com/watch?v=CF18ojCoo5k'])
+        'good_meme' => new Link('https://www.youtube.com/watch?v=CF18ojCoo5k')
     ]
 );
 $relationship_two = new Relationship(
-    $relationship_two_links,
     $relationship_two_data,
+    $relationship_two_links,
     $relationship_two_meta
 );
 
@@ -321,7 +317,6 @@ $relationships = new Relationships(['wingman' => $relationship_one, 'backup' => 
 
 // These are relationships to the main data, so are added to the main data resource:
 $data_resource->setRelationships($relationships);
-
 $response = $json_api_formatter->dataResourceResponse($data_resource);
 ```
 
@@ -351,7 +346,7 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
       "backup": {
         "data": {
           "id": "red-october",
-          "type": "submarine "
+          "type": "submarine"
         },
         "links": {
           "good_meme": {
@@ -372,6 +367,9 @@ $response = $json_api_formatter->dataResourceResponse($data_resource);
   }
 }
 ```
+
+Note: this is a one-to-one example. Relationships can also be a one-to-many. See the 
+[relationship docs](relationships.md) for an example.
 
 ### Data Response : Multiple objects
 

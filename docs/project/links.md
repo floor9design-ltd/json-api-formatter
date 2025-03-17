@@ -40,10 +40,6 @@ Methods are available for fluent creation:
 * `$links->addLink()`
 * `$links->unsetLink()`
 
-The class also exposes:
-
-* `$links->process()`: returns a validated array of the links and link objects contained
-
 The following shows a basic data object with two `Link`s inside a `Links` object. 
 
 ```php
