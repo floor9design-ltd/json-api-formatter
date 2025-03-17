@@ -44,10 +44,14 @@ use Floor9design\JsonApiFormatter\Interfaces\IncludedInterface;
  */
 class Included implements IncludedInterface
 {
+    // properties
+
     /**
      * @var array<DataResource>
      */
-    public array $data_resources = [];
+    protected array $data_resources = [];
+
+    // accessors
 
     /**
      * @return array<DataResource>

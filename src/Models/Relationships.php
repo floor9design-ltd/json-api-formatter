@@ -99,9 +99,9 @@ class Relationships implements RelationshipsInterface
      */
     public function addRelationship(string $name, Relationship|array $relationship): RelationshipsInterface
     {
-        if(is_array($relationship)) {
-            foreach($relationship as $name => $relationship_item) {
-                if(!$relationship_item instanceof RelationshipInterface) {
+        if (is_array($relationship)) {
+            foreach ($relationship as $name => $relationship_item) {
+                if (!$relationship_item instanceof RelationshipInterface) {
                     throw new JsonApiFormatterException('Relationships consist of Relationship objects.');
                 }
             }

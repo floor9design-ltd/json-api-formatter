@@ -46,21 +46,22 @@ use stdClass;
  */
 class Relationship implements RelationshipInterface
 {
+    // properties
 
     /**
      * @var DataResourceInterface|array<DataResourceInterface>|null
      */
-    public DataResourceInterface|array|null $data;
+    protected DataResourceInterface|array|null $data;
 
     /**
      * @var LinksInterface|null
      */
-    public ?LinksInterface $links = null;
+    protected ?LinksInterface $links = null;
 
     /**
      * @var MetaInterface|null
      */
-    public ?MetaInterface $meta;
+    protected ?MetaInterface $meta;
 
     // accessors
 

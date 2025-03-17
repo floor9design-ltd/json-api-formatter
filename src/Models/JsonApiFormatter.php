@@ -47,7 +47,7 @@ class JsonApiFormatter
     /**
      * @var string The precise response type expected by JSON API
      */
-    public string $content_type = 'application/vnd.api+json';
+    protected string $content_type = 'application/vnd.api+json';
 
     /**
      * A clean array to populate, including the main required elements
@@ -547,7 +547,9 @@ class JsonApiFormatter
         }
 
         $encoded = json_encode($array, JSON_UNESCAPED_SLASHES);
-        if (!$encoded) {throw new JsonApiFormatterException('The provided array was not able to be encoded');}
+        if (!$encoded) {
+            throw new JsonApiFormatterException('The provided array was not able to be encoded');
+        }
 
         return $encoded;
     }
@@ -659,28 +661,27 @@ class JsonApiFormatter
                         } else {
                             $href = $link['href'] ?? null;
 
-                            if($link['described_by'] ?? null) {
-                                if(is_string($link['described_by'])) {
+                            if ($link['described_by'] ?? null) {
+                                if (is_string($link['described_by'])) {
                                     $described_by = $link['described_by'];
                                 } else {
-
                                     // set up a new Link
                                     $described_by = new Link(
                                         $link['described_by']['href']
                                     );
-                                    if($link['described_by']['rel'] ?? false) {
+                                    if ($link['described_by']['rel'] ?? false) {
                                         $described_by->setRel($link['described_by']['rel']);
                                     }
-                                    if($link['described_by']['title'] ?? false) {
+                                    if ($link['described_by']['title'] ?? false) {
                                         $described_by->setTitle($link['described_by']['title']);
                                     }
-                                    if($link['described_by']['type'] ?? false) {
+                                    if ($link['described_by']['type'] ?? false) {
                                         $described_by->setType($link['described_by']['type']);
                                     }
-                                    if($link['described_by']['hreflang'] ?? false) {
+                                    if ($link['described_by']['hreflang'] ?? false) {
                                         $described_by->setType($link['described_by']['hreflang']);
                                     }
-                                    if($link['described_by']['meta'] ?? false) {
+                                    if ($link['described_by']['meta'] ?? false) {
                                         $described_by->setType($link['described_by']['meta']);
                                     }
                                 }
@@ -693,7 +694,7 @@ class JsonApiFormatter
                             $type = $link['type'] ?? null;
                             $hreflang = $link['hreflang'] ?? null;
 
-                            if($link['meta'] ?? false) {
+                            if ($link['meta'] ?? false) {
                                 $meta = new Meta($link['meta']);
                             } else {
                                 $meta = null;
@@ -708,8 +709,8 @@ class JsonApiFormatter
                 if ($error['source'] ?? false) {
                     $source = new Source(
                         $error['source']['pointer'] ?? null,
-                            $error['source']['parameter'] ?? null,
-                            $error['source']['header'] ?? null,
+                        $error['source']['parameter'] ?? null,
+                        $error['source']['header'] ?? null,
                     );
                 } else {
                     $source = null;
@@ -785,7 +786,7 @@ class JsonApiFormatter
 
         // Catch empty errors array: it needs to exist!
         if (!$this->getErrors()) {
-            throw new JsonApiFormatterException("Error responses cannot have an empty errors array");
+            throw new JsonApiFormatterException('Error responses cannot have an empty errors array');
         }
 
         $this->autoIncludeJsonapi();
@@ -958,7 +959,7 @@ class JsonApiFormatter
      */
     public function isDataResourceResponse(): bool
     {
-        if($this->getData() && !$this->getErrors()) {
+        if ($this->getData() && !$this->getErrors()) {
             return true;
         }
 
@@ -972,7 +973,7 @@ class JsonApiFormatter
      */
     public function isErrorResponse(): bool
     {
-        if(!$this->getData() && $this->getErrors()) {
+        if (!$this->getData() && $this->getErrors()) {
             return true;
         }
 

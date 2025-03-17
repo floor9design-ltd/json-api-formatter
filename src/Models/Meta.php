@@ -41,10 +41,14 @@ use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
  */
 class Meta implements MetaInterface
 {
+    // properties
+
     /**
      * @var array<mixed>
      */
     protected array $meta = [];
+
+    // accessors
 
     /**
      * @return array<mixed>

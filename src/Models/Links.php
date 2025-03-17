@@ -45,10 +45,14 @@ use Floor9design\JsonApiFormatter\Interfaces\LinksInterface;
  */
 class Links implements LinksInterface
 {
+    // properties
+
     /**
      * @var array<string|Link>
      */
     protected array $links = [];
+
+    // accessors
 
     /**
      * @return array<string|LinkInterface>

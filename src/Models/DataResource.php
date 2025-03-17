@@ -48,27 +48,27 @@ class DataResource implements DataResourceInterface
     /**
      * @var array<mixed>|null
      */
-    public ?array $attributes = null;
+    protected ?array $attributes = null;
 
     /**
      * @var MetaInterface|null
      */
-    public ?MetaInterface $meta = null;
+    protected ?MetaInterface $meta = null;
 
     /**
      * @var string|null
      */
-    public ?string $id = null;
+    protected ?string $id = null;
 
     /**
      * @var Relationships|null
      */
-    public ?Relationships $relationships = null;
+    protected ?Relationships $relationships = null;
 
     /**
      * @var string|null
      */
-    public ?string $type = null;
+    protected ?string $type = null;
 
     // accessors
 
@@ -210,13 +210,13 @@ class DataResource implements DataResourceInterface
 
         $array = [];
 
-        if($this->getId() !== null) {
+        if ($this->getId() !== null) {
             $array['id'] = $this->getId();
         }
 
         $array['type'] = $this->getType();
 
-        if($this->getAttributes()) {
+        if ($this->getAttributes()) {
             $array['attributes'] = $this->getAttributes();
         }
 

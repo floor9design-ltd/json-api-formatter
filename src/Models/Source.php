@@ -41,6 +41,8 @@ use Floor9design\JsonApiFormatter\Interfaces\SourceInterface;
  */
 class Source implements SourceInterface
 {
+    // properties
+
     /**
      * a JSON Pointer [RFC6901] to the value in the request document that caused the error
      * @link https://datatracker.ietf.org/doc/html/rfc6901
@@ -59,6 +61,8 @@ class Source implements SourceInterface
      * @var string|null
      */
     protected ?string $header = null;
+
+    // accessors
 
     /**
      * @return string|null
