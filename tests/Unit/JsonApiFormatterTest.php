@@ -31,7 +31,6 @@ use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use Floor9design\JsonApiFormatter\Models\Source;
 use PHPUnit\Framework\TestCase;
@@ -566,7 +565,7 @@ class JsonApiFormatterTest extends TestCase
 
         $relationship_links = new RelationshipLinks();
         $relationship_data = new RelationshipData('2', 'test');
-        $relationship_meta = new RelationshipMeta();
+        $relationship_meta = new Meta();
         $relationships = new Relationships(
             ['foo' => new Relationship($relationship_links, $relationship_data, $relationship_meta)]
         );

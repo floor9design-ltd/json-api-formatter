@@ -24,10 +24,9 @@ use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
+use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
 use PHPUnit\Framework\TestCase;
@@ -86,7 +85,7 @@ class DataResourceTest extends TestCase
 
         $links = new RelationshipLinks();
         $data = new RelationshipData();
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationships = new Relationships([new Relationship($links, $data, $meta)]);
         $data_resource->setRelationships($relationships);
@@ -133,7 +132,7 @@ class DataResourceTest extends TestCase
 
         $links = new RelationshipLinks();
         $data = new RelationshipData();
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationships = new Relationships([new Relationship($links, $data, $meta)]);
         $data_resource->setRelationships($relationships);

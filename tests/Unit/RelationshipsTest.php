@@ -22,13 +22,11 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\JsonApiFormatter\Models\Relationships;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
-use Floor9design\TestingTools\Traits\AccessorTesterTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -58,7 +56,7 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
@@ -78,7 +76,7 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
@@ -97,7 +95,7 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
@@ -120,13 +118,13 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
         $links2 = new RelationshipLinks(['test' => 'link2']);
         $data2 = new RelationshipData("3", "test");
-        $meta2 = new RelationshipMeta();
+        $meta2 = new Meta();
 
         $relationship2 = new Relationship($links2, $data2, $meta2);
 
@@ -147,13 +145,13 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
         $links2 = new RelationshipLinks(['test' => 'link2']);
         $data2 = new RelationshipData("3", "test");
-        $meta2 = new RelationshipMeta();
+        $meta2 = new Meta();
 
         $relationship2 = new Relationship($links2, $data2, $meta2);
 
@@ -180,13 +178,13 @@ class RelationshipsTest extends TestCase
     {
         $links = new RelationshipLinks(['test' => 'link']);
         $data = new RelationshipData("2", "test");
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
         $links2 = new RelationshipLinks(['test' => 'link2']);
         $data2 = new RelationshipData("3", "test");
-        $meta2 = new RelationshipMeta();
+        $meta2 = new Meta();
 
         $relationship2 = new Relationship($links2, $data2, $meta2);
 

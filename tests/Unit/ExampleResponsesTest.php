@@ -29,7 +29,6 @@ use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
 use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use PHPUnit\Framework\TestCase;
 
@@ -193,7 +192,7 @@ class ExampleResponsesTest extends TestCase
 
         // each relationship is similar to a separate object, with slightly less content in the main data resource
         $relationship_one_data = new RelationshipData('red-2', 'x-wing');
-        $relationship_one_meta = new RelationshipMeta(['pilot' => 'Wedge Antilles']);
+        $relationship_one_meta = new Meta(['pilot' => 'Wedge Antilles']);
         $relationship_one_links = new RelationshipLinks(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']
         );
         $relationship_one = new Relationship(
@@ -203,7 +202,7 @@ class ExampleResponsesTest extends TestCase
         );
 
         $relationship_two_data = new RelationshipData('red-october', 'submarine ');
-        $relationship_two_meta = new RelationshipMeta(['captain' => 'Marko Aleksandrovich Ramius']);
+        $relationship_two_meta = new Meta(['captain' => 'Marko Aleksandrovich Ramius']);
         // alternate link build
         $relationship_two_links = new RelationshipLinks(
             [

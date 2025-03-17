@@ -20,11 +20,10 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
-use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
+use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipMeta;
+use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -61,7 +60,7 @@ class RelationshipTest extends TestCase
         $relationship->setData($data);
         $this->assertEquals($data, $relationship->getData());
 
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
         $relationship->setMeta($meta);
         $this->assertEquals($meta, $relationship->getMeta());
     }
@@ -75,7 +74,7 @@ class RelationshipTest extends TestCase
     {
         $links = new RelationshipLinks();
         $data = new RelationshipData();
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $relationship = new Relationship($links, $data, $meta);
 
@@ -93,7 +92,7 @@ class RelationshipTest extends TestCase
     {
         $links = new RelationshipLinks();
         $data = new RelationshipData();
-        $meta = new RelationshipMeta();
+        $meta = new Meta();
 
         $array = [
             'links' => $links->process(),
