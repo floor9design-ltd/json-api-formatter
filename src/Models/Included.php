@@ -19,13 +19,16 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\IncludedInterface;
+
 /**
  * Class Included
  *
- * Class to offer methods/properties to prepare data for an Included object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * Class to offer methods/properties to prepare data for Included objects
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
- * Note: included should be populated by DataResource objects
+ * Note: IncludedInterface should be populated by DataResource objects
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -39,12 +42,12 @@ namespace Floor9design\JsonApiFormatter\Models;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Included
+class Included implements IncludedInterface
 {
     /**
      * @var array<DataResource>
      */
-    var array $data_resources = [];
+    public array $data_resources = [];
 
     /**
      * @return array<DataResource>
@@ -57,10 +60,10 @@ class Included
 
     /**
      * @param array<DataResource> $data_resources
-     * @return Included
+     * @return IncludedInterface
      * @see $data_resources
      */
-    public function setDataResources(array $data_resources): Included
+    public function setDataResources(array $data_resources): IncludedInterface
     {
         $this->data_resources = $data_resources;
         return $this;
@@ -85,9 +88,9 @@ class Included
 
     /**
      * @param DataResource $data_resource
-     * @return Included
+     * @return IncludedInterface
      */
-    public function addDataResource(DataResource $data_resource): Included
+    public function addDataResource(DataResource $data_resource): IncludedInterface
     {
         $this->data_resources[] = $data_resource;
         return $this;
@@ -95,16 +98,16 @@ class Included
 
     /**
      * @return array<array{id:string|null,type:string|null,attributes:array<mixed>|null,meta?:array<mixed>|null}>
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
         $array = [];
 
-        foreach($this->getDataResources() as $data_resource){
+        foreach ($this->getDataResources() as $data_resource) {
             $array[] = $data_resource->process();
         }
 
         return $array;
     }
-
 }

@@ -7,7 +7,7 @@
  * php 8.0+
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Examples\Included
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -20,9 +20,10 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\IncludedInterface;
 use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\Included;
-use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,7 +32,7 @@ use PHPUnit\Framework\TestCase;
  * This test file tests the Included class.
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Examples\Included
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -58,6 +59,22 @@ class IncludedTest extends TestCase
     }
 
     /**
+     * Test included interfaces.
+     *
+     * @return void
+     */
+    public function testInheritance(): void
+    {
+        $data_resource = new DataResource("2", "test", ["hello" => "world"]);
+        $included = new Included([$data_resource]);
+        $this->assertInstanceOf(
+            IncludedInterface::class,
+            $included,
+            'The Meta was not an instance of MetaInterface'
+        );
+    }
+
+    /**
      * Test addDataResource
      *
      * @return void
@@ -70,7 +87,7 @@ class IncludedTest extends TestCase
         $included = new Included([$data_resource]);
         $included->addDataResource($data_resource2);
 
-        $this->assertEquals([$data_resource,$data_resource2], $included->getDataResources());
+        $this->assertEquals([$data_resource, $data_resource2], $included->getDataResources());
 
         $included->setDataResources([$data_resource2]);
         $this->assertEquals([$data_resource2], $included->getDataResources());
@@ -80,6 +97,7 @@ class IncludedTest extends TestCase
      * Test unsetDataResource
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testProcess()
     {
@@ -88,7 +106,7 @@ class IncludedTest extends TestCase
 
         $included = new Included([$data_resource, $data_resource2]);
 
-        $object_array = [$data_resource->process(),$data_resource2->process()];
+        $object_array = [$data_resource->process(), $data_resource2->process()];
 
         $this->assertEquals($object_array, $included->process());
     }
