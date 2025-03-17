@@ -311,9 +311,9 @@ class JsonApiFormatter
     /**
      * @return Stdclass|null
      */
-    public function getJsonapi(): ?StdClass
+    public function getJsonApi(): JsonApiObject
     {
-        return $this->getBaseResponseArray()['jsonapi'] ?? null;
+        return $this->base_response_array['jsonapi'];
     }
 
     /**
@@ -322,7 +322,7 @@ class JsonApiFormatter
      * @param StdClass $jsonapi
      * @return JsonApiFormatter
      */
-    public function setJsonapi(StdClass $jsonapi): JsonApiFormatter
+    public function setJsonApi(JsonApiObject $jsonapi): JsonApiFormatter
     {
         $this->base_response_array['jsonapi'] = $jsonapi;
         return $this;
@@ -336,7 +336,7 @@ class JsonApiFormatter
     public function autoIncludeJsonapi(): JsonApiFormatter
     {
         // Cant form an object before instantiation, so do it here:
-        $this->base_response_array['jsonapi'] = (object)['version' => '1.1'];
+        $this->base_response_array['jsonapi'] = $this->getJsonApi()->process();
         return $this;
     }
 
@@ -450,12 +450,9 @@ class JsonApiFormatter
      */
     public function __construct(
         ?Meta $meta = null,
-        ?stdClass $json_api = null,
+        ?JsonApiObject $json_api = null,
         ?Links $links = null
     ) {
-        // Cant form an object before instantiation, so do it here:
-        $this->base_response_array['jsonapi'] = (object)['version' => '1.1'];
-
         if ($meta ?? false) {
             $this->setMeta($meta);
         } else {
@@ -463,7 +460,9 @@ class JsonApiFormatter
         }
 
         if ($json_api ?? false) {
-            $this->setJsonapi($json_api);
+            $this->setJsonApi($json_api);
+        } else {
+            $this->setJsonApi(new JsonApiObject());
         }
 
         if ($links ?? false) {
@@ -589,6 +588,7 @@ class JsonApiFormatter
     public function export(): string
     {
         $this->quickValidatorArray($this->getBaseResponseArray());
+        $this->autoIncludeJsonapi();
         return $this->correctEncode();
     }
 

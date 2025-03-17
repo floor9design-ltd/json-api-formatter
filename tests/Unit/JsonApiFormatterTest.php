@@ -25,6 +25,7 @@ use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\Error;
 use Floor9design\JsonApiFormatter\Models\Included;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
+use Floor9design\JsonApiFormatter\Models\JsonApiObject;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
@@ -321,18 +322,16 @@ class JsonApiFormatterTest extends TestCase
      */
     public function testJsonapiAccessors()
     {
-        $test_default_jsonapi = (object)['version' => '1.1'];
-
-        $test_replacement_meta = (object)['version' => '1.2'];
-
+        $test_default_jsonapi = new JsonApiObject('1.1');
+        $test_replacement_meta = new JsonApiObject('1.2');
         $json_api_formatter = new JsonApiFormatter();
 
         // check the default value
-        $this->assertEquals($json_api_formatter->getJsonapi(), $test_default_jsonapi);
+        $this->assertEquals($json_api_formatter->getJsonApi(), $test_default_jsonapi);
 
         // Valid get and set
-        $json_api_formatter->setJsonapi($test_replacement_meta);
-        $this->assertEquals($json_api_formatter->getJsonapi(), $test_replacement_meta);
+        $json_api_formatter->setJsonApi($test_replacement_meta);
+        $this->assertEquals($json_api_formatter->getJsonApi(), $test_replacement_meta);
     }
 
     /**
@@ -451,11 +450,11 @@ class JsonApiFormatterTest extends TestCase
         $this->assertEquals($json_api_formatter->getData(), null);
         $this->assertEquals($json_api_formatter->getErrors(), []);
         $this->assertEquals($json_api_formatter->getMeta(), new Meta(['status' => null]));
-        $this->assertEquals($json_api_formatter->getJsonapi(), (object)['version' => '1.1']);
+        $this->assertEquals($json_api_formatter->getJsonApi(), new JsonApiObject('1.1'));
         $this->assertNull($json_api_formatter->getIncluded());
 
         $meta = new Meta(['hello' => 'world']);
-        $json_api = (object)['application/vnd.api+jsonv2'];
+        $json_api = new JsonApiObject('1.1', ['application/vnd.api+jsonv2']);
         $links = new Links(
             [
                 'self' => 'http://example.com/posts',
@@ -471,43 +470,8 @@ class JsonApiFormatterTest extends TestCase
 
         // Instantiated items
         $this->assertEquals($json_api_formatter->getMeta(), $meta);
-        $this->assertEquals($json_api_formatter->getJsonapi(), $json_api);
+        $this->assertEquals($json_api_formatter->getJsonApi(), $json_api);
         $this->assertEquals($json_api_formatter->getLinks(), $links);
-    }
-
-    // Internal method/reflection testing
-
-    /**
-     * Tests that encode correctly encodes an array
-     */
-    public function testCorrectEncode()
-    {
-        $base_response_array = [
-            'data' => null,
-            'errors' => [],
-            'meta' => [
-                'status' => null
-            ],
-            'jsonapi' => (object)['version' => '1.1']
-        ];
-        $test_response_array = [
-            'data' => [],
-            'meta' => [
-                'status' => 'changed'
-            ],
-            'jsonapi' => (object)['version' => '2.0']
-        ];
-
-        $reflection = self::getMethod('correctEncode');
-        $test_object = new JsonApiFormatter();
-
-        // basic call
-        $response = $reflection->invokeArgs($test_object, []);
-        $this->assertSame($response, json_encode($base_response_array, true));
-
-        // modified call
-        $response = $reflection->invokeArgs($test_object, ['array' => $test_response_array]);
-        $this->assertSame($response, json_encode($test_response_array, true));
     }
 
     // Main functionality : base
@@ -524,7 +488,7 @@ class JsonApiFormatterTest extends TestCase
         // basic call
         $response = $reflection->invokeArgs($test_object, []);
 
-        $this->assertEquals("1.1", $response['jsonapi']->version ?? '');
+        $this->assertEquals("1.1", $response['jsonapi']['version']);
     }
 
     // Main functionality : data resources
@@ -871,10 +835,10 @@ class JsonApiFormatterTest extends TestCase
             'meta' => [
                 'status' => null
             ],
-            'jsonapi' => (object)['version' => '1.1']
+            'jsonapi' => ['version' => '1.1']
         ];
 
-        $this->assertSame($json_api_formatter->export(), json_encode($error_response_array, true));
+        $this->assertSame(json_encode($error_response_array, true), $json_api_formatter->export());
 
         // data
         $json_api_formatter = new JsonApiFormatter();

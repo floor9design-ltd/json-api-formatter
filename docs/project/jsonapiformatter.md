@@ -4,3 +4,5 @@ The `JsonApiFormatter` object is the core object. It contains the main functiona
 objects for each JSONAPI element, whether data responses or errors. It also includes the ability to import JSON and 
 populate these objects.
 
+
+

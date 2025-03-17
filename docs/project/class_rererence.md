@@ -4,7 +4,7 @@
 
 All structures are based around a `JsonApiFormatter` object
 
-* JsonApiFormatter
+* [JsonApiFormatter](jsonapiformatter.md)
 
 This is constructed of a number of subclasses
 
