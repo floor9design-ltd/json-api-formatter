@@ -22,10 +22,9 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use Floor9design\TestingTools\Exceptions\TestingToolsException;
 use Floor9design\TestingTools\Traits\AccessorTesterTrait;
@@ -61,7 +60,7 @@ class DataResourceTest extends TestCase
      */
     public function testDataAccessors()
     {
-        $data_resource = new DataResource();
+        $data_resource = new DataResource('0', 'type');
 
         $this->accessorTestStrings(
             [
@@ -83,11 +82,11 @@ class DataResourceTest extends TestCase
         $data_resource->setMeta($meta);
         $this->assertEquals($meta, $data_resource->getMeta());
 
-        $links = new RelationshipLinks();
-        $data = new RelationshipData();
+        $data = new DataResource('0', 'type');
+        $links = new Links();
         $meta = new Meta();
 
-        $relationships = new Relationships([new Relationship($links, $data, $meta)]);
+        $relationships = new Relationships([new Relationship($data, $links, $meta)]);
         $data_resource->setRelationships($relationships);
         $this->assertEquals($relationships, $data_resource->getRelationships());
     }
@@ -130,11 +129,11 @@ class DataResourceTest extends TestCase
 
         // data resource meta with relationships
 
-        $links = new RelationshipLinks();
-        $data = new RelationshipData();
+        $data = new DataResource('2', 'test');
+        $links = new Links();
         $meta = new Meta();
 
-        $relationships = new Relationships([new Relationship($links, $data, $meta)]);
+        $relationships = new Relationships([new Relationship($data, $links, $meta)]);
         $data_resource->setRelationships($relationships);
 
         $array = ['hello' => 'world'];

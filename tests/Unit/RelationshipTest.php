@@ -20,10 +20,11 @@
 
 namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -52,11 +53,11 @@ class RelationshipTest extends TestCase
     {
         $relationship = new Relationship();
 
-        $links = new RelationshipLinks();
+        $links = new Links();
         $relationship->setLinks($links);
         $this->assertEquals($links, $relationship->getLinks());
 
-        $data = new RelationshipData();
+        $data = new DataResource();
         $relationship->setData($data);
         $this->assertEquals($data, $relationship->getData());
 
@@ -69,14 +70,15 @@ class RelationshipTest extends TestCase
      * Test link constructor.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testConstructor()
     {
-        $links = new RelationshipLinks();
-        $data = new RelationshipData();
+        $data = new DataResource();
+        $links = new Links();
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
         $this->assertEquals($links, $relationship->getLinks());
         $this->assertEquals($data, $relationship->getData());
@@ -87,11 +89,12 @@ class RelationshipTest extends TestCase
      * Test meta constructor.
      *
      * @return void
+     * @throws JsonApiFormatterException
      */
     public function testProcess()
     {
-        $links = new RelationshipLinks();
-        $data = new RelationshipData();
+        $links = new Links();
+        $data = new DataResource('0', 'test');
         $meta = new Meta();
 
         $array = [
@@ -100,7 +103,7 @@ class RelationshipTest extends TestCase
             'meta' => $meta->process()
         ];
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
         $this->assertEquals($array, $relationship->process());
     }

@@ -19,7 +19,11 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\DataResourceInterface;
+use Floor9design\JsonApiFormatter\Interfaces\LinksInterface;
 use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
+use Floor9design\JsonApiFormatter\Interfaces\RelationshipInterface;
 use stdClass;
 
 /**
@@ -40,18 +44,18 @@ use stdClass;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Relationship
+class Relationship implements RelationshipInterface
 {
 
     /**
-     * @var RelationshipData|null
+     * @var DataResourceInterface|array<DataResourceInterface>|null
      */
-    public ?RelationshipData $data;
+    public DataResourceInterface|array|null $data;
 
     /**
-     * @var RelationshipLinks|null
+     * @var LinksInterface|null
      */
-    public ?RelationshipLinks $links = null;
+    public ?LinksInterface $links = null;
 
     /**
      * @var MetaInterface|null
@@ -61,40 +65,51 @@ class Relationship
     // accessors
 
     /**
-     * @return RelationshipData|null
+     * @return DataResourceInterface|array<DataResourceInterface>|null
      * @see $data
      */
-    public function getData(): ?RelationshipData
+    public function getData(): DataResourceInterface|array|null
     {
         return $this->data;
     }
 
     /**
-     * @param RelationshipData|null $data
-     * @return Relationship
+     * @param DataResourceInterface|array<DataResourceInterface>|null $data
+     * @return RelationshipInterface
+     * @throws JsonApiFormatterException
      * @see $data
      */
-    public function setData(?RelationshipData $data): Relationship
+    public function setData(DataResourceInterface|array|null $data): RelationshipInterface
     {
+        if (is_array($data)) {
+            foreach ($data as $value) {
+                if (!$value instanceof DataResourceInterface) {
+                    throw new JsonApiFormatterException(
+                        'Data must be instance of or array of DataResourceInterface objects'
+                    );
+                }
+            }
+        }
+
         $this->data = $data;
         return $this;
     }
 
     /**
-     * @return RelationshipLinks|null
+     * @return LinksInterface|null
      * @see $links
      */
-    public function getLinks(): ?RelationshipLinks
+    public function getLinks(): ?LinksInterface
     {
         return $this->links;
     }
 
     /**
-     * @param RelationshipLinks|null $links
-     * @return Relationship
+     * @param LinksInterface|null $links
+     * @return RelationshipInterface
      * @see $links
      */
-    public function setLinks(?RelationshipLinks $links): Relationship
+    public function setLinks(?LinksInterface $links): RelationshipInterface
     {
         $this->links = $links;
         return $this;
@@ -111,10 +126,10 @@ class Relationship
 
     /**
      * @param MetaInterface|null $meta
-     * @return Relationship
+     * @return RelationshipInterface
      * @see $meta
      */
-    public function setMeta(?MetaInterface $meta): Relationship
+    public function setMeta(?MetaInterface $meta): RelationshipInterface
     {
         $this->meta = $meta;
         return $this;
@@ -125,13 +140,14 @@ class Relationship
     /**
      * Relationship constructor.
      * Automatically sets up the provided array as properties
-     * @param RelationshipLinks|null $links
-     * @param RelationshipData|null $data
+     * @param LinksInterface|null $links
+     * @param DataResourceInterface|array<DataResourceInterface>|null $data
      * @param MetaInterface|null $meta
+     * @throws JsonApiFormatterException
      */
     public function __construct(
-        ?RelationshipLinks $links = null,
-        ?RelationshipData $data = null,
+        DataResourceInterface|array|null $data = null,
+        ?LinksInterface $links = null,
         ?MetaInterface $meta = null
     ) {
         $this
@@ -142,20 +158,27 @@ class Relationship
 
     /**
      * @return array<string, stdClass>.
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
         $response = [];
 
-        if($this->getData() instanceof RelationshipData) {
+        if ($this->getData() instanceof DataResourceInterface) {
             $response['data'] = $this->getData()->process();
+        } elseif (is_array($this->getData())) {
+            $data_array = [];
+            foreach ($this->getData() as $data_resource_item) {
+                $data_array[] = $data_resource_item->process();
+            }
+            $response['data'] = $data_array;
         }
 
-        if($this->getLinks() instanceof RelationshipLinks) {
+        if ($this->getLinks() instanceof LinksInterface) {
             $response['links'] = $this->getLinks()->process();
         }
 
-        if($this->getMeta() instanceof Meta) {
+        if ($this->getMeta() instanceof Meta) {
             $response['meta'] = $this->getMeta()->process();
         }
 

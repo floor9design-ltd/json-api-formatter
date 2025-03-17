@@ -27,8 +27,6 @@ use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use PHPUnit\Framework\TestCase;
 
@@ -177,7 +175,7 @@ class ExampleResponsesTest extends TestCase
     }
 
     /**
-     * Data Response : Adding response with relationships
+     * Data Response: Adding response with relationships
      */
     public function testDataResponseResourceRelationships()
     {
@@ -191,27 +189,26 @@ class ExampleResponsesTest extends TestCase
         );
 
         // each relationship is similar to a separate object, with slightly less content in the main data resource
-        $relationship_one_data = new RelationshipData('red-2', 'x-wing');
+        $relationship_one_data = new DataResource('red-2', 'x-wing');
+        $relationship_one_links = new Links(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']);
         $relationship_one_meta = new Meta(['pilot' => 'Wedge Antilles']);
-        $relationship_one_links = new RelationshipLinks(['good_scene' => 'https://www.youtube.com/watch?v=eEeTWVru1qc']
-        );
         $relationship_one = new Relationship(
-            $relationship_one_links,
             $relationship_one_data,
+            $relationship_one_links,
             $relationship_one_meta
         );
 
-        $relationship_two_data = new RelationshipData('red-october', 'submarine ');
+        $relationship_two_data = new DataResource('red-october', 'submarine ');
         $relationship_two_meta = new Meta(['captain' => 'Marko Aleksandrovich Ramius']);
         // alternate link build
-        $relationship_two_links = new RelationshipLinks(
+        $relationship_two_links = new Links(
             [
                 'good_meme' => new Link('https://www.youtube.com/watch?v=CF18ojCoo5k')
             ]
         );
         $relationship_two = new Relationship(
-            $relationship_two_links,
             $relationship_two_data,
+            $relationship_two_links,
             $relationship_two_meta
         );
 

@@ -208,12 +208,17 @@ class DataResource implements DataResourceInterface
     {
         $this->validate();
 
-        // always return core:
-        $array = [
-            'id' => $this->getId(),
-            'type' => $this->getType(),
-            'attributes' => $this->getAttributes()
-        ];
+        $array = [];
+
+        if($this->getId() !== null) {
+            $array['id'] = $this->getId();
+        }
+
+        $array['type'] = $this->getType();
+
+        if($this->getAttributes()) {
+            $array['attributes'] = $this->getAttributes();
+        }
 
         // return Meta if set, else clean
         if (($this->getMeta() instanceof MetaInterface)) {

@@ -29,8 +29,6 @@ use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use Floor9design\JsonApiFormatter\Models\Source;
 use PHPUnit\Framework\TestCase;
@@ -563,11 +561,11 @@ class JsonApiFormatterTest extends TestCase
         $array = ['hello' => 'world'];
         $data_resource_meta = new Meta($array);
 
-        $relationship_links = new RelationshipLinks();
-        $relationship_data = new RelationshipData('2', 'test');
+        $relationship_data = new DataResource('2', 'test');
+        $relationship_links = new Links();
         $relationship_meta = new Meta();
         $relationships = new Relationships(
-            ['foo' => new Relationship($relationship_links, $relationship_data, $relationship_meta)]
+            ['foo' => new Relationship($relationship_data, $relationship_links, $relationship_meta)]
         );
 
         $resource_array = ['id' => $id, 'type' => $type, 'attributes' => $attributes];
@@ -999,15 +997,6 @@ class JsonApiFormatterTest extends TestCase
                 'attributes' => [
                     'foo' => 'bar'
                 ]
-            ],
-            'included' => [
-                [
-                    'id' => '0',
-                    'type' => 'test',
-                    'attributes' => [
-                        'foo' => 'bar'
-                    ]
-                ]
             ]
         ];
 
@@ -1015,8 +1004,7 @@ class JsonApiFormatterTest extends TestCase
 
         $json_api_formatter = new JsonApiFormatter();
         $json_api_formatter->import($data_json);
-
-        $this->assertEquals($json_api_formatter->getData()->process(), $json_array['data']);
+        $this->assertEquals($json_array['data'], $json_api_formatter->getData()->process());
     }
 
     /**

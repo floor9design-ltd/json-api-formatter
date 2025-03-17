@@ -22,10 +22,10 @@ namespace Floor9design\JsonApiFormatter\Tests\Unit;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
+use Floor9design\JsonApiFormatter\Models\DataResource;
+use Floor9design\JsonApiFormatter\Models\Links;
 use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
-use Floor9design\JsonApiFormatter\Models\RelationshipData;
-use Floor9design\JsonApiFormatter\Models\RelationshipLinks;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use PHPUnit\Framework\TestCase;
 
@@ -54,11 +54,11 @@ class RelationshipsTest extends TestCase
      */
     public function testAccessors()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
         $relationships = new Relationships();
         $relationships->setRelationships(['test' => $relationship]);
@@ -74,11 +74,11 @@ class RelationshipsTest extends TestCase
      */
     public function testConstructor()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
         $relationships = new Relationships(['test' => $relationship]);
 
@@ -93,11 +93,11 @@ class RelationshipsTest extends TestCase
      */
     public function testInheritance(): void
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
         $relationships = new Relationships(['test' => $relationship]);
 
@@ -116,17 +116,17 @@ class RelationshipsTest extends TestCase
      */
     public function testAddRelationships()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
-        $links2 = new RelationshipLinks(['test' => 'link2']);
-        $data2 = new RelationshipData("3", "test");
+        $data2 = new DataResource("3", "test");
+        $links2 = new Links(['test' => 'link2']);
         $meta2 = new Meta();
 
-        $relationship2 = new Relationship($links2, $data2, $meta2);
+        $relationship2 = new Relationship($data2, $links2, $meta2);
 
         $relationships = new Relationships(['test1' => $relationship]);
         $relationships->addRelationship('test2', $relationship2);
@@ -145,24 +145,19 @@ class RelationshipsTest extends TestCase
      * @return void
      * @throws JsonApiFormatterException
      */
-    public function testAddRelationshipArray()
+    public function testAddRelationshipDataArray()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $data2 = new DataResource("3", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship([$data, $data2], $links, $meta);
 
-        $links2 = new RelationshipLinks(['test' => 'link2']);
-        $data2 = new RelationshipData("3", "test");
-        $meta2 = new Meta();
-
-        $relationship2 = new Relationship($links2, $data2, $meta2);
-
-        $relationships = new Relationships(['test' => [$relationship, $relationship2]]);
+        $relationships = new Relationships(['test' => $relationship]);
 
         $this->assertEquals(
-            [$relationship, $relationship2],
+            $relationship,
             $relationships->getRelationships()['test']
         );
     }
@@ -175,17 +170,17 @@ class RelationshipsTest extends TestCase
      */
     public function testUnsetRelationships()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
-        $links2 = new RelationshipLinks(['test' => 'link2']);
-        $data2 = new RelationshipData("3", "test");
+        $data2 = new DataResource("3", "test");
+        $links2 = new Links(['test' => 'link2']);
         $meta2 = new Meta();
 
-        $relationship2 = new Relationship($links2, $data2, $meta2);
+        $relationship2 = new Relationship($data2, $links2, $meta2);
 
         $relationships = new Relationships(
             [
@@ -208,17 +203,17 @@ class RelationshipsTest extends TestCase
      */
     public function testProcess()
     {
-        $links = new RelationshipLinks(['test' => 'link']);
-        $data = new RelationshipData("2", "test");
+        $data = new DataResource("2", "test");
+        $links = new Links(['test' => 'link']);
         $meta = new Meta();
 
-        $relationship = new Relationship($links, $data, $meta);
+        $relationship = new Relationship($data, $links, $meta);
 
-        $links2 = new RelationshipLinks(['test' => 'link2']);
-        $data2 = new RelationshipData("3", "test");
+        $links2 = new Links(['test' => 'link2']);
+        $data2 = new DataResource("3", "test");
         $meta2 = new Meta();
 
-        $relationship2 = new Relationship($links2, $data2, $meta2);
+        $relationship2 = new Relationship($data2, $links2, $meta2);
 
         $relationships = new Relationships(
             [

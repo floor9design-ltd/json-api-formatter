@@ -20,6 +20,7 @@
 namespace Floor9design\JsonApiFormatter\Models;
 
 use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
+use Floor9design\JsonApiFormatter\Interfaces\RelationshipInterface;
 use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
 
 /**
@@ -47,7 +48,7 @@ class Relationships implements RelationshipsInterface
     // properties
 
     /**
-     * @var array<Relationship>
+     * @var array<RelationshipInterface>
      */
     protected array $relationships = [];
 
@@ -79,6 +80,7 @@ class Relationships implements RelationshipsInterface
      * Relationships constructor.
      * Automatically sets up the provided array as properties
      * @param array<Relationship|array<Relationship>>|null $array
+     * @throws JsonApiFormatterException
      */
     public function __construct(?array $array = [])
     {
@@ -91,15 +93,14 @@ class Relationships implements RelationshipsInterface
 
     /**
      * @param string $name
-     * @param Relationship|array<Relationship> $relationship
+     * @param RelationshipInterface|array<RelationshipInterface> $relationship
      * @return RelationshipsInterface
-     * @throws JsonApiFormatterException
      */
     public function addRelationship(string $name, Relationship|array $relationship): RelationshipsInterface
     {
         if(is_array($relationship)) {
-            foreach($relationship as $relationship_array_item) {
-                if(!$relationship_array_item instanceof Relationship) {
+            foreach($relationship as $name => $relationship_item) {
+                if(!$relationship_item instanceof RelationshipInterface) {
                     throw new JsonApiFormatterException('Relationships consist of Relationship objects.');
                 }
             }
@@ -121,15 +122,22 @@ class Relationships implements RelationshipsInterface
 
     /**
      * @return array<mixed>
+     * @throws JsonApiFormatterException
      */
     public function process(): array
     {
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
+            if(is_array($relationship)) {
+                $relationship_array = [];
+                foreach($relationship as $relationship_array_item) {
+                    $relationship_array[] = $relationship_array_item->process();
+                }
+                $array[$key] = $relationship_array;
 
-
-
-            $array[$key] = $relationship->process();
+            } else {
+                $array[$key] = $relationship->process();
+            }
         }
 
         return $array;
