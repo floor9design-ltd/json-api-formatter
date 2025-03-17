@@ -19,13 +19,14 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Interfaces\MetaInterface;
 use stdClass;
 
 /**
  * Class Relationship
  *
  * Class to offer methods/properties to prepare data for a Relationship object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -53,9 +54,9 @@ class Relationship
     public ?RelationshipLinks $links = null;
 
     /**
-     * @var RelationshipMeta|null
+     * @var MetaInterface|null
      */
-    public ?RelationshipMeta $meta;
+    public ?MetaInterface $meta;
 
     // accessors
 
@@ -100,20 +101,20 @@ class Relationship
     }
 
     /**
-     * @return RelationshipMeta|null
+     * @return MetaInterface|null
      * @see $meta
      */
-    public function getMeta(): ?RelationshipMeta
+    public function getMeta(): ?MetaInterface
     {
         return $this->meta;
     }
 
     /**
-     * @param RelationshipMeta|null $meta
+     * @param MetaInterface|null $meta
      * @return Relationship
      * @see $meta
      */
-    public function setMeta(?RelationshipMeta $meta): Relationship
+    public function setMeta(?MetaInterface $meta): Relationship
     {
         $this->meta = $meta;
         return $this;
@@ -126,12 +127,12 @@ class Relationship
      * Automatically sets up the provided array as properties
      * @param RelationshipLinks|null $links
      * @param RelationshipData|null $data
-     * @param RelationshipMeta|null $meta
+     * @param MetaInterface|null $meta
      */
     public function __construct(
         ?RelationshipLinks $links = null,
         ?RelationshipData $data = null,
-        ?RelationshipMeta $meta = null
+        ?MetaInterface $meta = null
     ) {
         $this
             ->setLinks($links)
@@ -154,7 +155,7 @@ class Relationship
             $response['links'] = $this->getLinks()->process();
         }
 
-        if($this->getMeta() instanceof RelationshipMeta) {
+        if($this->getMeta() instanceof Meta) {
             $response['meta'] = $this->getMeta()->process();
         }
 

@@ -19,15 +19,16 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
 use stdClass;
 
 /**
  * Class Relationships
  *
  * Class to offer methods/properties to prepare data for a Relationships object
- * These are set to the v1.0 specification, defined at https://jsonapi.org/format/
+ * These are set to the v1.1 specification, defined at https://jsonapi.org/format/
  *
- * Note: Relationships should be populated by a Relationship object
+ * NoteRelationshipsInterface should be populated by a Relationship object
  *
  * @category  None
  * @package   Floor9design\JsonApiFormatter\Models
@@ -41,7 +42,7 @@ use stdClass;
  * @since     File available since pre-release development cycle
  * @see       https://jsonapi.org/format/
  */
-class Relationships
+class Relationships implements RelationshipsInterface
 {
     // properties
 
@@ -63,10 +64,10 @@ class Relationships
 
     /**
      * @param array<Relationship> $relationships
-     * @return Relationships
+     * @return RelationshipsInterface
      * @see $relationships
      */
-    public function setRelationships(array $relationships): Relationships
+    public function setRelationships(array $relationships): RelationshipsInterface
     {
         $this->relationships = $relationships;
         return $this;
@@ -90,10 +91,10 @@ class Relationships
 
     /**
      * @param string $name
-     * @param Relationship $relationship
-     * @return Relationships
+     * @param Relationship|array<Relationship> $relationship
+     * @return RelationshipsInterface
      */
-    public function addRelationship(string $name, Relationship $relationship): Relationships
+    public function addRelationship(string $name, Relationship|array $relationship): RelationshipsInterface
     {
         $this->relationships[$name] = $relationship;
         return $this;
@@ -101,25 +102,25 @@ class Relationships
 
     /**
      * @param string $name
-     * @return Relationships
+     * @return RelationshipsInterface
      */
-    public function unsetRelationship(string $name): Relationships
+    public function unsetRelationship(string $name): RelationshipsInterface
     {
         unset($this->relationships[$name]);
         return $this;
     }
 
     /**
-     * @return stdClass a stdClass cleaned object suitable for encoding
+     * @return array<mixed>
      */
-    public function process(): stdClass
+    public function process(): array
     {
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
             $array[$key] = $relationship->process();
         }
 
-        return (object)$array;
+        return $array;
     }
 
 }
