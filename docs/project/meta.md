@@ -81,6 +81,8 @@ The response would be:
 
 This is an ideal place for information such as Copyright.
 
+This is shown in [SimpleDataResourceTest](../../tests/Unit/Examples/Meta/SimpleDataResourceTest.php)
+
 ## Child `Meta` objects
 
 Meta objects can be part of children, such as `DataResource` objects
@@ -132,3 +134,5 @@ The response would be:
 }
 
 ```
+
+This is shown in [SimpleDataResponseTest](../../tests/Unit/Examples/Meta/SimpleDataResponseTest.php)
