@@ -91,3 +91,5 @@ Outputs:
 }
 
 ```
+
+This is shown in [SimpleUsageTest](../../tests/Unit/Examples/Links/SimpleUsageTest.php)
