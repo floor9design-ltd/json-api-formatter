@@ -7,7 +7,7 @@
  * php 8.0+
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Examples\Relationships
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
@@ -24,7 +24,6 @@ use Floor9design\JsonApiFormatter\Models\DataResource;
 use Floor9design\JsonApiFormatter\Models\JsonApiFormatter;
 use Floor9design\JsonApiFormatter\Models\Link;
 use Floor9design\JsonApiFormatter\Models\Links;
-use Floor9design\JsonApiFormatter\Models\Meta;
 use Floor9design\JsonApiFormatter\Models\Relationship;
 use Floor9design\JsonApiFormatter\Models\Relationships;
 use PHPUnit\Framework\TestCase;
@@ -35,7 +34,7 @@ use PHPUnit\Framework\TestCase;
  * This runs the test in /docs/project/relationships.md
  *
  * @category  None
- * @package   Floor9design\JsonApiFormatter\Tests\Unit\Relationships
+ * @package   Floor9design\JsonApiFormatter\Tests\Unit\Examples\Relationships
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
