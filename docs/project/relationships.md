@@ -10,6 +10,10 @@ These are used to create the `relationships` section of the packet. From the doc
 > The value of the relationships key MUST be an object (a “relationships object”). Each member of a relationships
 > object represents a “relationship” from the resource object in which it has been defined to other resource objects.
 
+***Gotcha***: relationships are not the content of the relationship: they are meta data about it. If you want to 
+include a relationship with the child object(s), add this to the relationship, then include them using a `Related` 
+object. 
+
 A `Relationships` object accepts the following instantiation arguments:
 
 ```php
