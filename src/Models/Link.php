@@ -60,9 +60,9 @@ class Link implements LinkInterface
 
     /**
      * a link to a description document (e.g. OpenAPI or JSON Schema) for the link target
-     * @var LinkInterface|null
+     * @var LinkInterface|string|null
      */
-    protected ?LinkInterface $described_by = null;
+    protected LinkInterface|string|null $described_by = null;
 
     /**
      * List of all valid relation types
@@ -281,22 +281,22 @@ class Link implements LinkInterface
     }
 
     /**
-     * @return LinkInterface|null
+     * @return LinkInterface|string|null
      * @see $described_by
      *
      */
-    public function getDescribedBy(): ?Link
+    public function getDescribedBy(): LinkInterface|string|null
     {
         return $this->described_by;
     }
 
     /**
-     * @param Link|null $described_by
+     * @param LinkInterface|string|null $described_by
      * @return LinkInterface
      * @see $described_by
      *
      */
-    public function setDescribedBy(?Link $described_by): LinkInterface
+    public function setDescribedBy(LinkInterface|string|null $described_by): LinkInterface
     {
         $this->described_by = $described_by;
         return $this;
@@ -420,7 +420,7 @@ class Link implements LinkInterface
      */
     public function __construct(
         string $href,
-        ?LinkInterface $described_by = null,
+        LinkInterface|string|null $described_by = null,
         ?string $rel = null,
         ?string $title = null,
         ?string $type = null,
@@ -460,7 +460,11 @@ class Link implements LinkInterface
         }
 
         if ($this->getDescribedBy()) {
-            $response['describedby'] = $this->getDescribedBy()->process();
+            if(is_string($this->getDescribedBy())) {
+                $response['describedby'] = $this->getDescribedBy();
+            } else {
+                $response['describedby'] = $this->getDescribedBy()->process();
+            }
         }
 
         if ($this->getTitle()) {

@@ -658,18 +658,48 @@ class JsonApiFormatter
                             $links->addLink($key, $link);
                         } else {
                             $href = $link['href'] ?? null;
+
+                            if($link['described_by'] ?? null) {
+                                if(is_string($link['described_by'])) {
+                                    $described_by = $link['described_by'];
+                                } else {
+
+                                    // set up a new Link
+                                    $described_by = new Link(
+                                        $link['described_by']['href']
+                                    );
+                                    if($link['described_by']['rel'] ?? false) {
+                                        $described_by->setRel($link['described_by']['rel']);
+                                    }
+                                    if($link['described_by']['title'] ?? false) {
+                                        $described_by->setTitle($link['described_by']['title']);
+                                    }
+                                    if($link['described_by']['type'] ?? false) {
+                                        $described_by->setType($link['described_by']['type']);
+                                    }
+                                    if($link['described_by']['hreflang'] ?? false) {
+                                        $described_by->setType($link['described_by']['hreflang']);
+                                    }
+                                    if($link['described_by']['meta'] ?? false) {
+                                        $described_by->setType($link['described_by']['meta']);
+                                    }
+                                }
+                            } else {
+                                $described_by = null;
+                            }
+
                             $rel = $link['rel'] ?? null;
                             $title = $link['title'] ?? null;
                             $type = $link['type'] ?? null;
                             $hreflang = $link['hreflang'] ?? null;
 
                             if($link['meta'] ?? false) {
-                                //$meta = $link['meta'] => $meta->process()
+                                $meta = new Meta($link['meta']);
                             } else {
                                 $meta = null;
                             }
 
-                            $new_link = new Link($href, $rel, $title, $type, $hreflang, $meta);
+                            $new_link = new Link($href, $described_by, $rel, $title, $type, $hreflang, $meta);
                             $links->addLink($key, $new_link);
                         }
                     }

@@ -1066,7 +1066,15 @@ class JsonApiFormatterTest extends TestCase
         $links = new Links(
             [
                 'http://link.com',
-                new Link('http://world.com')
+                new Link(
+                    'http://world.com',
+                    new Link('http://related-link.com'),
+                    'about',
+                    'link-title',
+                    'related',
+            'en-GB',
+                    new Meta(['foo' => 'bar'])
+                )
             ]
         );
 
@@ -1096,7 +1104,15 @@ class JsonApiFormatterTest extends TestCase
                         'detail' => $detail,
                         'links' => [
                             'http://link.com',
-                            ['href' => 'http://world.com']
+                            [
+                                'href' => 'http://world.com',
+                                'described_by' => ['href' => 'http://related-link.com'],
+                                'rel' => 'about',
+                                'title' => 'link-title',
+                                'type' => 'related',
+                                'hreflang' => 'en-GB',
+                                'meta' => ['foo' => 'bar']
+                            ]
                         ],
                         'source' => [
                             'pointer' => '/hello',

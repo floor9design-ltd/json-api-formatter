@@ -105,7 +105,17 @@ class LinkTest extends TestCase
         $link->setMeta($meta);
         $this->assertEquals($meta, $link->getMeta());
 
+        // object
         $described_by = new Link($generator->randomUrl());
+        $link->setDescribedBy($described_by);
+        $this->assertEquals(
+            $described_by,
+            $link->getDescribedBy(),
+            'The described_by accessors did not set/get correctly'
+        );
+
+        // string
+        $described_by = $generator->randomUrl();
         $link->setDescribedBy($described_by);
         $this->assertEquals(
             $described_by,
