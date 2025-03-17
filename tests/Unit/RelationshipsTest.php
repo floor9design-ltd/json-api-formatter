@@ -133,6 +133,38 @@ class RelationshipsTest extends TestCase
 
         $this->assertEquals($relationship, $relationships->getRelationships()['test1']);
         $this->assertEquals($relationship2, $relationships->getRelationships()['test2']);
+
+        $this->expectException(JsonApiFormatterException::class);
+        $this->expectExceptionMessage('Relationships consist of Relationship objects.');
+        $relationships->addRelationship('test3', [['bad-array']]);
+    }
+
+    /**
+     * Test addRelationships
+     *
+     * @return void
+     * @throws JsonApiFormatterException
+     */
+    public function testAddRelationshipArray()
+    {
+        $links = new RelationshipLinks(['test' => 'link']);
+        $data = new RelationshipData("2", "test");
+        $meta = new Meta();
+
+        $relationship = new Relationship($links, $data, $meta);
+
+        $links2 = new RelationshipLinks(['test' => 'link2']);
+        $data2 = new RelationshipData("3", "test");
+        $meta2 = new Meta();
+
+        $relationship2 = new Relationship($links2, $data2, $meta2);
+
+        $relationships = new Relationships(['test' => [$relationship, $relationship2]]);
+
+        $this->assertEquals(
+            [$relationship, $relationship2],
+            $relationships->getRelationships()['test']
+        );
     }
 
     /**

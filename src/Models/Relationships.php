@@ -19,8 +19,8 @@
 
 namespace Floor9design\JsonApiFormatter\Models;
 
+use Floor9design\JsonApiFormatter\Exceptions\JsonApiFormatterException;
 use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
-use stdClass;
 
 /**
  * Class Relationships
@@ -78,7 +78,7 @@ class Relationships implements RelationshipsInterface
     /**
      * Relationships constructor.
      * Automatically sets up the provided array as properties
-     * @param array<Relationship>|null $array
+     * @param array<Relationship|array<Relationship>>|null $array
      */
     public function __construct(?array $array = [])
     {
@@ -93,9 +93,18 @@ class Relationships implements RelationshipsInterface
      * @param string $name
      * @param Relationship|array<Relationship> $relationship
      * @return RelationshipsInterface
+     * @throws JsonApiFormatterException
      */
     public function addRelationship(string $name, Relationship|array $relationship): RelationshipsInterface
     {
+        if(is_array($relationship)) {
+            foreach($relationship as $relationship_array_item) {
+                if(!$relationship_array_item instanceof Relationship) {
+                    throw new JsonApiFormatterException('Relationships consist of Relationship objects.');
+                }
+            }
+        }
+
         $this->relationships[$name] = $relationship;
         return $this;
     }
@@ -117,6 +126,9 @@ class Relationships implements RelationshipsInterface
     {
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
+
+
+
             $array[$key] = $relationship->process();
         }
 
