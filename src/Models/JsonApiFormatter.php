@@ -815,7 +815,7 @@ class JsonApiFormatter
      */
     public function dataResourceResponseArray($data_resources = null): array
     {
-        // clear errors: it must not be set in an dataResource response
+        // clear errors: it must not be set in a dataResource response
         unset($this->base_response_array['errors']);
 
         // load if it's not been provided:
