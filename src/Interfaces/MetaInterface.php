@@ -11,9 +11,9 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.1
+ * @version   2.0.2
  * @link      https://www.floor9design.com
- * @since     2.0.1
+ * @since     2.0.0
  *
  */
 
@@ -31,11 +31,11 @@ use Floor9design\JsonApiFormatter\Models\Meta;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.1
+ * @version   2.0.2
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
- * @since     2.0.1
+ * @since     2.0.0
  * @see       Meta
  */
 interface MetaInterface
