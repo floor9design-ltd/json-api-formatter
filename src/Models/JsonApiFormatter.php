@@ -470,7 +470,7 @@ class JsonApiFormatter
         }
     }
 
-    // private functions
+    // protected functions
 
     /**
      * Correctly encodes the string, catching issues such as:
@@ -481,7 +481,7 @@ class JsonApiFormatter
      * @return string
      * @throws JsonApiFormatterException
      */
-    private function correctEncode(?array $array = []): string
+    protected function correctEncode(?array $array = []): string
     {
         if (!$array) {
             // dont change base array, use $array as output
@@ -544,6 +544,7 @@ class JsonApiFormatter
         ) {
             $array['data'] = $array['data']->process();
         }
+        $array = $this->normalizeRelationshipsRecursive($array);
 
         $encoded = json_encode($array, JSON_UNESCAPED_SLASHES);
         if (!$encoded) {
@@ -551,6 +552,18 @@ class JsonApiFormatter
         }
 
         return $encoded;
+    }
+
+    protected function normalizeRelationshipsRecursive(array $input): array
+    {
+        foreach ($input as $key => &$value) {
+            if ($key === 'relationships' && is_array($value)) {
+                $value = (object) $value;
+            } elseif (is_array($value)) {
+                $value = $this->normalizeRelationshipsRecursive($value);
+            }
+        }
+        return $input;
     }
 
     // Main functionality:
