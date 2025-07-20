@@ -1,6 +1,6 @@
 {
     "name": "floor9design/json-api-formatter",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "type": "library",
     "description": "A set classes that allow for creating JSON API compliant objects",
     "keywords": [
