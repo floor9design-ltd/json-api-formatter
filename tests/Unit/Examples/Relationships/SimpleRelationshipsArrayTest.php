@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.0
+ * @version   2.0.1
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @since     File available since Release 1.0
@@ -38,7 +38,7 @@ use PHPUnit\Framework\TestCase;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.0
+ * @version   2.0.1
  * @link      https://github.com/floor9design-ltd/json-api-formatter
  * @link      https://floor9design.com
  * @since     File available since Release 1.0

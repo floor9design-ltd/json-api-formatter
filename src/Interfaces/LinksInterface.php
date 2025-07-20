@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.0
+ * @version   2.0.1
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -33,11 +33,11 @@ use stdClass;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.0
+ * @version   2.0.1
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
- * @since     2.0.0
+ * @since     2.0.1
  * @see       Link
  */
 interface LinksInterface
