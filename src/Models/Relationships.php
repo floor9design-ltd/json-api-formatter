@@ -11,7 +11,7 @@
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.2
+ * @version   2.0.3
  * @link      https://www.floor9design.com
  * @since     File available since pre-release development cycle
  *
@@ -36,7 +36,7 @@ use Floor9design\JsonApiFormatter\Interfaces\RelationshipsInterface;
  * @author    Rick Morice <rick@floor9design.com>
  * @copyright Floor9design Ltd
  * @license   MIT
- * @version   2.0.2
+ * @version   2.0.3
  * @link      https://www.floor9design.com
  * @link      https://jsonapi.org/
  * @link      https://jsonapi-validator.herokuapp.com/
@@ -129,7 +129,14 @@ class Relationships implements RelationshipsInterface
     {
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
-            $array[$key] = $relationship->process();
+            if (is_array($relationship)) {
+                $relationship_array = [];
+                foreach ($relationship as $name => $relationship_item) {
+                    $relationship_array[$name] = $relationship_item->process();
+                }
+            } else {
+                $array[$key] = $relationship->process();
+            }
         }
         return $array;
     }
