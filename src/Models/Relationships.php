@@ -130,9 +130,11 @@ class Relationships implements RelationshipsInterface
         $array = [];
         foreach ($this->getRelationships() as $key => $relationship) {
             if (is_array($relationship)) {
-                $relationship_array = [];
                 foreach ($relationship as $name => $relationship_item) {
-                    $relationship_array[$name] = $relationship_item->process();
+                    if(isset($array[$name])) {
+                        throw new JsonApiFormatterException('Relationships must have unique keys.');
+                    }
+                    $array[$name] = $relationship_item->process();
                 }
             } else {
                 $array[$key] = $relationship->process();
