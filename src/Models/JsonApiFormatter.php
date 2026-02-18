@@ -582,6 +582,7 @@ class JsonApiFormatter
             ->unsetIncluded()
             ->unsetLinks()
             ->unsetMeta();
+        $this->setJsonApi(new JsonApiObject());
 
         return $this;
     }
